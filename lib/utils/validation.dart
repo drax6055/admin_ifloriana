@@ -49,6 +49,13 @@ class Validation {
 
     return null;
   }
+    static String? validateTime(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please Select Time';
+    }
+
+    return null;
+  }
 
   static String? validateAddress(String? value) {
     if (value == null || value.isEmpty) {

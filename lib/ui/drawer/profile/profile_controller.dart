@@ -15,7 +15,6 @@ class ProfileController extends GetxController {
   var opentimeController = TextEditingController();
   var closetimeController = TextEditingController();
   var categoryController = TextEditingController();
-  var isSwitched = true.obs;
   var selectedcategory = "UNISEX".obs;
 
   final List<String> dropdownItems = [
@@ -23,10 +22,6 @@ class ProfileController extends GetxController {
     'FEMALE',
     'UNISEX',
   ];
-
-  void toggleSwitch(bool value) {
-    isSwitched.value = value;
-  }
 
   Future onsalonPress() async {
     Map<String, dynamic> udpateSalonData = {
@@ -48,7 +43,7 @@ class ProfileController extends GetxController {
         udpateSalonData,
         (json) => UpdateSalonDetails.fromJson(json),
       );
-      CustomSnackbar.showSuccess('sucess', 'salon updated successfully');
+      CustomSnackbar.showSuccess('success', 'salon updated successfully');
     } catch (e) {
       CustomSnackbar.showError(
           'Error', 'Failed to update salon ${e.toString()}');

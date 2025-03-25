@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/utils/validation.dart';
 import 'package:get/get.dart';
 import '../../../route/app_route.dart';
-import '../../../utils/colors.dart';
 import '../../../wiget/Custome_button.dart';
 import '../../../wiget/Custome_textfield.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
@@ -29,31 +28,32 @@ class ProfileScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.only(
-              left: 20.h,
-              right: 20.h,
+              left: 15.w,
+              right: 15.w,
             ),
             child: Column(
               children: [
-                SizedBox(height: 10.h),
-                open_time(context),
-                SizedBox(height: 10.h),
-                close_time(context),
-                SizedBox(height: 10.h),
-                status(),
-                InputTxtfield_Email(),
-                SizedBox(height: 10.h),
-                InputTxtfield_Phone(),
-                SizedBox(height: 10.h),
-                InputTxtfield_add(),
+                SizedBox(height: 20.h),
+                InputTxtfield_SalonName(),
                 SizedBox(height: 10.h),
                 InputTxtfield_dis(),
                 SizedBox(height: 10.h),
-                InputTxtfield_category(),
+                InputTxtfield_add(),
                 SizedBox(height: 10.h),
-                InputTxtfield_SalonName(),
+                InputTxtfield_Phone(),
                 SizedBox(height: 10.h),
-                cat(),
+                InputTxtfield_Email(),
                 SizedBox(height: 10.h),
+                Row(
+                  children: [
+                    Expanded(child: open_time(context)),
+                    SizedBox(width: 10.w),
+                    Expanded(child: close_time(context)),
+                  ],
+                ),
+                SizedBox(height: 10.h),
+                category(),
+                SizedBox(height: 40.h),
                 Btn_register(),
                 SizedBox(height: 10.h),
               ],
@@ -69,6 +69,7 @@ class ProfileScreen extends StatelessWidget {
       controller: getController.opentimeController,
       labelText: 'Open Time',
       keyboardType: TextInputType.none,
+      validator: (value) => Validation.validateTime(value),
       suffixIcon: IconButton(
         onPressed: () async {
           TimeOfDay initialTime = TimeOfDay.now();
@@ -91,6 +92,7 @@ class ProfileScreen extends StatelessWidget {
       controller: getController.closetimeController,
       labelText: 'Close Time',
       keyboardType: TextInputType.none,
+      validator: (value) => Validation.validateTime(value),
       suffixIcon: IconButton(
         onPressed: () async {
           TimeOfDay initialTime = TimeOfDay.now();
@@ -109,13 +111,13 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget status() {
-    return Obx(() => Switch(
-          activeColor: primaryColor,
-          value: getController.isSwitched.value,
-          onChanged: getController.toggleSwitch,
-        ));
-  }
+  // Widget status() {
+  //   return Obx(() => Switch(
+  //         activeColor: primaryColor,
+  //         value: getController.isSwitched.value,
+  //         onChanged: getController.toggleSwitch,
+  //       ));
+  // }
 
   Widget InputTxtfield_Email() {
     return CustomTextFormField(
@@ -126,18 +128,19 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-Widget InputTxtfield_Phone() {
-  return CustomTextFormField(
-    controller: getController.contact_numberController,
-    labelText: 'Personal Phone',
-    keyboardType: TextInputType.phone,
-    validator: (value) => Validation.validatePhone('Please enter a valid 10-digit phone number'),
-    inputFormatters: [
-      FilteringTextInputFormatter.digitsOnly,  
-      LengthLimitingTextInputFormatter(10),   
-    ],
-  );
-}
+  Widget InputTxtfield_Phone() {
+    return CustomTextFormField(
+      controller: getController.contact_numberController,
+      labelText: 'Personal Phone',
+      keyboardType: TextInputType.phone,
+      validator: (value) => Validation.validatePhone(
+          'Please enter a valid 10-digit phone number'),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(10),
+      ],
+    );
+  }
 
   Widget InputTxtfield_add() {
     return CustomTextFormField(
@@ -145,8 +148,7 @@ Widget InputTxtfield_Phone() {
       labelText: 'Address',
       maxLines: 2,
       keyboardType: TextInputType.text,
-      validator: (value) =>
-          Validation.validateAddress('Please enter Salon Address'),
+      validator: (value) => Validation.validateAddress(value),
     );
   }
 
@@ -156,8 +158,7 @@ Widget InputTxtfield_Phone() {
       labelText: 'Description',
       maxLines: 2,
       keyboardType: TextInputType.text,
-      validator: (value) =>
-          Validation.validatedisscription('Please enter Salon Description'),
+      validator: (value) => Validation.validatedisscription(value),
     );
   }
 
@@ -193,20 +194,19 @@ Widget InputTxtfield_Phone() {
     );
   }
 
-  Widget cat() {
+  Widget category() {
     return Obx(() => CustomDropdown<String>(
           value: getController.selectedcategory.value.isEmpty
               ? null
               : getController.selectedcategory.value,
           items: getController.dropdownItems,
           hintText: 'Select an option',
-          labelText: 'Dropdown Label',
+          labelText: 'Category',
           onChanged: (newValue) {
             if (newValue != null) {
               getController.selectedcategory(newValue);
             }
           },
-        )); 
-
+        ));
   }
 }
