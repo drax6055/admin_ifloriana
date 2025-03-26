@@ -2,6 +2,7 @@ import 'package:flutter_template/ui/auth/login/login_screen.dart';
 import 'package:flutter_template/ui/auth/packages/packages_screen.dart';
 import 'package:flutter_template/ui/auth/register/register_screen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
+import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
 import 'package:get/get.dart';
 import '../ui/auth/forgot/forgot_screen.dart';
 import '../ui/drawer/dashboard/dashboard_screen.dart';
@@ -43,6 +44,10 @@ class AppPages {
     GetPage(
         name: Routes.completeSalonProfileScreen,
         page: () => CompleteSalonProfileScreen(),
+        transition: Transition.rightToLeft),
+        GetPage(
+        name: Routes.updateSalonScreen,
+        page: () => UpdatesalonScreen(),
         transition: Transition.rightToLeft),
   ];
 }

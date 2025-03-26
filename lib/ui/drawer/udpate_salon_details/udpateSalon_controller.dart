@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../../../main.dart';
 import '../../../network/model/udpate_salon._model.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
-class CompleteSalonProfileController extends GetxController {
+class UdpatesalonController extends GetxController {
   var nameController = TextEditingController();
   var disController = TextEditingController();
   var addController = TextEditingController();
@@ -16,14 +15,6 @@ class CompleteSalonProfileController extends GetxController {
   var closetimeController = TextEditingController();
   var categoryController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
-  var selectedPackageId = 0.obs;
-
-  @override
-  void onInit() {
-    selectedPackageId.value = Get.arguments?['package_id'] ;
-    super.onInit();
-  }
-
 
   final List<String> dropdownItems = [
     'MALE',
@@ -42,7 +33,7 @@ class CompleteSalonProfileController extends GetxController {
       'closing_time': closetimeController.text,
       'Category': selectedcategory.value.toString().toLowerCase(),
       'status': 1,
-      'package_id':  selectedPackageId.value,
+      'package_id': 6,
     };
     print("{'===>': $updateSalonData}");
     try {
