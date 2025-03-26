@@ -172,7 +172,7 @@ class PackagesController extends GetxController {
         register_post_details,
         (json) => Sigm_up_model.fromJson(json),
       );
-    Get.offAllNamed(Routes.loginScreen);
+    Get.offAllNamed(Routes.completeSalonProfileScreen);
     } catch (e) {
       CustomSnackbar.showError("==>", e.toString());
     }

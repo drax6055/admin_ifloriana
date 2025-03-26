@@ -5,7 +5,7 @@ import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:get/get.dart';
 import '../ui/auth/forgot/forgot_screen.dart';
 import '../ui/drawer/dashboard/dashboard_screen.dart';
-import '../ui/drawer/profile/profile_screen.dart';
+import '../ui/drawer/complete__salon_profile.dart/complete_salon_profile_screen.dart';
 import '../ui/splash/splash_screen.dart';
 import 'app_route.dart';
 
@@ -41,8 +41,8 @@ class AppPages {
         page: () => ForgotScreen(),
         transition: Transition.rightToLeft),
     GetPage(
-        name: Routes.profileScreen,
-        page: () => ProfileScreen(),
+        name: Routes.completeSalonProfileScreen,
+        page: () => CompleteSalonProfileScreen(),
         transition: Transition.rightToLeft),
   ];
 }

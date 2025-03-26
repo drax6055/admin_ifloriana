@@ -9,19 +9,20 @@ import '../../../wiget/Custome_textfield.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
 import '../../../wiget/custome_dropdown.dart';
 import '../../../wiget/custome_snackbar.dart';
-import 'profile_controller.dart';
+import 'complete_salon_profile_controller.dart';
 
-class ProfileScreen extends StatelessWidget {
-  ProfileScreen({super.key});
+class CompleteSalonProfileScreen extends StatelessWidget {
+  CompleteSalonProfileScreen({super.key});
 
-  final ProfileController getController = Get.put(ProfileController());
+  final CompleteSalonProfileController getController =
+      Get.put(CompleteSalonProfileController());
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Profile',
+        title: 'Add Salon Details',
       ),
       body: Form(
         key: _formKey,
@@ -54,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: 10.h),
                 category(),
                 SizedBox(height: 40.h),
-                Btn_register(),
+                Btn_submitSalonDetails(),
                 SizedBox(height: 10.h),
               ],
             ),
@@ -169,13 +170,13 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget Btn_register() {
+  Widget Btn_submitSalonDetails() {
     return ElevatedButtonExample(
-      text: "Update",
+      text: "Submit",
       onPressed: () {
         if (_formKey.currentState?.validate() ?? false) {
           getController.onsalonPress();
-          Get.toNamed(Routes.drawerScreen);
+          Get.offAllNamed(Routes.loginScreen);
         } else {
           CustomSnackbar.showError(
               'Validation Error', 'Please fill in all fields correctly');

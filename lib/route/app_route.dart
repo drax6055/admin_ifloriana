@@ -6,5 +6,5 @@ abstract class Routes {
   static const packagesScreen = '/PackagesScreen';
   static const dashboardScreen = '/DashboardScreen';
   static const forgotScreen = '/ForgotScreen';
-  static const profileScreen = '/ProfileScreen';
+  static const completeSalonProfileScreen = '/CompleteSalonProfileScreen';
 }

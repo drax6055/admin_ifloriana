@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-
 import '../../../main.dart';
 import '../../../network/model/udpate_salon._model.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
-class ProfileController extends GetxController {
+class CompleteSalonProfileController extends GetxController {
   var nameController = TextEditingController();
   var disController = TextEditingController();
   var addController = TextEditingController();
@@ -45,12 +44,10 @@ class ProfileController extends GetxController {
         (json) => UpdateSalonDetails.fromJson(json),
       );
       CustomSnackbar.showSuccess('Success', 'Salon updated successfully');
-      clearControllers();
     } catch (e) {
       CustomSnackbar.showError(
           'Error', 'Failed to update salon: ${e.toString()}');
       print("==> ${e.toString()}");
-      clearControllers();
     }
   }
 
@@ -72,16 +69,5 @@ class ProfileController extends GetxController {
     closetimeController.dispose();
     categoryController.dispose();
     super.onClose();
-  }
-
-  void clearControllers() {
-    nameController.clear();
-    disController.clear();
-    addController.clear();
-    contact_numberController.clear();
-    contact_emailController.clear();
-    opentimeController.clear();
-    closetimeController.clear();
-    selectedcategory.value = "UNISEX";
   }
 }

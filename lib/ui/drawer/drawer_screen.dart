@@ -64,7 +64,7 @@ class DrawerScreen extends StatelessWidget {
                     Navigator.pop(context); // This will close the drawer
 
                     // Then navigate to the profile screen
-                    Get.toNamed(Routes.profileScreen);
+                    Get.toNamed(Routes.completeSalonProfileScreen);
                   },
                   child: Stack(
                     children: [
