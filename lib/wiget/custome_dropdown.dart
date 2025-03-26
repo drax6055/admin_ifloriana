@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/wiget/custome_text.dart';
 
 import '../utils/colors.dart';
 import '../utils/custom_text_styles.dart';
@@ -60,7 +61,10 @@ class CustomDropdown<T> extends StatelessWidget {
       items: items.map((T item) {
         return DropdownMenuItem<T>(
           value: item,
-          child: Text(item.toString(), style: CustomTextStyles.textFontMedium(size: 14.sp)),
+          child: CustomTextWidget(
+            text: item.toString(),
+            textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
+          ),
         );
       }).toList(),
       onChanged: onChanged,
