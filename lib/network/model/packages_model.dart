@@ -1,7 +1,7 @@
 class Package_model {
   int? id;
   String? name;
-  double? price; 
+  double? price;
   String? description;
   List<String>? servicesIncluded;
   String? expirationDate;
@@ -29,7 +29,12 @@ class Package_model {
         : json['price'];
 
     description = json['description'];
-    servicesIncluded = json['services_included'].cast<String>();
+
+    // Check if services_included is null before calling cast
+    servicesIncluded = json['services_included'] != null
+        ? List<String>.from(json['services_included'])
+        : [];
+
     expirationDate = json['expiration_date'];
     subscriptionPlan = json['subscription_plan'];
     createdAt = json['created_at'];
@@ -40,7 +45,7 @@ class Package_model {
     final Map<String, dynamic> data = {};
     data['id'] = this.id;
     data['name'] = this.name;
-    data['price'] = this.price; 
+    data['price'] = this.price;
     data['description'] = this.description;
     data['services_included'] = this.servicesIncluded;
     data['expiration_date'] = this.expirationDate;

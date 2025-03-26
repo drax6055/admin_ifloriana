@@ -96,7 +96,7 @@ class RegisterScreen extends StatelessWidget {
           'Address': getController.addressController.text,
           'Email': getController.emailController.text,
         };
-
+        // Get.toNamed(Routes.packagesScreen, arguments: register_data);
         if (_formKey.currentState?.validate() ?? false) {
           Get.toNamed(Routes.packagesScreen, arguments: register_data);
           getController.ownerNameController.text = "";

@@ -122,7 +122,7 @@ class PackagesController extends GetxController {
         print('Success --> Payment captured successfully: $paymentId');
         await saveToDatabase();
         onRegisterData();
-        Get.offNamed(Routes.loginScreen);
+        // Get.offNamed(Routes.loginScreen);
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Payment capture failed: $e');
