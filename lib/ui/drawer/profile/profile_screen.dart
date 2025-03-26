@@ -78,7 +78,7 @@ class ProfileScreen extends StatelessWidget {
             initialTime: initialTime,
           );
           if (pickedTime != null) {
-            String formattedTime = pickedTime.format(context);
+            String formattedTime = getController.formatTimeToString(pickedTime);
             getController.opentimeController.text = formattedTime;
           }
         },
@@ -100,9 +100,8 @@ class ProfileScreen extends StatelessWidget {
             context: context,
             initialTime: initialTime,
           );
-
           if (pickedTime != null) {
-            String formattedTime = pickedTime.format(context);
+            String formattedTime = getController.formatTimeToString(pickedTime);
             getController.closetimeController.text = formattedTime;
           }
         },
@@ -124,7 +123,7 @@ class ProfileScreen extends StatelessWidget {
       controller: getController.contact_emailController,
       labelText: 'Personal Email',
       keyboardType: TextInputType.emailAddress,
-      validator: (value) => Validation.validateEmail('Please enter Email'),
+      validator: (value) => Validation.validateEmail(value),
     );
   }
 
@@ -133,8 +132,7 @@ class ProfileScreen extends StatelessWidget {
       controller: getController.contact_numberController,
       labelText: 'Personal Phone',
       keyboardType: TextInputType.phone,
-      validator: (value) => Validation.validatePhone(
-          'Please enter a valid 10-digit phone number'),
+      validator: (value) => Validation.validatePhone(value),
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(10),
@@ -176,6 +174,7 @@ class ProfileScreen extends StatelessWidget {
       text: "Update",
       onPressed: () {
         if (_formKey.currentState?.validate() ?? false) {
+          getController.onsalonPress();
           Get.toNamed(Routes.drawerScreen);
         } else {
           CustomSnackbar.showError(

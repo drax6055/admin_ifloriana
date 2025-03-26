@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -24,29 +25,63 @@ class ProfileController extends GetxController {
   ];
 
   Future onsalonPress() async {
-    Map<String, dynamic> udpateSalonData = {
-      'name': "Dhruve ganchi",
-      'description': "A dummy context",
-      'address': "Ahmedabad",
-      'contact_number': "5395168423",
-      'contact_email': "demo1212@gmail.com",
-      'opening_time': "10:00:00",
-      'closing_time': "21:00:00",
-      'Category': "unisex",
+    Map<String, dynamic> updateSalonData = {
+      'name': nameController.text,
+      'description': disController.text,
+      'address': addController.text,
+      'contact_number': contact_numberController.text,
+      'contact_email': contact_emailController.text,
+      'opening_time': opentimeController.text,
+      'closing_time': closetimeController.text,
+      'Category': selectedcategory.value.toString().toLowerCase(),
       'status': 1,
       'package_id': 6,
     };
-
+    print("{'===>': $updateSalonData}");
     try {
       await dioClient.postData<UpdateSalonDetails>(
         '${Apis.baseUrl}${Endpoints.udpate_salon}',
-        udpateSalonData,
+        updateSalonData,
         (json) => UpdateSalonDetails.fromJson(json),
       );
-      CustomSnackbar.showSuccess('success', 'salon updated successfully');
+      CustomSnackbar.showSuccess('Success', 'Salon updated successfully');
+      clearControllers();
     } catch (e) {
       CustomSnackbar.showError(
-          'Error', 'Failed to update salon ${e.toString()}');
+          'Error', 'Failed to update salon: ${e.toString()}');
+      print("==> ${e.toString()}");
+      clearControllers();
     }
+  }
+
+  String formatTimeToString(TimeOfDay timeOfDay) {
+    final now = DateTime.now();
+    final time = DateTime(
+        now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+    return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}";
+  }
+
+  @override
+  void onClose() {
+    nameController.dispose();
+    disController.dispose();
+    addController.dispose();
+    contact_numberController.dispose();
+    contact_emailController.dispose();
+    opentimeController.dispose();
+    closetimeController.dispose();
+    categoryController.dispose();
+    super.onClose();
+  }
+
+  void clearControllers() {
+    nameController.clear();
+    disController.clear();
+    addController.clear();
+    contact_numberController.clear();
+    contact_emailController.clear();
+    opentimeController.clear();
+    closetimeController.clear();
+    selectedcategory.value = "UNISEX";
   }
 }
