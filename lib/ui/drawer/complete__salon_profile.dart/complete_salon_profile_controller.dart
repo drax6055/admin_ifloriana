@@ -1,29 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import '../../../commen_items/sharePrafrence.dart';
 import '../../../main.dart';
+import '../../../network/model/signup_model.dart';
 import '../../../network/model/udpate_salon._model.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class CompleteSalonProfileController extends GetxController {
-  var nameController = TextEditingController();
+  var nameController = TextEditingController(); // salon name add
   var disController = TextEditingController();
-  var addController = TextEditingController();
-  var contact_numberController = TextEditingController();
-  var contact_emailController = TextEditingController();
+  var addController = TextEditingController(); // address add
+  var contact_numberController = TextEditingController(); // contact number add
+  var contact_emailController = TextEditingController(); // email add
   var opentimeController = TextEditingController();
   var closetimeController = TextEditingController();
   var categoryController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
-  var selectedPackageId = 0.obs;
+
+  final SharedPreferenceManager _prefs = SharedPreferenceManager();
+
+  var signupdetails = Rxn<Sigm_up_model>();
 
   @override
-  void onInit() {
-    selectedPackageId.value = Get.arguments?['package_id'] ;
+  void onInit() async {
     super.onInit();
+    getSignupdetails(Get.context);
   }
 
+  Future<void> getSignupdetails(context) async {
+    // Fetch stored signup details
+    signupdetails.value = await _prefs.getSignupDetails();
+
+    if (signupdetails.value != null) {
+      print("==> Stored Signup Data: ${signupdetails.value?.toJson()}");
+
+      // Assign values to controllers
+      nameController.text = signupdetails.value?.data?.salonName ?? '';
+      addController.text = signupdetails.value?.data?.address ?? '';
+      contact_emailController.text = signupdetails.value?.data?.email ?? '';
+      contact_numberController.text =
+          signupdetails.value?.data?.phoneNumber ?? '';
+    } else {
+      print("No stored signup details found!");
+    }
+  }
 
   final List<String> dropdownItems = [
     'MALE',
@@ -42,7 +64,7 @@ class CompleteSalonProfileController extends GetxController {
       'closing_time': closetimeController.text,
       'Category': selectedcategory.value.toString().toLowerCase(),
       'status': 1,
-      'package_id':  selectedPackageId.value,
+      'package_id': signupdetails.value?.data?.packageId ?? 0,
     };
     print("{'===>': $updateSalonData}");
     try {

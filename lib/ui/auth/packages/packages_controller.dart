@@ -2,6 +2,7 @@ import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../../../commen_items/sharePrafrence.dart';
 import '../../../main.dart';
 import '../../../network/model/packages_model.dart';
 import '../../../network/model/signup_model.dart';
@@ -15,6 +16,7 @@ class PackagesController extends GetxController {
   var filteredPackages = <Package_model>[].obs;
   late Razorpay _razorpay;
   final Map<String, dynamic> registerData = Get.arguments;
+  final SharedPreferenceManager _prefs = SharedPreferenceManager();
 
   @override
   void onInit() {
@@ -119,7 +121,7 @@ class PackagesController extends GetxController {
 
         CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
         print('Success --> Payment captured successfully: $paymentId');
-        onRegisterData();
+          await onRegisterData();
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Payment capture failed: $e');
@@ -140,7 +142,12 @@ class PackagesController extends GetxController {
 
 
 
-  Future onRegisterData() async {
+   Future<void> onRegisterData() async {
+    if (selectedPackageId.value == null) {
+      CustomSnackbar.showError("Error", "No package selected");
+      return;
+    }
+
     Map<String, dynamic> register_post_details = {
       'full_name': registerData['Owner_Name'].toString(),
       'salon_name': registerData['Salon_Name'].toString(),
@@ -151,14 +158,22 @@ class PackagesController extends GetxController {
     };
 
     try {
-      await dioClient.postData<Sigm_up_model>(
+      final response = await dioClient.postData<Sigm_up_model>(
         '${Apis.baseUrl}${Endpoints.register_salon}',
         register_post_details,
         (json) => Sigm_up_model.fromJson(json),
       );
-    Get.offAllNamed(Routes.completeSalonProfileScreen,arguments:  {'package_id': selectedPackageId.value});
+
+      // ✅ Store Signup Data in Shared Preferences
+      await _prefs.setSignupDetails(response);
+
+      // ✅ Navigate to Profile Completion Screen
+      Get.offAllNamed(Routes.completeSalonProfileScreen,
+          arguments: {'package_id': selectedPackageId.value});
+
     } catch (e) {
-      CustomSnackbar.showError("==>", e.toString());
+      CustomSnackbar.showError("Error", e.toString());
     }
   }
+
 }
