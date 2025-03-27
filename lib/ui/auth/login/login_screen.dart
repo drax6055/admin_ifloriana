@@ -67,12 +67,13 @@ class LoginScreen extends StatelessWidget {
     return ElevatedButtonExample(
       text: "Login",
       onPressed: () {
-        if (_formKey.currentState?.validate() ?? false) {
-          getController.onLoginPress();
-        } else {
-          CustomSnackbar.showError(
-              'Validation Error', 'Please fill in all fields correctly');
-        }
+        Get.toNamed(Routes.drawerScreen);
+        // if (_formKey.currentState?.validate() ?? false) {
+        //   getController.onLoginPress();
+        // } else {
+        //   CustomSnackbar.showError(
+        //       'Validation Error', 'Please fill in all fields correctly');
+        // }
       },
     );
   }
