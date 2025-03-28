@@ -12,7 +12,7 @@ import '../../../wiget/custome_snackbar.dart';
 class PackagesController extends GetxController {
   var packages = <Package_model>[].obs;
   var selectedPackageId = RxnInt();
-  var selectedFilter = 'All'.obs; 
+  var selectedFilter = 'All'.obs;
   var filteredPackages = <Package_model>[].obs;
   late Razorpay _razorpay;
   final Map<String, dynamic> registerData = Get.arguments;
@@ -121,7 +121,7 @@ class PackagesController extends GetxController {
 
         CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
         print('Success --> Payment captured successfully: $paymentId');
-          await onRegisterData();
+        await onRegisterData();
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Payment capture failed: $e');
@@ -140,9 +140,7 @@ class PackagesController extends GetxController {
     print('Info: External Wallet selected: ${response.walletName}');
   }
 
-
-
-   Future<void> onRegisterData() async {
+  Future<void> onRegisterData() async {
     if (selectedPackageId.value == null) {
       CustomSnackbar.showError("Error", "No package selected");
       return;
@@ -170,10 +168,8 @@ class PackagesController extends GetxController {
       // ✅ Navigate to Profile Completion Screen
       Get.offAllNamed(Routes.completeSalonProfileScreen,
           arguments: {'package_id': selectedPackageId.value});
-
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());
     }
   }
-
 }
