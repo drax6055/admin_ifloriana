@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/udpate_salon_details/udpateSalon_controller.dart';
 import 'package:flutter_template/utils/validation.dart';
 import 'package:get/get.dart';
-import '../../../route/app_route.dart';
 import '../../../wiget/Custome_button.dart';
 import '../../../wiget/Custome_textfield.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
@@ -110,14 +109,6 @@ class UpdatesalonScreen extends StatelessWidget {
     );
   }
 
-  // Widget status() {
-  //   return Obx(() => Switch(
-  //         activeColor: primaryColor,
-  //         value: getController.isSwitched.value,
-  //         onChanged: getController.toggleSwitch,
-  //       ));
-  // }
-
   Widget InputTxtfield_Email() {
     return CustomTextFormField(
       controller: getController.contact_emailController,
@@ -175,7 +166,6 @@ class UpdatesalonScreen extends StatelessWidget {
       onPressed: () {
         if (_formKey.currentState?.validate() ?? false) {
           getController.onsalonPress();
-          Get.offAllNamed(Routes.loginScreen);
         } else {
           CustomSnackbar.showError(
               'Validation Error', 'Please fill in all fields correctly');

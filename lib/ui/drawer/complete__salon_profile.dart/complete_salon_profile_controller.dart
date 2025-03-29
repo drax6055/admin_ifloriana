@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 import '../../../commen_items/sharePrafrence.dart';
 import '../../../main.dart';
 import '../../../network/model/signup_model.dart';
-import '../../../network/model/udpate_salon._model.dart';
+import '../../../network/model/addSalonDetails.dart';
 import '../../../network/network_const.dart';
+import '../../../route/app_route.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class CompleteSalonProfileController extends GetxController {
@@ -66,14 +67,17 @@ class CompleteSalonProfileController extends GetxController {
       'status': 1,
       'package_id': signupdetails.value?.data?.packageId ?? 0,
     };
+
     print("{'===>': $updateSalonData}");
     try {
-      await dioClient.postData<UpdateSalonDetails>(
+      final response = await dioClient.postData<AddsalonDetails>(
         '${Apis.baseUrl}${Endpoints.udpate_salon}',
         updateSalonData,
-        (json) => UpdateSalonDetails.fromJson(json),
+        (json) => AddsalonDetails.fromJson(json),
       );
-      CustomSnackbar.showSuccess('Success', 'Salon updated successfully');
+      await _prefs.setCreatedSalondetails(response);
+      CustomSnackbar.showSuccess('Success', 'Salon created successfully');
+      Get.offAllNamed(Routes.loginScreen);
     } catch (e) {
       CustomSnackbar.showError(
           'Error', 'Failed to update salon: ${e.toString()}');

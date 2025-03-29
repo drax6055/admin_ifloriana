@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../network/model/addSalonDetails.dart';
 import '../network/model/login_model.dart';
 import '../network/model/signup_model.dart';
 
@@ -10,6 +11,8 @@ class SharedPreferenceManager {
   static const String _accessTokenKey = 'accessToken';
   static const String _keyUser = "login_user";
   static const String _keySignup = "signup_user";
+  static const String _keySalonDetails = "salon_details";
+
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   /// Save access token
@@ -65,6 +68,40 @@ class SharedPreferenceManager {
     }
     return Sigm_up_model.fromJson(jsonDecode(data));
   }
+
+  Future<AddsalonDetails?> getCreatedSalondetails() async {
+    String? data = await storage.read(key: _keySalonDetails);
+    if (data == null || data.isEmpty || data == "null") {
+      return null;
+    }
+    print("===> Salon created :  $data");
+    return AddsalonDetails.fromJson(jsonDecode(data));
+  }
+
+  Future<void> setCreatedSalondetails(AddsalonDetails? salonDetails) async {
+    if (salonDetails != null) {
+      await storage.write(key: _keySalonDetails, value: jsonEncode(salonDetails.toJson()));
+    } else {
+      await storage.delete(key: _keySalonDetails);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /// Get token from stored login user data
   Future<String?> getToken() async {

@@ -19,6 +19,7 @@ class SplashController extends GetxController {
 
       Timer(duration, () async {
         String? accessToken = await _prefs.getAccessToken();
+        print("==> Access Token: $accessToken");
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {

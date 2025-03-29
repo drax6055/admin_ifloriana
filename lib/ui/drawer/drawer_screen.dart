@@ -43,56 +43,57 @@ class DrawerScreen extends StatelessWidget {
         drawer: Drawer(
           child: ListView(
             children: [
+              //strong
               SizedBox(
                 height: 10.h,
               ),
               UserAccountsDrawerHeader(
-  decoration: BoxDecoration(
-    color: primaryColor,
-  ),
-  accountName: Obx(() => CustomTextWidget(
-      text: getController.name.value, 
-      textStyle: CustomTextStyles.textFontMedium(
-          size: 14.sp, color: white))),
-  accountEmail: Obx(() => CustomTextWidget(
-      text: getController.email.value, 
-      textStyle: CustomTextStyles.textFontMedium(
-          size: 12.sp, color: white))),
-  currentAccountPicture: InkWell(
-    onTap: () {
-      Navigator.pop(context);
-      Get.toNamed(Routes.updateSalonScreen);
-    },
-    child: Stack(
-      children: [
-        CircleAvatar(
-          radius: 40.r,
-          backgroundColor: secondaryColor,
-          child: Obx(() => CustomTextWidget(
-                text: getController.name.value.isNotEmpty
-                    ? getController.name.value[0].toUpperCase()
-                    : 'DT',
-                textStyle: CustomTextStyles.textFontMedium(
-                    size: 20.sp, color: white),
-              )),
-        ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: CircleAvatar(
-            radius: 12.r,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.edit,
-              size: 12.sp,
-              color: primaryColor,
-            ),
-          ),
-        )
-      ],
-    ),
-  ),
-),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                ),
+                accountName: Obx(() => CustomTextWidget(
+                    text: getController.name.value,
+                    textStyle: CustomTextStyles.textFontMedium(
+                        size: 14.sp, color: white))),
+                accountEmail: Obx(() => CustomTextWidget(
+                    text: getController.email.value,
+                    textStyle: CustomTextStyles.textFontMedium(
+                        size: 12.sp, color: white))),
+                currentAccountPicture: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Get.toNamed(Routes.updateSalonScreen);
+                  },
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 40.r,
+                        backgroundColor: secondaryColor,
+                        child: Obx(() => CustomTextWidget(
+                              text: getController.name.value.isNotEmpty
+                                  ? getController.name.value[0].toUpperCase()
+                                  : 'DT',
+                              textStyle: CustomTextStyles.textFontMedium(
+                                  size: 20.sp, color: white),
+                            )),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: CircleAvatar(
+                          radius: 12.r,
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.edit,
+                            size: 12.sp,
+                            color: primaryColor,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
               ListTile(
                 leading: Icon(Icons.dashboard),
                 title: CustomTextWidget(

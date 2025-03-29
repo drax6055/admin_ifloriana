@@ -33,6 +33,7 @@ class LoginController extends GetxController {
 
       await _prefs.setUser(loginResponse);
       await _prefs.saveAccessToken(loginResponse.token!);
+      
       Get.offNamed(Routes.drawerScreen);
       
       CustomSnackbar.showSuccess('sucess', 'Login Successfully');

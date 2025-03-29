@@ -47,6 +47,19 @@ class DioClient {
       throw _handleDioError(e);
     }
   }
+  Future<T> putData<T>(
+      String endpoint, Map<String, dynamic> data, T Function(Map<String, dynamic>) fromJson) async {
+    try {
+      final response = await dio.put(endpoint, data: data);
+      if (response.statusCode == 200) {
+        return fromJson(response.data);
+      } else {
+        throw Exception('PUT Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw _handleDioError(e);
+    }
+  }
 
   Future<void> capturePayment(String paymentId, double amount) async {
     try {

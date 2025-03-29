@@ -16,6 +16,7 @@ class PackagesController extends GetxController {
   var filteredPackages = <Package_model>[].obs;
   late Razorpay _razorpay;
   final Map<String, dynamic> registerData = Get.arguments;
+
   final SharedPreferenceManager _prefs = SharedPreferenceManager();
 
   @override
@@ -161,11 +162,7 @@ class PackagesController extends GetxController {
         register_post_details,
         (json) => Sigm_up_model.fromJson(json),
       );
-
-      // ✅ Store Signup Data in Shared Preferences
       await _prefs.setSignupDetails(response);
-
-      // ✅ Navigate to Profile Completion Screen
       Get.offAllNamed(Routes.completeSalonProfileScreen,
           arguments: {'package_id': selectedPackageId.value});
     } catch (e) {

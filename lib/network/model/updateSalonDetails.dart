@@ -1,27 +1,26 @@
-class UpdateSalonDetails {
+class UpdateSalon {
   String? message;
-  Data? data;
+  Salon? salon;
 
-  UpdateSalonDetails({this.message, this.data});
+  UpdateSalon({this.message, this.salon});
 
-  UpdateSalonDetails.fromJson(Map<String, dynamic> json) {
+  UpdateSalon.fromJson(Map<String, dynamic> json) {
     message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    salon = json['salon'] != null ? new Salon.fromJson(json['salon']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
+    if (this.salon != null) {
+      data['salon'] = this.salon!.toJson();
     }
     return data;
   }
 }
 
-class Data {
+class Salon {
   int? id;
-  Null? slug;
   String? name;
   String? description;
   String? address;
@@ -35,9 +34,8 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
+  Salon(
       {this.id,
-      this.slug,
       this.name,
       this.description,
       this.address,
@@ -51,9 +49,8 @@ class Data {
       this.createdAt,
       this.updatedAt});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  Salon.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    slug = json['slug'];
     name = json['name'];
     description = json['description'];
     address = json['address'];
@@ -71,7 +68,6 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['slug'] = this.slug;
     data['name'] = this.name;
     data['description'] = this.description;
     data['address'] = this.address;

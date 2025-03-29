@@ -176,7 +176,7 @@ class CompleteSalonProfileScreen extends StatelessWidget {
       onPressed: () {
         if (_formKey.currentState?.validate() ?? false) {
           getController.onsalonPress();
-          Get.offAllNamed(Routes.loginScreen);
+        
         } else {
           CustomSnackbar.showError(
               'Validation Error', 'Please fill in all fields correctly');
