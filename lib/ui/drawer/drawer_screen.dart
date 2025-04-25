@@ -20,30 +20,45 @@ class DrawerScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: CustomAppBar(
-          title: "Deshboaard",
-          actions: [
-            IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.notifications,
-                  size: 24.sp,
-                ))
-          ],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(70.h),
+          child: Obx(() => CustomAppBar(
+                title: getController.appBarTitle.value,
+                actions: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.notifications,
+                      size: 26.sp,
+                    ),
+                  ),
+                ],
+              )),
         ),
         body: Obx(() {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            switch (getController.selectedPage.value) {
+              case 0:
+                getController.appBarTitle.value = 'Dashboard';
+                break;
+              case 1:
+                getController.appBarTitle.value = 'CalenderScreen';
+                break;
+              case 2:
+                getController.appBarTitle.value = 'Update Salon Details';
+                break;
+              default:
+                getController.appBarTitle.value = 'DashboardScreen';
+            }
+          });
           switch (getController.selectedPage.value) {
             case 0:
-              getController.appBarTitle.value = 'Dashboard';
               return DashboardScreen();
             case 1:
-              getController.appBarTitle.value = 'CalenderScreen';
               return CalenderScreen();
             case 2:
-              getController.appBarTitle.value = 'CalenderScreen';
-              return UpdatesalonScreen();
+              return UpdatesalonScreen(showAppBar: false);
             default:
-              getController.appBarTitle.value = 'DashboardScreen';
               return DashboardScreen();
           }
         }),
@@ -59,13 +74,13 @@ class DrawerScreen extends StatelessWidget {
                   color: primaryColor,
                 ),
                 accountName: Obx(() => CustomTextWidget(
-                    text: getController.name.value,
+                    text: getController.fullname.value,
                     textStyle: CustomTextStyles.textFontMedium(
                         size: 14.sp, color: white))),
                 accountEmail: Obx(() => CustomTextWidget(
                     text: getController.email.value,
                     textStyle: CustomTextStyles.textFontMedium(
-                        size: 12.sp, color: white))),
+                        size: 14.sp, color: white))),
                 currentAccountPicture: InkWell(
                   onTap: () {
                     Navigator.pop(context);
@@ -77,9 +92,10 @@ class DrawerScreen extends StatelessWidget {
                         radius: 40.r,
                         backgroundColor: secondaryColor,
                         child: Obx(() => CustomTextWidget(
-                              text: getController.name.value.isNotEmpty
-                                  ? getController.name.value[0].toUpperCase()
-                                  : 'X',
+                              text: getController.fullname.value.isNotEmpty
+                                  ? getController.fullname.value[0]
+                                      .toUpperCase()
+                                  : '',
                               textStyle: CustomTextStyles.textFontMedium(
                                   size: 20.sp, color: white),
                             )),
@@ -105,7 +121,7 @@ class DrawerScreen extends StatelessWidget {
                 leading: Icon(Icons.dashboard),
                 title: CustomTextWidget(
                     text: 'Dashboard',
-                    textStyle: CustomTextStyles.textFontMedium(size: 15.sp)),
+                    textStyle: CustomTextStyles.textFontMedium(size: 14.sp)),
                 onTap: () {
                   getController.selectPage(0);
                   Navigator.pop(context);
@@ -115,7 +131,7 @@ class DrawerScreen extends StatelessWidget {
                 leading: Icon(Icons.calendar_month),
                 title: CustomTextWidget(
                     text: 'Calender Booking',
-                    textStyle: CustomTextStyles.textFontMedium(size: 15.sp)),
+                    textStyle: CustomTextStyles.textFontMedium(size: 14.sp)),
                 onTap: () {
                   getController.selectPage(1);
                   Navigator.pop(context);
@@ -125,7 +141,7 @@ class DrawerScreen extends StatelessWidget {
                 leading: Icon(Icons.update),
                 title: CustomTextWidget(
                     text: 'Update Salone Details',
-                    textStyle: CustomTextStyles.textFontMedium(size: 15.sp)),
+                    textStyle: CustomTextStyles.textFontMedium(size: 14.sp)),
                 onTap: () async {
                   getController.selectPage(2);
                   Navigator.pop(context);
@@ -135,7 +151,7 @@ class DrawerScreen extends StatelessWidget {
                 leading: Icon(Icons.exit_to_app),
                 title: CustomTextWidget(
                     text: 'Logout',
-                    textStyle: CustomTextStyles.textFontMedium(size: 15.sp)),
+                    textStyle: CustomTextStyles.textFontMedium(size: 14.sp)),
                 onTap: () async {
                   await getController.onLogoutPress();
                 },

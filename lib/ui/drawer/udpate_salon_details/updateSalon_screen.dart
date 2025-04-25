@@ -11,17 +11,15 @@ import '../../../wiget/custome_dropdown.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class UpdatesalonScreen extends StatelessWidget {
-  UpdatesalonScreen({super.key});
-
+  final bool showAppBar;
+  UpdatesalonScreen({super.key, this.showAppBar = true});
   final UdpatesalonController getController = Get.put(UdpatesalonController());
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: 'Update Salon Details',
-      ),
+      appBar: showAppBar ? CustomAppBar(title: 'Update Salon Details') : null,
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -174,7 +172,7 @@ class UpdatesalonScreen extends StatelessWidget {
     );
   }
 
-  Widget InputTxtfield_category() { 
+  Widget InputTxtfield_category() {
     return CustomTextFormField(
       controller: getController.categoryController,
       labelText: 'Category',

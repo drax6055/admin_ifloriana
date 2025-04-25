@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../network/model/addSalonDetails.dart';
 import '../network/model/login_model.dart';
 import '../network/model/signup_model.dart';

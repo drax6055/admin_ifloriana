@@ -4,7 +4,7 @@ import '../../main.dart';
 class DrawermenuController extends GetxController {
 
   var selectedPage = 0.obs;
-  var name = ''.obs;
+  var fullname = ''.obs;
   var email = ''.obs;
   var appBarTitle = 'Dashboard'.obs;
 
@@ -24,7 +24,8 @@ class DrawermenuController extends GetxController {
 
   void getUserDetails() async {
     final loginUser = await prefs.getUser();
-    name.value = loginUser?.admin?.firstName ?? '';
+    
+    fullname.value = '${loginUser?.admin?.firstName ?? ''} ${loginUser?.admin?.lastName ?? ''}';  
     email.value = loginUser?.admin?.email ?? '';
   }
 }
