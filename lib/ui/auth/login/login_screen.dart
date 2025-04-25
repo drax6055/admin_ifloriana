@@ -43,8 +43,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-
-
   Widget InputTxtfield_Pass() {
     return Obx(() => CustomTextFormField(
           controller: getController.passController,
@@ -69,13 +67,12 @@ class LoginScreen extends StatelessWidget {
     return ElevatedButtonExample(
       text: "Login",
       onPressed: () {
-        Get.toNamed(Routes.drawerScreen);
-        // if (_formKey.currentState?.validate() ?? false) {
-        //   getController.onLoginPress();
-        // } else {
-        //   CustomSnackbar.showError(
-        //       'Validation Error', 'Please fill in all fields correctly');
-        // }
+        if (_formKey.currentState?.validate() ?? false) {
+          getController.onLoginPress();
+        } else {
+          CustomSnackbar.showError(
+              'Validation Error', 'Please fill in all fields correctly');
+        }
       },
     );
   }
@@ -85,6 +82,10 @@ class LoginScreen extends StatelessWidget {
       clipBehavior: Clip.none,
       alignment: Alignment.center,
       children: [
+        Semantics(
+          label: 'Submit button',
+          child: ElevatedButton(onPressed: () {}, child: Text('Submit')),
+        ),
         Container(
           height: 170.h,
           width: double.infinity,

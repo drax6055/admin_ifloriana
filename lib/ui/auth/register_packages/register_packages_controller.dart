@@ -148,7 +148,8 @@ class PackagesController extends GetxController {
     }
 
     Map<String, dynamic> register_post_details = {
-      'full_name': registerData['Owner_Name'].toString(),
+      'first_name': registerData['first_Name'].toString(),
+      'last_name': registerData['Last_Name'].toString(),
       'salon_name': registerData['Salon_Name'].toString(),
       'phone_number': registerData['Phone'].toString(),
       'email': registerData['Email'].toString(),

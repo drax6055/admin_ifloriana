@@ -20,50 +20,58 @@ class Sigm_up_model {
 }
 
 class Data {
-  int? id;
-  String? fullName;
+  String? firstName;
+  String? lastName;
   String? salonName;
   String? phoneNumber;
   String? email;
   String? address;
   int? packageId;
-  String? createdAt;
+  String? password;
   String? updatedAt;
+  String? createdAt;
+  int? id;
 
   Data(
-      {this.id,
-      this.fullName,
+      {this.firstName,
+      this.lastName,
       this.salonName,
       this.phoneNumber,
       this.email,
       this.address,
       this.packageId,
+      this.password,
+      this.updatedAt,
       this.createdAt,
-      this.updatedAt});
+      this.id});
 
   Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    fullName = json['full_name'];
+    firstName = json['first_name'];
+    lastName = json['last_name'];
     salonName = json['salon_name'];
     phoneNumber = json['phone_number'];
     email = json['email'];
     address = json['address'];
     packageId = json['package_id'];
-    createdAt = json['created_at'];
+    password = json['password'];
     updatedAt = json['updated_at'];
+    createdAt = json['created_at'];
+    id = json['id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['full_name'] = this.fullName;
+    data['first_name'] = this.firstName;
+    data['last_name'] = this.lastName;
     data['salon_name'] = this.salonName;
     data['phone_number'] = this.phoneNumber;
     data['email'] = this.email;
     data['address'] = this.address;
     data['package_id'] = this.packageId;
-    data['created_at'] = this.createdAt;
+    data['password'] = this.password;
     data['updated_at'] = this.updatedAt;
+    data['created_at'] = this.createdAt;
+    data['id'] = this.id;
     return data;
   }
 }

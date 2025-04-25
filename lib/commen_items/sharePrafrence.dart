@@ -86,23 +86,6 @@ class SharedPreferenceManager {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /// Get token from stored login user data
   Future<String?> getToken() async {
     var user = await getUser();

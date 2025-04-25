@@ -23,18 +23,9 @@ class Package_model {
   Package_model.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-
-    price = json['price'] is int
-        ? (json['price'] as int).toDouble()
-        : json['price'];
-
+    price = (json['price'] as num).toDouble();
     description = json['description'];
-
-    // Check if services_included is null before calling cast
-    servicesIncluded = json['services_included'] != null
-        ? List<String>.from(json['services_included'])
-        : [];
-
+    servicesIncluded = json['services_included'].cast<String>();
     expirationDate = json['expiration_date'];
     subscriptionPlan = json['subscription_plan'];
     createdAt = json['created_at'];
@@ -42,7 +33,7 @@ class Package_model {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
     data['price'] = this.price;

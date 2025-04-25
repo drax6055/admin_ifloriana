@@ -1,9 +1,7 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../utils/colors.dart';
 import '../utils/custom_text_styles.dart';
 
@@ -18,7 +16,7 @@ class CustomTextFormField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final TextStyle labelStyle = CustomTextStyles.textFontMedium(size: 14.sp);
   final int? maxLines;
-  final List<TextInputFormatter>? inputFormatters;  // Add this line for inputFormatters
+  final List<TextInputFormatter>? inputFormatters;  
 
   CustomTextFormField({
     Key? key,
@@ -31,7 +29,7 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.validator,
     this.maxLines = 1,
-    this.inputFormatters,  // Add this to the constructor
+    this.inputFormatters, 
   }) : super(key: key);
 
   @override
@@ -43,7 +41,7 @@ class CustomTextFormField extends StatelessWidget {
       validator: validator,
       cursorColor: primaryColor,
       maxLines: maxLines,
-      inputFormatters: inputFormatters,  // Apply inputFormatters here
+      inputFormatters: inputFormatters,  
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,

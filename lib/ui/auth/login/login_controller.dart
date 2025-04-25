@@ -33,11 +33,15 @@ class LoginController extends GetxController {
 
       await _prefs.setUser(loginResponse);
       await _prefs.saveAccessToken(loginResponse.token!);
-      
+
+      String? storedToken = await _prefs.getAccessToken();
+      print('==> Here Stored Token: $storedToken');
+
       Get.offNamed(Routes.drawerScreen);
-      
+
       CustomSnackbar.showSuccess('sucess', 'Login Successfully');
     } catch (e) {
+      print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
     }
   }

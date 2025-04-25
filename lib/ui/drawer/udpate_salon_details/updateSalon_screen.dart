@@ -174,7 +174,7 @@ class UpdatesalonScreen extends StatelessWidget {
     );
   }
 
-  Widget InputTxtfield_category() {
+  Widget InputTxtfield_category() { 
     return CustomTextFormField(
       controller: getController.categoryController,
       labelText: 'Category',

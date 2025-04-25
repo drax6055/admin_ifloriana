@@ -10,11 +10,11 @@ import '../../../route/app_route.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class CompleteSalonProfileController extends GetxController {
-  var nameController = TextEditingController(); // salon name add
+  var nameController = TextEditingController();
   var disController = TextEditingController();
-  var addController = TextEditingController(); // address add
-  var contact_numberController = TextEditingController(); // contact number add
-  var contact_emailController = TextEditingController(); // email add
+  var addController = TextEditingController();
+  var contact_numberController = TextEditingController();
+  var contact_emailController = TextEditingController();
   var opentimeController = TextEditingController();
   var closetimeController = TextEditingController();
   var categoryController = TextEditingController();
@@ -31,13 +31,11 @@ class CompleteSalonProfileController extends GetxController {
   }
 
   Future<void> getSignupdetails(context) async {
-    // Fetch stored signup details
     signupdetails.value = await _prefs.getSignupDetails();
 
     if (signupdetails.value != null) {
       print("==> Stored Signup Data: ${signupdetails.value?.toJson()}");
 
-      // Assign values to controllers
       nameController.text = signupdetails.value?.data?.salonName ?? '';
       addController.text = signupdetails.value?.data?.address ?? '';
       contact_emailController.text = signupdetails.value?.data?.email ?? '';
@@ -66,6 +64,7 @@ class CompleteSalonProfileController extends GetxController {
       'Category': selectedcategory.value.toString().toLowerCase(),
       'status': 1,
       'package_id': signupdetails.value?.data?.packageId ?? 0,
+      'signup_id': signupdetails.value?.data?.id ?? 0,
     };
 
     print("{'===>': $updateSalonData}");

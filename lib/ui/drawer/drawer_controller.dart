@@ -6,8 +6,9 @@ class DrawermenuController extends GetxController {
   final SharedPreferenceManager _prefs = SharedPreferenceManager();
   var selectedPage = 0.obs;
   var signupdetails = Rxn<Sigm_up_model>();
-  var name = ''.obs; 
-  var email = ''.obs; 
+  var name = ''.obs;
+  var email = ''.obs;
+  var appBarTitle = 'Dashboard'.obs;
 
   void selectPage(int page) {
     selectedPage.value = page;
@@ -24,10 +25,8 @@ class DrawermenuController extends GetxController {
   }
 
   void getUserDetails() async {
-    signupdetails.value = await _prefs.getSignupDetails();
-
-  
-    name.value = signupdetails.value?.data?.fullName ?? '';
-    email.value = signupdetails.value?.data?.email ?? '';
+    final loginUser = await _prefs.getUser();
+    name.value = loginUser?.admin?.firstName ?? '';
+    email.value = loginUser?.admin?.email ?? '';
   }
 }

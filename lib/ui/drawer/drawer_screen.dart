@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/drawer/calender_booking/calender_screen.dart';
 import 'package:flutter_template/ui/drawer/drawer_controller.dart';
+import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,7 @@ class DrawerScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: CustomAppBar(
-          title: 'Dashboard',
+          title: "Deshboaard",
           actions: [
             IconButton(
                 onPressed: () {},
@@ -33,10 +34,16 @@ class DrawerScreen extends StatelessWidget {
         body: Obx(() {
           switch (getController.selectedPage.value) {
             case 0:
+              getController.appBarTitle.value = 'Dashboard';
               return DashboardScreen();
             case 1:
+              getController.appBarTitle.value = 'CalenderScreen';
               return CalenderScreen();
+            case 2:
+              getController.appBarTitle.value = 'CalenderScreen';
+              return UpdatesalonScreen();
             default:
+              getController.appBarTitle.value = 'DashboardScreen';
               return DashboardScreen();
           }
         }),
@@ -72,7 +79,7 @@ class DrawerScreen extends StatelessWidget {
                         child: Obx(() => CustomTextWidget(
                               text: getController.name.value.isNotEmpty
                                   ? getController.name.value[0].toUpperCase()
-                                  : 'DT',
+                                  : 'X',
                               textStyle: CustomTextStyles.textFontMedium(
                                   size: 20.sp, color: white),
                             )),
@@ -111,6 +118,16 @@ class DrawerScreen extends StatelessWidget {
                     textStyle: CustomTextStyles.textFontMedium(size: 15.sp)),
                 onTap: () {
                   getController.selectPage(1);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.update),
+                title: CustomTextWidget(
+                    text: 'Update Salone Details',
+                    textStyle: CustomTextStyles.textFontMedium(size: 15.sp)),
+                onTap: () async {
+                  getController.selectPage(2);
                   Navigator.pop(context);
                 },
               ),

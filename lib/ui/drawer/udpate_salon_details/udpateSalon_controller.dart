@@ -9,11 +9,11 @@ import '../../../route/app_route.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class UdpatesalonController extends GetxController {
-  var nameController = TextEditingController(); // salon name add
+  var nameController = TextEditingController(); 
   var disController = TextEditingController();
-  var addController = TextEditingController(); // address add
-  var contact_numberController = TextEditingController(); // contact number add
-  var contact_emailController = TextEditingController(); // email add
+  var addController = TextEditingController(); 
+  var contact_numberController = TextEditingController(); 
+  var contact_emailController = TextEditingController(); 
   var opentimeController = TextEditingController();
   var closetimeController = TextEditingController();
   var categoryController = TextEditingController();
@@ -31,13 +31,9 @@ class UdpatesalonController extends GetxController {
   }
 
   Future<void> getSignupdetails(context) async {
-    // Fetch stored signup details
     salonDetails.value = await _prefs.getCreatedSalondetails();
 
     if (salonDetails.value != null) {
-      print("==> Stored salon Data: ${salonDetails.value?.toJson()}");
-
-      // Assign values to controllers
       salonid.value = salonDetails.value?.data?.id ?? 0;
       nameController.text = salonDetails.value?.data?.name ?? '';
       disController.text = salonDetails.value?.data?.description ?? '';
@@ -50,7 +46,7 @@ class UdpatesalonController extends GetxController {
       closetimeController.text = salonDetails.value?.data?.closingTime ?? '';
       selectedcategory.value = salonDetails.value?.data?.category ?? 'UNISEX';
     } else {
-      print("No stored salon details found!");
+      CustomSnackbar.showError('=>', 'No stored salon details found!');
     }
   }
 
@@ -73,7 +69,7 @@ class UdpatesalonController extends GetxController {
       'status': 1,
       'package_id': salonDetails.value?.data?.packageId ?? 0,
     };
-    print("{'===>': $updateSalonData}");
+    
     try {
       await dioClient.putData<UpdateSalon>(
         '${Apis.baseUrl}${Endpoints.udpate_salon}/${salonid.value}',

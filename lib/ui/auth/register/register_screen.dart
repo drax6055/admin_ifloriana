@@ -76,10 +76,19 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  Widget InputTxtfield_OwnerName() {
+  Widget InputTxtfield_firstName() {
     return CustomTextFormField(
-      controller: getController.ownerNameController,
-      labelText: 'Owner Name',
+      controller: getController.firstNameController,
+      labelText: 'Fiest Name',
+      keyboardType: TextInputType.text,
+      validator: (value) => Validation.validatename(value),
+    );
+  }
+
+  Widget InputTxtfield_lastName() {
+    return CustomTextFormField(
+      controller: getController.lastNameController,
+      labelText: 'Last Name',
       keyboardType: TextInputType.text,
       validator: (value) => Validation.validatename(value),
     );
@@ -90,16 +99,17 @@ class RegisterScreen extends StatelessWidget {
       text: "Next",
       onPressed: () {
         var register_data = {
-          'Owner_Name': getController.ownerNameController.text,
+          'first_Name': getController.firstNameController.text,
+          'Last_Name': getController.lastNameController.text,
           'Salon_Name': getController.salonNameController.text,
           'Phone': getController.phoneController.text,
           'Address': getController.addressController.text,
           'Email': getController.emailController.text,
         };
-        // Get.toNamed(Routes.packagesScreen, arguments: register_data);
         if (_formKey.currentState?.validate() ?? false) {
           Get.toNamed(Routes.packagesScreen, arguments: register_data);
-          getController.ownerNameController.text = "";
+          getController.firstNameController.text = "";
+          getController.lastNameController.text = "";
           getController.salonNameController.text = "";
           getController.phoneController.text = "";
           getController.addressController.text = "";
@@ -167,7 +177,9 @@ class RegisterScreen extends StatelessWidget {
                 CustomTextStyles.textFontSemiBold(size: 12.sp, color: grey),
           ),
           SizedBox(height: 20.h),
-          InputTxtfield_OwnerName(),
+          InputTxtfield_firstName(),
+          SizedBox(height: 16.h),
+          InputTxtfield_lastName(),
           SizedBox(height: 16.h),
           InputTxtfield_Phone(),
           SizedBox(height: 16.h),

@@ -7,7 +7,7 @@ import '../../../utils/custom_text_styles.dart';
 import '../../../wiget/Custome_button.dart';
 import '../../../wiget/appbar/commen_appbar.dart';
 import '../../../wiget/custome_text.dart';
-import 'packages_controller.dart';
+import 'register_packages_controller.dart';
 
 class PackagesScreen extends StatelessWidget {
   PackagesScreen({super.key});
