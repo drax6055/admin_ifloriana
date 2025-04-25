@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import '../../../commen_items/sharePrafrence.dart';
 import '../../../main.dart';
 import '../../../network/model/signup_model.dart';
 import '../../../network/model/addSalonDetails.dart';
@@ -20,7 +19,6 @@ class CompleteSalonProfileController extends GetxController {
   var categoryController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
 
-  final SharedPreferenceManager _prefs = SharedPreferenceManager();
 
   var signupdetails = Rxn<Sigm_up_model>();
 
@@ -31,7 +29,7 @@ class CompleteSalonProfileController extends GetxController {
   }
 
   Future<void> getSignupdetails(context) async {
-    signupdetails.value = await _prefs.getSignupDetails();
+    signupdetails.value = await prefs.getSignupDetails();
 
     if (signupdetails.value != null) {
       print("==> Stored Signup Data: ${signupdetails.value?.toJson()}");
@@ -74,7 +72,7 @@ class CompleteSalonProfileController extends GetxController {
         updateSalonData,
         (json) => AddsalonDetails.fromJson(json),
       );
-      await _prefs.setCreatedSalondetails(response);
+      await prefs.setCreatedSalondetails(response);
       CustomSnackbar.showSuccess('Success', 'Salon created successfully');
       Get.offAllNamed(Routes.loginScreen);
     } catch (e) {

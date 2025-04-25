@@ -2,7 +2,6 @@ import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../../../commen_items/sharePrafrence.dart';
 import '../../../main.dart';
 import '../../../network/model/packages_model.dart';
 import '../../../network/model/signup_model.dart';
@@ -17,7 +16,7 @@ class PackagesController extends GetxController {
   late Razorpay _razorpay;
   final Map<String, dynamic> registerData = Get.arguments;
 
-  final SharedPreferenceManager _prefs = SharedPreferenceManager();
+
 
   @override
   void onInit() {
@@ -163,7 +162,7 @@ class PackagesController extends GetxController {
         register_post_details,
         (json) => Sigm_up_model.fromJson(json),
       );
-      await _prefs.setSignupDetails(response);
+       await prefs.setSignupDetails(response);
       Get.offAllNamed(Routes.completeSalonProfileScreen,
           arguments: {'package_id': selectedPackageId.value});
     } catch (e) {

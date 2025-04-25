@@ -1,11 +1,9 @@
 import 'package:get/get.dart';
-import '../../commen_items/sharePrafrence.dart';
-import '../../network/model/signup_model.dart';
+import '../../main.dart';
 
 class DrawermenuController extends GetxController {
-  final SharedPreferenceManager _prefs = SharedPreferenceManager();
+
   var selectedPage = 0.obs;
-  var signupdetails = Rxn<Sigm_up_model>();
   var name = ''.obs;
   var email = ''.obs;
   var appBarTitle = 'Dashboard'.obs;
@@ -21,11 +19,11 @@ class DrawermenuController extends GetxController {
   }
 
   Future<void> onLogoutPress() async {
-    await _prefs.onLogout();
+    await prefs.onLogout();
   }
 
   void getUserDetails() async {
-    final loginUser = await _prefs.getUser();
+    final loginUser = await prefs.getUser();
     name.value = loginUser?.admin?.firstName ?? '';
     email.value = loginUser?.admin?.email ?? '';
   }

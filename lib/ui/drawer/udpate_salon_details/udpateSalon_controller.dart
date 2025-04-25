@@ -19,7 +19,6 @@ class UdpatesalonController extends GetxController {
   var categoryController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
 
-  final SharedPreferenceManager _prefs = SharedPreferenceManager();
 
   var salonDetails = Rxn<AddsalonDetails>();
   var salonid = 0.obs;
@@ -31,7 +30,7 @@ class UdpatesalonController extends GetxController {
   }
 
   Future<void> getSignupdetails(context) async {
-    salonDetails.value = await _prefs.getCreatedSalondetails();
+    salonDetails.value = await prefs.getCreatedSalondetails();
 
     if (salonDetails.value != null) {
       salonid.value = salonDetails.value?.data?.id ?? 0;
@@ -76,7 +75,7 @@ class UdpatesalonController extends GetxController {
         updateSalonData,
         (json) => UpdateSalon.fromJson(json),
       );
-      await _prefs.getCreatedSalondetails();
+      await prefs.getCreatedSalondetails();
       CustomSnackbar.showSuccess('Success', 'Salon updated successfully');
       Get.offAllNamed(Routes.loginScreen);
     } catch (e) {

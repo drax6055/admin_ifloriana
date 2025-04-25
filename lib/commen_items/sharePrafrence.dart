@@ -15,23 +15,23 @@ class SharedPreferenceManager {
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
-  /// Save access token
-  Future<void> saveAccessToken(String token) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_accessTokenKey, token);
-  }
+  // /// Save access token
+  // Future<void> saveAccessToken(String token) async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString(_accessTokenKey, token);
+  // }
 
-  /// Get access token
-  Future<String?> getAccessToken() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_accessTokenKey);
-  }
+  // /// Get access token
+  // Future<String?> getAccessToken() async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   return prefs.getString(_accessTokenKey);
+  // }
 
-  /// Remove access token
-  Future<void> removeAccessToken() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_accessTokenKey);
-  }
+  // /// Remove access token
+  // Future<void> removeAccessToken() async {
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.remove(_accessTokenKey);
+  // }
 
   /// Save login user details
   Future<void> setUser(Login_model? user) async {
@@ -51,7 +51,7 @@ class SharedPreferenceManager {
     return Login_model.fromJson(jsonDecode(data));
   }
 
-  /// Save signup details
+  // / Save signup details
   Future<void> setSignupDetails(Sigm_up_model? signup) async {
     if (signup != null) {
       await storage.write(key: _keySignup, value: jsonEncode(signup.toJson()));
@@ -94,7 +94,6 @@ class SharedPreferenceManager {
 
   /// Logout and clear data
   Future<void> onLogout() async {
-    await removeAccessToken();
     await setUser(null);
     await setSignupDetails(null);
     Get.offAllNamed(Routes.loginScreen);
