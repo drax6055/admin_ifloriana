@@ -76,31 +76,23 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  Widget InputTxtfield_firstName() {
+  Widget InputTxtfield_fullName() {
     return CustomTextFormField(
-      controller: getController.firstNameController,
-      labelText: 'Fiest Name',
+      controller: getController.fullNameController,
+      labelText: 'Full Name',
       keyboardType: TextInputType.text,
       validator: (value) => Validation.validatename(value),
     );
   }
 
-  Widget InputTxtfield_lastName() {
-    return CustomTextFormField(
-      controller: getController.lastNameController,
-      labelText: 'Last Name',
-      keyboardType: TextInputType.text,
-      validator: (value) => Validation.validatename(value),
-    );
-  }
+
 
   Widget Btn_register() {
     return ElevatedButtonExample(
       text: "Next",
       onPressed: () {
         var register_data = {
-          'first_Name': getController.firstNameController.text,
-          'Last_Name': getController.lastNameController.text,
+          'full_Name': getController.fullNameController.text,
           'Salon_Name': getController.salonNameController.text,
           'Phone': getController.phoneController.text,
           'Address': getController.addressController.text,
@@ -108,8 +100,7 @@ class RegisterScreen extends StatelessWidget {
         };
         if (_formKey.currentState?.validate() ?? false) {
           Get.toNamed(Routes.packagesScreen, arguments: register_data);
-          getController.firstNameController.text = "";
-          getController.lastNameController.text = "";
+          getController.fullNameController.text = "";
           getController.salonNameController.text = "";
           getController.phoneController.text = "";
           getController.addressController.text = "";
@@ -177,9 +168,7 @@ class RegisterScreen extends StatelessWidget {
                 CustomTextStyles.textFontSemiBold(size: 12.sp, color: grey),
           ),
           SizedBox(height: 20.h),
-          InputTxtfield_firstName(),
-          SizedBox(height: 16.h),
-          InputTxtfield_lastName(),
+          InputTxtfield_fullName(),
           SizedBox(height: 16.h),
           InputTxtfield_Phone(),
           SizedBox(height: 16.h),

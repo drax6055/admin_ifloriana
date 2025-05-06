@@ -32,6 +32,5 @@ class ForgotController extends GetxController {
       CustomSnackbar.showError(
           'Error', 'Something went wrong. Please try again.');
     }
-
   }
 }

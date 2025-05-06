@@ -34,11 +34,11 @@ class CompleteSalonProfileController extends GetxController {
     if (signupdetails.value != null) {
       print("==> Stored Signup Data: ${signupdetails.value?.toJson()}");
 
-      nameController.text = signupdetails.value?.data?.salonName ?? '';
-      addController.text = signupdetails.value?.data?.address ?? '';
-      contact_emailController.text = signupdetails.value?.data?.email ?? '';
+      nameController.text = signupdetails.value?.admin?.fullName ?? '';
+      addController.text = signupdetails.value?.admin?.address ?? '';
+      contact_emailController.text = signupdetails.value?.admin?.email ?? '';
       contact_numberController.text =
-          signupdetails.value?.data?.phoneNumber ?? '';
+          signupdetails.value?.admin?.phoneNumber ?? '';
     } else {
       print("No stored signup details found!");
     }
@@ -46,7 +46,7 @@ class CompleteSalonProfileController extends GetxController {
 
   final List<String> dropdownItems = [
     'MALE',
-    'FEMALE',
+    'FEMALE', 
     'UNISEX',
   ];
 
@@ -61,11 +61,10 @@ class CompleteSalonProfileController extends GetxController {
       'closing_time': closetimeController.text,
       'Category': selectedcategory.value.toString().toLowerCase(),
       'status': 1,
-      'package_id': signupdetails.value?.data?.packageId ?? 0,
-      'signup_id': signupdetails.value?.data?.id ?? 0,
+      'package_id': signupdetails.value?.admin?.packageId ?? 0,
+      // 'signup_id': signupdetails.value?.admin?. ?? 0,
     };
 
-    print("{'===>': $updateSalonData}");
     try {
       final response = await dioClient.postData<AddsalonDetails>(
         '${Apis.baseUrl}${Endpoints.udpate_salon}',

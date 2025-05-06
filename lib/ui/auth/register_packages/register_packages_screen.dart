@@ -78,9 +78,9 @@ class PackagesScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 15, right: 15),
       child: Obx(() {
-        bool isSelected = getController.selectedPackageId.value == pkg.id;
+        bool isSelected = getController.selectedPackageId.value == pkg.sId;
         return GestureDetector(
-          onTap: () => getController.updateSelected(pkg.id!),
+          onTap: () => getController.updateSelected(int.tryParse(pkg.sId ?? '') ?? 0),
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -97,7 +97,7 @@ class PackagesScreen extends StatelessWidget {
                 children: [
                   ListTile(
                     title: CustomTextWidget(
-                      text: pkg.name.toString(),
+                      text: pkg.packageName.toString(),
                       textStyle: CustomTextStyles.textFontBold(size: 14.sp),
                     ),
                     subtitle: Column(

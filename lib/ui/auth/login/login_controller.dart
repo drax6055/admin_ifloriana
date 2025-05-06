@@ -7,6 +7,7 @@ import '../../../route/app_route.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class LoginController extends GetxController {
+
   var emailController = TextEditingController();
   var passController = TextEditingController();
   var showPass = false.obs;
@@ -28,7 +29,7 @@ class LoginController extends GetxController {
         (json) => Login_model.fromJson(json),
       );
 
-      await prefs.setUser(loginResponse);
+      await prefs.setUser(loginResponse); 
 
       Get.offNamed(Routes.drawerScreen);
       CustomSnackbar.showSuccess('success', 'Login Successfully');

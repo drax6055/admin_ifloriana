@@ -9,8 +9,7 @@ class RegisterController extends GetxController {
   var phoneController = TextEditingController();
   var addressController = TextEditingController();
   var salonNameController = TextEditingController();
-  var firstNameController = TextEditingController();
-  var lastNameController = TextEditingController();
+  var fullNameController = TextEditingController();
 
 
 

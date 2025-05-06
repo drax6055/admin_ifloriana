@@ -83,12 +83,12 @@ class PackagesController extends GetxController {
 
   void startPayment() {
     var selectedPackage =
-        packages.firstWhereOrNull((pkg) => pkg.id == selectedPackageId.value);
+        packages.firstWhereOrNull((pkg) => pkg.sId == selectedPackageId.value);
     if (selectedPackage != null) {
       var options = {
         'key': dotenv.env['RAZORPAY_KEY_ID'],
         'amount': (selectedPackage.price! * 100).toInt(),
-        'name': selectedPackage.name,
+        'name': selectedPackage.packageName,
         'description': selectedPackage.description,
         'prefill': {
           'contact': registerData['Phone'],
@@ -112,7 +112,7 @@ class PackagesController extends GetxController {
       String paymentId = response.paymentId ?? '';
 
       var selectedPackage =
-          packages.firstWhereOrNull((pkg) => pkg.id == selectedPackageId.value);
+          packages.firstWhereOrNull((pkg) => pkg.sId == selectedPackageId.value);
 
       if (selectedPackage != null) {
         double amount = selectedPackage.price! * 100.0;
@@ -147,8 +147,7 @@ class PackagesController extends GetxController {
     }
 
     Map<String, dynamic> register_post_details = {
-      'first_name': registerData['first_Name'].toString(),
-      'last_name': registerData['Last_Name'].toString(),
+      'full_Name': registerData['full_Name'].toString(),
       'salon_name': registerData['Salon_Name'].toString(),
       'phone_number': registerData['Phone'].toString(),
       'email': registerData['Email'].toString(),
