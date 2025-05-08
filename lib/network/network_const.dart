@@ -1,5 +1,5 @@
 class Apis {
-  static const baseUrl = 'http://192.168.1.11:5000/api';
+  static const baseUrl = 'http://192.168.1.14:5000/api';
 
   // static const staticbaseUrl = 'http://192.168.1.10:8000/api/';
 }

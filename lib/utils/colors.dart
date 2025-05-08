@@ -8,3 +8,4 @@ const lightgrey = Color.fromARGB(255, 231, 231, 231);
 const black = Color(0xFF000000);
 const white = Color(0xFFFFFFFF);
 const transparent = Color(0x00000000);
+const lightbg = Color(0xFFF9F9F9);

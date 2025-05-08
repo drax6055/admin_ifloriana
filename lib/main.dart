@@ -12,7 +12,7 @@ import 'network/dio.dart';
 
 FlutterSecureStorage? storage;
 final dioClient = DioClient();
-  final SharedPreferenceManager prefs = SharedPreferenceManager();
+final SharedPreferenceManager prefs = SharedPreferenceManager();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +31,6 @@ void main() async {
   });
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -41,13 +40,14 @@ class MyApp extends StatelessWidget {
       designSize: ScreenUtil.defaultSize,
       child: GetMaterialApp(
         theme: ThemeData(
+          scaffoldBackgroundColor: lightbg,
           textSelectionTheme: TextSelectionThemeData(
             cursorColor: primaryColor,
             selectionColor: secondaryColor,
             selectionHandleColor: primaryColor,
           ),
         ),
-        debugShowCheckedModeBanner: false,  
+        debugShowCheckedModeBanner: false,
         title: 'iFloriana_Super_Admin',
         initialRoute: Routes.splashScreen,
         getPages: AppPages.routes,
