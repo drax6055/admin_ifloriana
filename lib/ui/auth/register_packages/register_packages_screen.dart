@@ -80,7 +80,8 @@ class PackagesScreen extends StatelessWidget {
       child: Obx(() {
         bool isSelected = getController.selectedPackageId.value == pkg.sId;
         return GestureDetector(
-          onTap: () => getController.updateSelected(int.tryParse(pkg.sId ?? '') ?? 0),
+          // onTap: () => getController.updateSelected(int.tryParse(pkg.sId ?? '') ?? 0),
+          onTap: () => getController.updateSelected(pkg.sId ?? ''),
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),

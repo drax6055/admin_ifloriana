@@ -10,13 +10,11 @@ import '../../../wiget/custome_snackbar.dart';
 
 class PackagesController extends GetxController {
   var packages = <Package_model>[].obs;
-  var selectedPackageId = RxnInt();
+   var selectedPackageId = RxnString();
   var selectedFilter = 'All'.obs;
   var filteredPackages = <Package_model>[].obs;
   late Razorpay _razorpay;
   final Map<String, dynamic> registerData = Get.arguments;
-
-
 
   @override
   void onInit() {
@@ -55,21 +53,22 @@ class PackagesController extends GetxController {
     switch (selectedFilter.value) {
       case 'Monthly':
         filteredPackages.value =
-            packages.where((pkg) => pkg.subscriptionPlan == "monthly").toList();
+            packages.where((pkg) => pkg.subscriptionPlan == "1-month")
+            .toList();
         break;
       case 'Quarterly':
         filteredPackages.value = packages
-            .where((pkg) => pkg.subscriptionPlan == "quarterly")
+            .where((pkg) => pkg.subscriptionPlan == "3-months")
             .toList();
         break;
       case 'Half-Yearly':
         filteredPackages.value = packages
-            .where((pkg) => pkg.subscriptionPlan == "half-yearly")
+            .where((pkg) => pkg.subscriptionPlan == "6-months")
             .toList();
         break;
       case 'Yearly':
-        filteredPackages.value = packages
-            .where((pkg) => pkg.subscriptionPlan == "annually")
+        filteredPackages.value =
+            packages.where((pkg) => pkg.subscriptionPlan == "1-year")
             .toList();
         break;
       default:
@@ -77,7 +76,7 @@ class PackagesController extends GetxController {
     }
   }
 
-  void updateSelected(int value) {
+  void updateSelected(String  value) {
     selectedPackageId.value = value;
   }
 
@@ -111,8 +110,8 @@ class PackagesController extends GetxController {
     try {
       String paymentId = response.paymentId ?? '';
 
-      var selectedPackage =
-          packages.firstWhereOrNull((pkg) => pkg.sId == selectedPackageId.value);
+      var selectedPackage = packages
+          .firstWhereOrNull((pkg) => pkg.sId == selectedPackageId.value);
 
       if (selectedPackage != null) {
         double amount = selectedPackage.price! * 100.0;
@@ -161,7 +160,7 @@ class PackagesController extends GetxController {
         register_post_details,
         (json) => Sigm_up_model.fromJson(json),
       );
-       await prefs.setSignupDetails(response);
+      await prefs.setSignupDetails(response);
       Get.offAllNamed(Routes.completeSalonProfileScreen,
           arguments: {'package_id': selectedPackageId.value});
     } catch (e) {
