@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import '../../main.dart';
 
 class DrawermenuController extends GetxController {
-
   var selectedPage = 0.obs;
   var fullname = ''.obs;
   var email = ''.obs;
@@ -24,8 +23,8 @@ class DrawermenuController extends GetxController {
 
   void getUserDetails() async {
     final loginUser = await prefs.getUser();
-    
-    fullname.value = '${loginUser?.fullName ?? ''}';  
+    print("==> $loginUser");
+    fullname.value = '${loginUser?.salonName}';
     email.value = loginUser?.email ?? '';
   }
 }

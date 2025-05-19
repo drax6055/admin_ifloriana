@@ -20,6 +20,7 @@ class Sigm_up_model {
 }
 
 class Admin {
+  String? sId;
   String? fullName;
   String? salonName;
   String? phoneNumber;
@@ -28,7 +29,8 @@ class Admin {
   String? packageId;
 
   Admin(
-      {this.fullName,
+      {this.sId,
+      this.fullName,
       this.salonName,
       this.phoneNumber,
       this.email,
@@ -36,6 +38,7 @@ class Admin {
       this.packageId});
 
   Admin.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
     fullName = json['full_name'];
     salonName = json['salon_name'];
     phoneNumber = json['phone_number'];
@@ -46,6 +49,7 @@ class Admin {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
     data['full_name'] = this.fullName;
     data['salon_name'] = this.salonName;
     data['phone_number'] = this.phoneNumber;
@@ -55,4 +59,3 @@ class Admin {
     return data;
   }
 }
-  

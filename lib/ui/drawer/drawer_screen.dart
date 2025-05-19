@@ -74,7 +74,7 @@ class DrawerScreen extends StatelessWidget {
                   color: primaryColor,
                 ),
                 accountName: Obx(() => CustomTextWidget(
-                    text: getController.fullname.value,
+                    text: getController.fullname.value.toString(),
                     textStyle: CustomTextStyles.textFontMedium(
                         size: 14.sp, color: white))),
                 accountEmail: Obx(() => CustomTextWidget(

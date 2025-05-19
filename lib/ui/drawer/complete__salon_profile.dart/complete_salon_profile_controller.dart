@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../../main.dart';
 import '../../../network/model/signup_model.dart';
 import '../../../network/model/addSalonDetails.dart';
@@ -19,7 +20,6 @@ class CompleteSalonProfileController extends GetxController {
   var categoryController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
 
-
   var signupdetails = Rxn<Sigm_up_model>();
 
   @override
@@ -32,21 +32,19 @@ class CompleteSalonProfileController extends GetxController {
     signupdetails.value = await prefs.getSignupDetails();
 
     if (signupdetails.value != null) {
-      print("==> Stored Signup Data: ${signupdetails.value?.toJson()}");
-
-      nameController.text = signupdetails.value?.admin?.fullName ?? '';
+      nameController.text = signupdetails.value?.admin?.salonName ?? '';
       addController.text = signupdetails.value?.admin?.address ?? '';
       contact_emailController.text = signupdetails.value?.admin?.email ?? '';
       contact_numberController.text =
           signupdetails.value?.admin?.phoneNumber ?? '';
     } else {
-      print("No stored signup details found!");
+      CustomSnackbar.showError("Issue", "No stored signup details found!");
     }
   }
 
   final List<String> dropdownItems = [
     'MALE',
-    'FEMALE', 
+    'FEMALE',
     'UNISEX',
   ];
 
@@ -59,10 +57,10 @@ class CompleteSalonProfileController extends GetxController {
       'contact_email': contact_emailController.text,
       'opening_time': opentimeController.text,
       'closing_time': closetimeController.text,
-      'Category': selectedcategory.value.toString().toLowerCase(),
+      'category': selectedcategory.value.toString().toLowerCase(),
       'status': 1,
-      'package_id': signupdetails.value?.admin?.packageId ?? 0,
-      // 'signup_id': signupdetails.value?.admin?. ?? 0,
+      'package_id': signupdetails.value?.admin?.packageId,
+      'signup_id': signupdetails.value?.admin?.sId,
     };
 
     try {
@@ -85,7 +83,7 @@ class CompleteSalonProfileController extends GetxController {
     final now = DateTime.now();
     final time = DateTime(
         now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
-    return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}";
+    return DateFormat('hh:mm a').format(time);
   }
 
   @override

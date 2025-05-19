@@ -109,15 +109,11 @@ class PackagesController extends GetxController {
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     try {
       String paymentId = response.paymentId ?? '';
-
       var selectedPackage = packages
           .firstWhereOrNull((pkg) => pkg.sId == selectedPackageId.value);
-
       if (selectedPackage != null) {
         double amount = selectedPackage.price! * 100.0;
-
         await dioClient.capturePayment(paymentId, amount);
-
         CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
         print('Success --> Payment captured successfully: $paymentId');
         await onRegisterData();
@@ -127,7 +123,6 @@ class PackagesController extends GetxController {
       print('Error --> Payment capture failed: $e');
     }
   }
-
   void _handlePaymentError(PaymentFailureResponse response) {
     CustomSnackbar.showError('Error', 'Payment failed: ${response.message}');
     print('Error --> Payment failed: ${response.message}');
@@ -161,6 +156,7 @@ class PackagesController extends GetxController {
         (json) => Sigm_up_model.fromJson(json),
       );
       await prefs.setSignupDetails(response);
+     
       Get.offAllNamed(Routes.completeSalonProfileScreen,
           arguments: {'package_id': selectedPackageId.value});
     } catch (e) {

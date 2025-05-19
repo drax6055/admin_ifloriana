@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.dhairya_soni.flutter_template"
-    compileSdkVersion 34
+    compileSdkVersion 35
     ndkVersion "27.0.12077973"
 
     compileOptions {

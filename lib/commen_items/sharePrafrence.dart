@@ -14,25 +14,7 @@ class SharedPreferenceManager {
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
-  // /// Save access token
-  // Future<void> saveAccessToken(String token) async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString(_accessTokenKey, token);
-  // }
 
-  // /// Get access token
-  // Future<String?> getAccessToken() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString(_accessTokenKey);
-  // }
-
-  // /// Remove access token
-  // Future<void> removeAccessToken() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.remove(_accessTokenKey);
-  // }
-
-  /// Save login user details
   Future<void> setUser(Login_model? user) async {
     if (user != null) {
       await storage.write(key: _keyUser, value: jsonEncode(user.toJson()));
@@ -41,7 +23,7 @@ class SharedPreferenceManager {
     }
   }
 
-  /// Get login user details
+  /// Get login user details  
   Future<Login_model?> getUser() async {
     String? data = await storage.read(key: _keyUser);
     if (data == null || data.isEmpty || data == "null") {
@@ -73,19 +55,22 @@ class SharedPreferenceManager {
     if (data == null || data.isEmpty || data == "null") {
       return null;
     }
-    print("===> Salon created :  $data");
     return AddsalonDetails.fromJson(jsonDecode(data));
   }
 
   Future<void> setCreatedSalondetails(AddsalonDetails? salonDetails) async {
     if (salonDetails != null) {
-      await storage.write(key: _keySalonDetails, value: jsonEncode(salonDetails.toJson()));
+      await storage.write(
+          key: _keySalonDetails, value: jsonEncode(salonDetails.toJson()));
     } else {
       await storage.delete(key: _keySalonDetails);
     }
   }
 
   /// Get token from stored login user data
+  /// 
+  /// 
+  /// current flowe goes like 
   Future<String?> getToken() async {
     var user = await getUser();
     return user?.token ?? "";

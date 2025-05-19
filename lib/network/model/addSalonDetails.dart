@@ -1,27 +1,4 @@
 class AddsalonDetails {
-  String? message;
-  Data? data;
-
-  AddsalonDetails({this.message, this.data});
-
-  AddsalonDetails.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['message'] = this.message;
-    if (this.data != null) {
-      data['data'] = this.data!.toJson();
-    }
-    return data;
-  }
-}
-
-class Data {
-  int? id;
-  String? slug;
   String? name;
   String? description;
   String? address;
@@ -31,14 +8,11 @@ class Data {
   String? closingTime;
   String? category;
   int? status;
-  int? packageId;
-  String? createdAt;
-  String? updatedAt;
+  String? packageId;
+  String? signupId;
 
-  Data(
-      {this.id,
-      this.slug,
-      this.name,
+  AddsalonDetails(
+      {this.name,
       this.description,
       this.address,
       this.contactNumber,
@@ -48,12 +22,9 @@ class Data {
       this.category,
       this.status,
       this.packageId,
-      this.createdAt,
-      this.updatedAt});
+      this.signupId});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    slug = json['slug'];
+  AddsalonDetails.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     description = json['description'];
     address = json['address'];
@@ -61,17 +32,14 @@ class Data {
     contactEmail = json['contact_email'];
     openingTime = json['opening_time'];
     closingTime = json['closing_time'];
-    category = json['Category'];
+    category = json['category'];
     status = json['status'];
     packageId = json['package_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    signupId = json['signup_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['slug'] = this.slug;
     data['name'] = this.name;
     data['description'] = this.description;
     data['address'] = this.address;
@@ -79,11 +47,10 @@ class Data {
     data['contact_email'] = this.contactEmail;
     data['opening_time'] = this.openingTime;
     data['closing_time'] = this.closingTime;
-    data['Category'] = this.category;
+    data['category'] = this.category;
     data['status'] = this.status;
     data['package_id'] = this.packageId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    data['signup_id'] = this.signupId;
     return data;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../commen_items/sharePrafrence.dart';
 import '../../../main.dart';
 import '../../../network/model/addSalonDetails.dart';
 import '../../../network/model/updateSalonDetails.dart';
@@ -9,16 +8,15 @@ import '../../../route/app_route.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class UdpatesalonController extends GetxController {
-  var nameController = TextEditingController(); 
+  var nameController = TextEditingController();
   var disController = TextEditingController();
-  var addController = TextEditingController(); 
-  var contact_numberController = TextEditingController(); 
-  var contact_emailController = TextEditingController(); 
+  var addController = TextEditingController();
+  var contact_numberController = TextEditingController();
+  var contact_emailController = TextEditingController();
   var opentimeController = TextEditingController();
   var closetimeController = TextEditingController();
   var categoryController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
-
 
   var salonDetails = Rxn<AddsalonDetails>();
   var salonid = 0.obs;
@@ -33,17 +31,15 @@ class UdpatesalonController extends GetxController {
     salonDetails.value = await prefs.getCreatedSalondetails();
 
     if (salonDetails.value != null) {
-      salonid.value = salonDetails.value?.data?.id ?? 0;
-      nameController.text = salonDetails.value?.data?.name ?? '';
-      disController.text = salonDetails.value?.data?.description ?? '';
-      addController.text = salonDetails.value?.data?.address ?? '';
-      contact_emailController.text =
-          salonDetails.value?.data?.contactEmail ?? '';
-      contact_numberController.text =
-          salonDetails.value?.data?.contactNumber ?? '';
-      opentimeController.text = salonDetails.value?.data?.openingTime ?? '';
-      closetimeController.text = salonDetails.value?.data?.closingTime ?? '';
-      selectedcategory.value = salonDetails.value?.data?.category ?? 'UNISEX';
+      // salonid.value = salonDetails.value?.signupId ?? 0;
+      nameController.text = salonDetails.value?.name ?? '';
+      disController.text = salonDetails.value?.description ?? '';
+      addController.text = salonDetails.value?.address ?? '';
+      contact_emailController.text = salonDetails.value?.contactEmail ?? '';
+      contact_numberController.text = salonDetails.value?.contactNumber ?? '';
+      opentimeController.text = salonDetails.value?.openingTime ?? '';
+      closetimeController.text = salonDetails.value?.closingTime ?? '';
+      selectedcategory.value = salonDetails.value?.category ?? 'UNISEX';
     } else {
       CustomSnackbar.showError('=>', 'No stored salon details found!');
     }
@@ -66,9 +62,9 @@ class UdpatesalonController extends GetxController {
       'closing_time': closetimeController.text,
       'Category': selectedcategory.value.toString().toLowerCase(),
       'status': 1,
-      'package_id': salonDetails.value?.data?.packageId ?? 0,
+      'package_id': salonDetails.value?.packageId,
     };
-    
+
     try {
       await dioClient.putData<UpdateSalon>(
         '${Apis.baseUrl}${Endpoints.udpate_salon}/${salonid.value}',

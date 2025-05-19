@@ -7,6 +7,8 @@ class Login_model {
   String? phoneNumber;
   String? address;
   String? packageId;
+  String? adminId;
+  String? salonId;
 
   Login_model(
       {this.message,
@@ -16,7 +18,9 @@ class Login_model {
       this.salonName,
       this.phoneNumber,
       this.address,
-      this.packageId});
+      this.packageId,
+      this.adminId,
+      this.salonId});
 
   Login_model.fromJson(Map<String, dynamic> json) {
     message = json['message'];
@@ -27,6 +31,8 @@ class Login_model {
     phoneNumber = json['phone_number'];
     address = json['address'];
     packageId = json['package_id'];
+    adminId = json['admin_id'];
+    salonId = json['salon_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +45,8 @@ class Login_model {
     data['phone_number'] = this.phoneNumber;
     data['address'] = this.address;
     data['package_id'] = this.packageId;
+    data['admin_id'] = this.adminId;
+    data['salon_id'] = this.salonId;
     return data;
   }
 }

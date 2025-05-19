@@ -1,6 +1,10 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/commen_items/commen_class.dart';
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
@@ -85,8 +89,6 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-
-
   Widget Btn_register() {
     return ElevatedButtonExample(
       text: "Next",
@@ -139,12 +141,39 @@ class RegisterScreen extends StatelessWidget {
                     blurRadius: 10, color: secondaryColor, spreadRadius: 6)
               ],
             ),
-            child: CircleAvatar(
-              radius: 70,
-              backgroundColor: primaryColor,
-              foregroundImage: AssetImage(
-                AppImages.applogo,
-              ),
+            child: Stack(
+              children: [
+                Obx(
+                  () => CircleAvatar(
+                    radius: 70,
+                    backgroundColor: primaryColor,
+                    foregroundImage: singleImage.value != null &&
+                            singleImage.value!.path.isNotEmpty
+                        ? FileImage(File(singleImage.value!.path))
+                        : AssetImage(AppImages.applogo) as ImageProvider,
+                  ),
+                ),
+                Positioned(
+                  right: 12,
+                  bottom: 0,
+                  child: GestureDetector(
+                    onTap: () => pickImage(isMultiple: false),
+                    child: Container(
+                      height: 25.h,
+                      width: 25.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: white,
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: primaryColor,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         )
