@@ -1,27 +1,38 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/commen_items/commen_class.dart';
+import 'package:flutter_template/route/app_route.dart';
+import 'package:flutter_template/ui/auth/register/register_controller.dart';
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/utils/validation.dart';
+import 'package:flutter_template/wiget/Custome_button.dart';
+import 'package:flutter_template/wiget/Custome_textfield.dart';
+import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:get/get.dart';
-import '../../../route/app_route.dart';
-import '../../../utils/custom_text_styles.dart';
-import '../../../utils/validation.dart';
-import '../../../wiget/Custome_textfield.dart';
-import '../../../wiget/Custome_button.dart';
-import '../../../wiget/custome_snackbar.dart';
-import '../../../wiget/custome_text.dart';
-import 'register_controller.dart';
+import 'package:step_progress/step_progress.dart';
 
 class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
-
   final RegisterController getController = Get.put(RegisterController());
   final _formKey = GlobalKey<FormState>();
+
+  Widget _stepForm(int step, BuildContext context) {
+    switch (step) {
+      case 0:
+        return Case1();
+
+      case 1:
+        return Case2();
+      case 2:
+        return Case3(context);
+
+      default:
+        return SizedBox.shrink();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +42,104 @@ class RegisterScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              register_screen(),
+              loginScreenHeader(),
+              SizedBox(height: 45.h),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  spacing: 20.h,
+                  children: [
+                    Obx(() =>
+                        _stepForm(getController.currentStep.value, context)),
+                    Obx(() => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(width: 5.w),
+                            if (getController.currentStep.value > 0)
+                              Expanded(
+                                child: ElevatedButtonExample(
+                                  text: "Back",
+                                  onPressed: getController.previousStep,
+                                  height: 35.h,
+                                ),
+                              ),
+                            if (getController.currentStep.value > 0)
+                              SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButtonExample(
+                                height: 35.h,
+                                text: getController.currentStep.value == 2
+                                    ? 'Select Packages'
+                                    : 'Next',
+                                onPressed: () {
+                                  if (getController.currentStep.value < 2) {
+                                    getController.nextStep();
+                                  } else {
+                                    var register_data = {
+                                      "owner_name":
+                                          getController.fullnameController.text,
+                                      "owner_email":
+                                          getController.emailController.text,
+                                      "owner_phone":
+                                          getController.phoneController.text,
+                                      "salon_name": getController
+                                          .salonNameController.text,
+                                      "salon_email": getController
+                                          .salonEmailController.text,
+                                      "salon_phone": getController
+                                          .salonPhoneController.text,
+                                      "salon_address":
+                                          getController.addressController.text,
+                                      "salon_description": getController
+                                          .descriptionController.text,
+                                      "salon_opening_time":
+                                          getController.opentimeController.text,
+                                      "salon_closing_time": getController
+                                          .closetimeController.text,
+                                      "category":
+                                          getController.selectedcategory.value,
+                                    };
+                                    Get.toNamed(Routes.packagesScreen,
+                                        arguments: register_data);
+                                    // if (_formKey.currentState?.validate() ??
+                                    //     false) {
+                                    //   Get.toNamed(Routes.packagesScreen,
+                                    //       arguments: register_data);
+                                    //   getController.fullnameController.text =
+                                    //       "";
+                                    //   getController.salonNameController.text =
+                                    //       "";
+                                    //   getController.phoneController.text = "";
+                                    //   getController.addressController.text = "";
+                                    //   getController.emailController.text = "";
+                                    //   getController.salonEmailController.text =
+                                    //       "";
+                                    //   getController.salonPhoneController.text =
+                                    //       "";
+                                    //   getController.descriptionController.text =
+                                    //       "";
+                                    //   getController.opentimeController.text =
+                                    //       "";
+                                    //   getController.closetimeController.text =
+                                    //       "";
+                                    //   getController.selectedcategory.value =
+                                    //       "UNISEX";
+                                    //   singleImage.value = null;
+                                    //   getController.currentStep.value = 0;
+                                    // } else {
+                                    //   CustomSnackbar.showError(
+                                    //       'Validation Error',
+                                    //       'Please fill in all fields correctly');
+                                    // }
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        )),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -39,10 +147,178 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
+  Widget loginScreenHeader() {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        Container(
+          height: 190.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20.r),
+              bottomRight: Radius.circular(20.r),
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 35),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Obx(() => StepProgress(
+                    totalSteps: 3,
+                    currentStep: getController.currentStep.value,
+                    stepSize: 24,
+                    nodeTitles: const [
+                      "Owner's Info",
+                      "Salon's Info",
+                      "Extra Infor",
+                    ],
+                    padding: const EdgeInsets.all(18),
+                    theme: const StepProgressThemeData(
+                      shape: StepNodeShape.diamond,
+                      activeForegroundColor: white,
+                      defaultForegroundColor: secondaryColor,
+                      stepLineSpacing: 18,
+                      stepLineStyle: StepLineStyle(
+                        borderRadius: Radius.circular(4),
+                      ),
+                      nodeLabelStyle: StepLabelStyle(
+                        margin: EdgeInsets.only(bottom: 6),
+                      ),
+                      stepNodeStyle: StepNodeStyle(
+                        activeIcon: null,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -50,
+          child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 10,
+                    color: secondaryColor,
+                    spreadRadius: 6,
+                  )
+                ],
+              ),
+              child: Obx(
+                () => GestureDetector(
+                  onTap: () => pickImage(isMultiple: false),
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundColor: primaryColor,
+                    foregroundImage: singleImage.value != null &&
+                            singleImage.value!.path.isNotEmpty
+                        ? FileImage(File(singleImage.value!.path))
+                        : AssetImage(AppImages.applogo) as ImageProvider,
+                  ),
+                ),
+              )),
+        )
+      ],
+    );
+  }
+
+  Widget Case1() {
+    return Column(
+      spacing: 15.h,
+      children: [
+        // Imagepicker(),
+        InputTxtfield_fullName(),
+        InputTxtfield_Email(),
+        InputTxtfield_Phone(),
+      ],
+    );
+  }
+
+  Widget Case2() {
+    return Column(
+      spacing: 15.h,
+      children: [
+        InputTxtfield_saloneName(),
+        InputTxtfield_add(),
+        InputTxtfield_SalonPhone(),
+        InputTxtfield_discription(),
+      ],
+    );
+  }
+
+  Widget Case3(BuildContext context) {
+    return Column(
+      spacing: 15.h,
+      children: [
+        InputTxtfield_salonEmail(),
+        Row(
+          children: [
+            Expanded(child: opening_time(context)),
+            SizedBox(width: 10.w),
+            Expanded(child: closeing_time(context)),
+          ],
+        ),
+        category(),
+      ],
+    );
+  }
+
+  Widget Imagepicker() {
+    return Obx(() {
+      return GestureDetector(
+        onTap: () => pickImage(isMultiple: false),
+        child: Container(
+          height: 80.h,
+          width: 80.w,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: primaryColor,
+              width: 1,
+            ),
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
+            color: secondaryColor.withOpacity(0.2),
+          ),
+          child: singleImage.value != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(10.r),
+                  child: Image.file(
+                    singleImage.value!,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : Icon(
+                  Icons.image_rounded,
+                  color: primaryColor,
+                  size: 30.sp,
+                ),
+        ),
+      );
+    });
+  }
+
+  Widget InputTxtfield_fullName() {
+    return CustomTextFormField(
+      controller: getController.fullnameController,
+      labelText: "Owner's Name",
+      keyboardType: TextInputType.text,
+      validator: (value) => Validation.validatename(value),
+    );
+  }
+
   Widget InputTxtfield_Email() {
     return CustomTextFormField(
       controller: getController.emailController,
-      labelText: 'Email',
+      labelText: "Owner's Email",
       keyboardType: TextInputType.emailAddress,
       validator: (value) => Validation.validateEmail(value),
     );
@@ -51,13 +327,22 @@ class RegisterScreen extends StatelessWidget {
   Widget InputTxtfield_Phone() {
     return CustomTextFormField(
       controller: getController.phoneController,
-      labelText: 'Phone',
+      labelText: "Owner's Phone",
       keyboardType: TextInputType.phone,
       validator: (value) => Validation.validatePhone(value),
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(10),
       ],
+    );
+  }
+
+  Widget InputTxtfield_saloneName() {
+    return CustomTextFormField(
+      controller: getController.salonNameController,
+      labelText: "Salon's Name",
+      keyboardType: TextInputType.text,
+      validator: (value) => Validation.validatename(value),
     );
   }
 
@@ -71,164 +356,97 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 
-  Widget InputTxtfield_SalonName() {
+  Widget InputTxtfield_SalonPhone() {
     return CustomTextFormField(
-      controller: getController.salonNameController,
-      labelText: 'Salon Name',
-      keyboardType: TextInputType.text,
-      validator: (value) => Validation.validatename(value),
-    );
-  }
-
-  Widget InputTxtfield_fullName() {
-    return CustomTextFormField(
-      controller: getController.fullNameController,
-      labelText: 'Full Name',
-      keyboardType: TextInputType.text,
-      validator: (value) => Validation.validatename(value),
-    );
-  }
-
-  Widget Btn_register() {
-    return ElevatedButtonExample(
-      text: "Next",
-      onPressed: () {
-        var register_data = {
-          'full_Name': getController.fullNameController.text,
-          'Salon_Name': getController.salonNameController.text,
-          'Phone': getController.phoneController.text,
-          'Address': getController.addressController.text,
-          'Email': getController.emailController.text,
-        };
-        if (_formKey.currentState?.validate() ?? false) {
-          Get.toNamed(Routes.packagesScreen, arguments: register_data);
-          getController.fullNameController.text = "";
-          getController.salonNameController.text = "";
-          getController.phoneController.text = "";
-          getController.addressController.text = "";
-          getController.emailController.text = "";
-        } else {
-          CustomSnackbar.showError(
-              'Validation Error', 'Please fill in all fields correctly');
-        }
-      },
-    );
-  }
-
-  Widget register_screen_header() {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        Container(
-          height: 120.h,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20.r),
-              bottomRight: Radius.circular(20.r),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -50,
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 10, color: secondaryColor, spreadRadius: 6)
-              ],
-            ),
-            child: Stack(
-              children: [
-                Obx(
-                  () => CircleAvatar(
-                    radius: 70,
-                    backgroundColor: primaryColor,
-                    foregroundImage: singleImage.value != null &&
-                            singleImage.value!.path.isNotEmpty
-                        ? FileImage(File(singleImage.value!.path))
-                        : AssetImage(AppImages.applogo) as ImageProvider,
-                  ),
-                ),
-                Positioned(
-                  right: 12,
-                  bottom: 0,
-                  child: GestureDetector(
-                    onTap: () => pickImage(isMultiple: false),
-                    child: Container(
-                      height: 25.h,
-                      width: 25.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: white,
-                      ),
-                      child: Icon(
-                        Icons.add,
-                        color: primaryColor,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
+      controller: getController.salonPhoneController,
+      labelText: "Salon's Phone",
+      keyboardType: TextInputType.phone,
+      validator: (value) => Validation.validatePhone(value),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(10),
       ],
     );
   }
 
-  Widget register_screen_body() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          CustomTextWidget(
-            text: 'Create account',
-            textStyle: CustomTextStyles.textFontSemiBold(size: 16.sp),
-          ),
-          SizedBox(height: 3.h),
-          CustomTextWidget(
-            text: 'create an account so you can explore all the features',
-            textStyle:
-                CustomTextStyles.textFontSemiBold(size: 12.sp, color: grey),
-          ),
-          SizedBox(height: 20.h),
-          InputTxtfield_fullName(),
-          SizedBox(height: 16.h),
-          InputTxtfield_Phone(),
-          SizedBox(height: 16.h),
-          InputTxtfield_add(),
-          SizedBox(height: 16.h),
-          InputTxtfield_SalonName(),
-          SizedBox(height: 16.h),
-          InputTxtfield_Email(),
-          SizedBox(height: 30.h),
-          Btn_register(),
-          SizedBox(height: 30.h),
-          InkWell(
-              onTap: () => Get.back(),
-              child: Align(
-                  alignment: Alignment.center,
-                  child: CustomTextWidget(
-                      text: "Already have an account",
-                      textStyle: CustomTextStyles.textFontBold(
-                          size: 14.sp, color: primaryColor)))),
-        ],
+  Widget InputTxtfield_discription() {
+    return CustomTextFormField(
+      controller: getController.descriptionController,
+      labelText: 'Description',
+      maxLines: 2,
+      keyboardType: TextInputType.text,
+      validator: (value) => Validation.validatedisscription(value),
+    );
+  }
+
+  Widget opening_time(BuildContext context) {
+    return CustomTextFormField(
+      controller: getController.opentimeController,
+      labelText: 'Opening Time',
+      keyboardType: TextInputType.none,
+      validator: (value) => Validation.validateTime(value),
+      suffixIcon: IconButton(
+        onPressed: () async {
+          TimeOfDay initialTime = TimeOfDay.now();
+          TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: initialTime,
+          );
+          if (pickedTime != null) {
+            String formattedTime = getController.formatTimeToString(pickedTime);
+            getController.opentimeController.text = formattedTime;
+          }
+        },
+        icon: Icon(Icons.access_time),
       ),
     );
   }
 
-  Widget register_screen() {
-    return Column(
-      children: [
-        register_screen_header(),
-        SizedBox(height: 45.h),
-        register_screen_body(),
-      ],
+  Widget closeing_time(BuildContext context) {
+    return CustomTextFormField(
+      controller: getController.closetimeController,
+      labelText: 'Closeing Time',
+      keyboardType: TextInputType.none,
+      validator: (value) => Validation.validateTime(value),
+      suffixIcon: IconButton(
+        onPressed: () async {
+          TimeOfDay initialTime = TimeOfDay.now();
+          TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: initialTime,
+          );
+          if (pickedTime != null) {
+            String formattedTime = getController.formatTimeToString(pickedTime);
+            getController.closetimeController.text = formattedTime;
+          }
+        },
+        icon: Icon(Icons.access_time),
+      ),
     );
+  }
+
+  Widget InputTxtfield_salonEmail() {
+    return CustomTextFormField(
+      controller: getController.salonEmailController,
+      labelText: "Salon's Email",
+      keyboardType: TextInputType.emailAddress,
+      validator: (value) => Validation.validateEmail(value),
+    );
+  }
+
+  Widget category() {
+    return Obx(() => CustomDropdown<String>(
+          value: getController.selectedcategory.value.isEmpty
+              ? null
+              : getController.selectedcategory.value,
+          items: getController.dropdownItems,
+          hintText: 'Select an option',
+          labelText: 'Category',
+          onChanged: (newValue) {
+            if (newValue != null) {
+              getController.selectedcategory(newValue);
+            }
+          },
+        ));
   }
 }

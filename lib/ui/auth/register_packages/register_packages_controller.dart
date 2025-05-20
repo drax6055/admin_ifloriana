@@ -10,7 +10,7 @@ import '../../../wiget/custome_snackbar.dart';
 
 class PackagesController extends GetxController {
   var packages = <Package_model>[].obs;
-   var selectedPackageId = RxnString();
+  var selectedPackageId = RxnString();
   var selectedFilter = 'All'.obs;
   var filteredPackages = <Package_model>[].obs;
   late Razorpay _razorpay;
@@ -53,8 +53,7 @@ class PackagesController extends GetxController {
     switch (selectedFilter.value) {
       case 'Monthly':
         filteredPackages.value =
-            packages.where((pkg) => pkg.subscriptionPlan == "1-month")
-            .toList();
+            packages.where((pkg) => pkg.subscriptionPlan == "1-month").toList();
         break;
       case 'Quarterly':
         filteredPackages.value = packages
@@ -68,15 +67,14 @@ class PackagesController extends GetxController {
         break;
       case 'Yearly':
         filteredPackages.value =
-            packages.where((pkg) => pkg.subscriptionPlan == "1-year")
-            .toList();
+            packages.where((pkg) => pkg.subscriptionPlan == "1-year").toList();
         break;
       default:
         filteredPackages.value = packages;
     }
   }
 
-  void updateSelected(String  value) {
+  void updateSelected(String value) {
     selectedPackageId.value = value;
   }
 
@@ -90,8 +88,8 @@ class PackagesController extends GetxController {
         'name': selectedPackage.packageName,
         'description': selectedPackage.description,
         'prefill': {
-          'contact': registerData['Phone'],
-          'email': registerData['Email']
+          'contact': registerData['owner_phone'],
+          'email': registerData['owner_email']
         },
         'external': {
           'wallets': ['paytm']
@@ -115,7 +113,7 @@ class PackagesController extends GetxController {
         double amount = selectedPackage.price! * 100.0;
         await dioClient.capturePayment(paymentId, amount);
         CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
-        print('Success --> Payment captured successfully: $paymentId');
+
         await onRegisterData();
       }
     } catch (e) {
@@ -123,6 +121,7 @@ class PackagesController extends GetxController {
       print('Error --> Payment capture failed: $e');
     }
   }
+
   void _handlePaymentError(PaymentFailureResponse response) {
     CustomSnackbar.showError('Error', 'Payment failed: ${response.message}');
     print('Error --> Payment failed: ${response.message}');
@@ -140,13 +139,37 @@ class PackagesController extends GetxController {
       return;
     }
 
+    // Map<String, dynamic> register_post_details = {
+    //   'full_name': "drax",
+    //   'salon_name': "drax salon",
+    //   'phone_number': "1234567892",
+    //   'email': "bca19bcuos005@gmail.com",
+    //   'address': "this is a demo demo address",
+    //   'package_id': "6819ab9c7e36b237396e6083",
+    //   'description': "this is a demo description",
+    //   'image': "",
+    //   'contact_number': "1234567892",
+    //   'contact_email': "bca19bcuos005@gmail.com",
+    //   'opening_time': "09:00",
+    //   'closing_time': "18:00",
+    //   'category': "unisex",
+    //   'status': 1,
+    // };
     Map<String, dynamic> register_post_details = {
-      'full_Name': registerData['full_Name'].toString(),
-      'salon_name': registerData['Salon_Name'].toString(),
-      'phone_number': registerData['Phone'].toString(),
-      'email': registerData['Email'].toString(),
-      'address': registerData['Address'].toString(),
+      'full_name': registerData['owner_name'].toString(),
+      'salon_name': registerData['salon_name'].toString(),
+      'phone_number': registerData['owner_phone'].toString(),
+      'email': registerData['salon_email'].toString(),
+      'address': registerData['salon_address'].toString(),
       'package_id': selectedPackageId.value,
+      'description': registerData['salon_description'].toString(),
+      'image': registerData['image'].toString(),
+      'contact_number': registerData['salon_phone'].toString(),
+      'contact_email': registerData['salon_email'].toString(),
+      'opening_time': registerData['salon_opening_time'].toString(),
+      'closing_time': registerData['salon_closing_time'].toString(),
+      'category': registerData['category'].toString().toLowerCase(),
+      'status': 1,
     };
 
     try {
@@ -156,7 +179,7 @@ class PackagesController extends GetxController {
         (json) => Sigm_up_model.fromJson(json),
       );
       await prefs.setSignupDetails(response);
-     
+
       Get.offAllNamed(Routes.completeSalonProfileScreen,
           arguments: {'package_id': selectedPackageId.value});
     } catch (e) {
