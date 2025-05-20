@@ -26,6 +26,61 @@ class LoginScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              // SizedBox(height: 50.h),
+              // Padding(
+              //   padding: const EdgeInsets.all(10),
+              //   child: Container(
+              //     width: double.infinity,
+              //     height: 200.h,
+              //     decoration: BoxDecoration(
+              //       color: secondaryColor,
+              //       borderRadius: BorderRadius.all(
+              //         Radius.circular(20.r),
+              //       ),
+              //     ),
+              //     child: Column(
+              //       children: [
+              //         Padding(
+              //           padding: const EdgeInsets.all(15),
+              //           child: Row(
+              //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //             children: [
+              //               CustomTextWidget(
+              //                 text: 'Basic Package',
+              //                 textStyle: CustomTextStyles.textFontBold(
+              //                     size: 16.sp, color: white),
+              //               ),
+              //               SizedBox(width: 5.w),
+              //               Container(
+              //                 decoration: BoxDecoration(
+              //                   shape: BoxShape.rectangle,
+              //                   color: primaryColor,
+              //                   borderRadius: BorderRadius.all(
+              //                     Radius.circular(10.r),
+              //                   ),
+              //                 ),
+              //                 child: Padding(
+              //                   padding: const EdgeInsets.only(
+              //                       left: 10, right: 10, top: 4, bottom: 4),
+              //                   child: CustomTextWidget(
+              //                     text: 'iFloriana',
+              //                     textStyle: CustomTextStyles.textFontRegular(
+              //                         size: 12.sp, color: white),
+              //                   ),
+              //                 ),
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //         CustomTextWidget(
+              //           text: 'Basic Package',
+              //           textStyle: CustomTextStyles.textFontBold(
+              //               size: 16.sp, color: white),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // )
               Login_screen(),
             ],
           ),
@@ -140,7 +195,7 @@ class LoginScreen extends StatelessWidget {
           SizedBox(height: 16.h),
           InputTxtfield_Pass(),
           SizedBox(height: 16.h),
-          InkWell(
+          GestureDetector(
               onTap: () {
                 Get.toNamed(Routes.forgotScreen);
               },
@@ -153,7 +208,7 @@ class LoginScreen extends StatelessWidget {
           SizedBox(height: 30.h),
           Btn_Login(),
           SizedBox(height: 16.h),
-          InkWell(
+          GestureDetector(
               onTap: () => Get.toNamed(Routes.registerScreen),
               child: Align(
                   alignment: Alignment.center,

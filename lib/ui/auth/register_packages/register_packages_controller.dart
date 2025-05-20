@@ -139,37 +139,23 @@ class PackagesController extends GetxController {
       return;
     }
 
-    // Map<String, dynamic> register_post_details = {
-    //   'full_name': "drax",
-    //   'salon_name': "drax salon",
-    //   'phone_number': "1234567892",
-    //   'email': "bca19bcuos005@gmail.com",
-    //   'address': "this is a demo demo address",
-    //   'package_id': "6819ab9c7e36b237396e6083",
-    //   'description': "this is a demo description",
-    //   'image': "",
-    //   'contact_number': "1234567892",
-    //   'contact_email': "bca19bcuos005@gmail.com",
-    //   'opening_time': "09:00",
-    //   'closing_time': "18:00",
-    //   'category': "unisex",
-    //   'status': 1,
-    // };
     Map<String, dynamic> register_post_details = {
       'full_name': registerData['owner_name'].toString(),
       'salon_name': registerData['salon_name'].toString(),
       'phone_number': registerData['owner_phone'].toString(),
-      'email': registerData['salon_email'].toString(),
+      'email': registerData['owner_email'].toString(),
       'address': registerData['salon_address'].toString(),
       'package_id': selectedPackageId.value,
-      'description': registerData['salon_description'].toString(),
-      'image': registerData['image'].toString(),
-      'contact_number': registerData['salon_phone'].toString(),
-      'contact_email': registerData['salon_email'].toString(),
-      'opening_time': registerData['salon_opening_time'].toString(),
-      'closing_time': registerData['salon_closing_time'].toString(),
-      'category': registerData['category'].toString().toLowerCase(),
-      'status': 1,
+      'salonDetails': {
+        'name': registerData['salon_name'].toString(),
+        'email': registerData['salon_email'].toString(),
+        'phone_number': registerData['salon_phone'].toString(),
+        'description': registerData['salon_description'].toString(),
+        'image': registerData['image'].toString(),
+        'opening_time': registerData['salon_opening_time'].toString(),
+        'closing_time': registerData['salon_closing_time'].toString(),
+        'category': registerData['category'].toString().toLowerCase(),
+      }
     };
 
     try {
@@ -180,8 +166,7 @@ class PackagesController extends GetxController {
       );
       await prefs.setSignupDetails(response);
 
-      Get.offAllNamed(Routes.completeSalonProfileScreen,
-          arguments: {'package_id': selectedPackageId.value});
+      Get.offAllNamed(Routes.loginScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());
     }

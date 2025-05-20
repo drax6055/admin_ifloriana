@@ -81,7 +81,7 @@ class DrawerScreen extends StatelessWidget {
                     text: getController.email.value,
                     textStyle: CustomTextStyles.textFontMedium(
                         size: 14.sp, color: white))),
-                currentAccountPicture: InkWell(
+                currentAccountPicture: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                     Get.toNamed(Routes.updateSalonScreen);

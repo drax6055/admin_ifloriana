@@ -8,10 +8,12 @@ import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/auth/register/register_controller.dart';
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/utils/validation.dart';
 import 'package:flutter_template/wiget/Custome_button.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
 import 'package:flutter_template/wiget/custome_dropdown.dart';
+import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
 import 'package:step_progress/step_progress.dart';
 
@@ -43,11 +45,11 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
             children: [
               loginScreenHeader(),
-              SizedBox(height: 45.h),
+              SizedBox(height: 70.h),
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(
-                  spacing: 20.h,
+                  spacing: 30.h,
                   children: [
                     Obx(() =>
                         _stepForm(getController.currentStep.value, context)),
@@ -101,42 +103,61 @@ class RegisterScreen extends StatelessWidget {
                                     };
                                     Get.toNamed(Routes.packagesScreen,
                                         arguments: register_data);
-                                    // if (_formKey.currentState?.validate() ??
-                                    //     false) {
-                                    //   Get.toNamed(Routes.packagesScreen,
-                                    //       arguments: register_data);
-                                    //   getController.fullnameController.text =
-                                    //       "";
-                                    //   getController.salonNameController.text =
-                                    //       "";
-                                    //   getController.phoneController.text = "";
-                                    //   getController.addressController.text = "";
-                                    //   getController.emailController.text = "";
-                                    //   getController.salonEmailController.text =
-                                    //       "";
-                                    //   getController.salonPhoneController.text =
-                                    //       "";
-                                    //   getController.descriptionController.text =
-                                    //       "";
-                                    //   getController.opentimeController.text =
-                                    //       "";
-                                    //   getController.closetimeController.text =
-                                    //       "";
-                                    //   getController.selectedcategory.value =
-                                    //       "UNISEX";
-                                    //   singleImage.value = null;
-                                    //   getController.currentStep.value = 0;
-                                    // } else {
-                                    //   CustomSnackbar.showError(
-                                    //       'Validation Error',
-                                    //       'Please fill in all fields correctly');
-                                    // }
+                                    //   if (_formKey.currentState?.validate() ??
+                                    //       false) {
+                                    //     Get.toNamed(Routes.packagesScreen,
+                                    //         arguments: register_data);
+                                    //     getController.fullnameController.text =
+                                    //         "";
+                                    //     getController.salonNameController.text =
+                                    //         "";
+                                    //     getController.phoneController.text = "";
+                                    //     getController.addressController.text = "";
+                                    //     getController.emailController.text = "";
+                                    //     getController.salonEmailController.text =
+                                    //         "";
+                                    //     getController.salonPhoneController.text =
+                                    //         "";
+                                    //     getController.descriptionController.text =
+                                    //         "";
+                                    //     getController.opentimeController.text =
+                                    //         "";
+                                    //     getController.closetimeController.text =
+                                    //         "";
+                                    //     getController.selectedcategory.value =
+                                    //         "UNISEX";
+                                    //     singleImage.value = null;
+                                    //     getController.currentStep.value = 0;
+                                    //   } else {
+                                    //     CustomSnackbar.showError(
+                                    //         'Validation Error',
+                                    //         'Please fill in all fields correctly');
+                                    //   }
                                   }
                                 },
                               ),
                             ),
                           ],
                         )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomTextWidget(
+                          text: 'Already have an account?',
+                          textStyle:
+                              CustomTextStyles.textFontRegular(size: 13.sp),
+                        ),
+                        SizedBox(width: 10.w),
+                        GestureDetector(
+                          onTap: () => Get.toNamed(Routes.loginScreen),
+                          child: CustomTextWidget(
+                            text: 'Login Here',
+                            textStyle: CustomTextStyles.textFontBold(
+                                size: 13.sp, color: primaryColor),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               )
