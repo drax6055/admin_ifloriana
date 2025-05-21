@@ -76,47 +76,117 @@ class PackagesScreen extends StatelessWidget {
 
   Widget _buildRadioCard(Package_model pkg) {
     return Padding(
-      padding: const EdgeInsets.only(left: 15, right: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       child: Obx(() {
         bool isSelected = getController.selectedPackageId.value == pkg.sId;
         return GestureDetector(
           onTap: () => getController.updateSelected(pkg.sId ?? ''),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: BorderSide(
-                color: isSelected ? primaryColor : transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: secondaryColor,
+              borderRadius: BorderRadius.circular(20.r),
+              border: Border.all(
+                color: isSelected ? primaryColor : Colors.transparent,
                 width: 2,
               ),
             ),
-            elevation: isSelected ? 4 : 0,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    title: CustomTextWidget(
-                      text: pkg.packageName.toString(),
-                      textStyle: CustomTextStyles.textFontBold(size: 14.sp),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ...pkg.servicesIncluded!
-                            .map((service) => CustomTextWidget(
-                                text: "• $service",
-                                textStyle: CustomTextStyles.textFontRegular(
-                                    size: 12.sp)))
-                            .toList(),
-                        SizedBox(height: 5.h),
-                        CustomTextWidget(
-                          text: "₹${pkg.price.toString()}",
-                          textStyle: CustomTextStyles.textFontBold(
-                              size: 14.sp, color: primaryColor),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        text: pkg.packageName ?? '',
+                        textStyle: CustomTextStyles.textFontBold(
+                          size: 16.sp,
+                          color: white,
                         ),
+                      ),
+                      SizedBox(width: 5.w),
+                      if (pkg.subscriptionPlan != null &&
+                          pkg.subscriptionPlan!.isNotEmpty)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          child: CustomTextWidget(
+                            text: pkg
+                                .subscriptionPlan!, // e.g. "Annual (40% off)"
+                            textStyle: CustomTextStyles.textFontRegular(
+                              size: 12.sp,
+                              color: white,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+
+                  // Price container
+                  Container(
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomTextWidget(
+                          text: '₹${pkg.price.toString()}',
+                          textStyle: CustomTextStyles.textFontBold(
+                            size: 26.sp,
+                            color: white,
+                          ),
+                        ),
+                        SizedBox(width: 15.w),
+                        if (pkg.subscriptionPlan != null &&
+                            pkg.subscriptionPlan!.isNotEmpty)
+                          CustomTextWidget(
+                            text: pkg.subscriptionPlan!,
+                            textStyle: CustomTextStyles.textFontRegular(
+                              size: 12.sp,
+                              color: white,
+                            ),
+                          ),
                       ],
                     ),
+                  ),
+
+                  SizedBox(height: 10.h),
+
+                  // Services list with icons
+                  ListView.separated(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: pkg.servicesIncluded?.length ?? 0,
+                    separatorBuilder: (_, __) => SizedBox(height: 5.h),
+                    itemBuilder: (context, index) {
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.check_circle,
+                              color: primaryColor, size: 20.sp),
+                          SizedBox(width: 10.w),
+                          Expanded(
+                            child: CustomTextWidget(
+                              text: pkg.servicesIncluded![index],
+                              textStyle: CustomTextStyles.textFontRegular(
+                                size: 14.sp,
+                                color: white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -126,4 +196,57 @@ class PackagesScreen extends StatelessWidget {
       }),
     );
   }
+
+  // Widget _buildRadioCard(Package_model pkg) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(left: 15, right: 15),
+  //     child: Obx(() {
+  //       bool isSelected = getController.selectedPackageId.value == pkg.sId;
+  //       return GestureDetector(
+  //         onTap: () => getController.updateSelected(pkg.sId ?? ''),
+  //         child: Card(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(10),
+  //             side: BorderSide(
+  //               color: isSelected ? primaryColor : transparent,
+  //               width: 2,
+  //             ),
+  //           ),
+  //           elevation: isSelected ? 4 : 0,
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(8.0),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 ListTile(
+  //                   title: CustomTextWidget(
+  //                     text: pkg.packageName.toString(),
+  //                     textStyle: CustomTextStyles.textFontBold(size: 14.sp),
+  //                   ),
+  //                   subtitle: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       ...pkg.servicesIncluded!
+  //                           .map((service) => CustomTextWidget(
+  //                               text: "• $service",
+  //                               textStyle: CustomTextStyles.textFontRegular(
+  //                                   size: 12.sp)))
+  //                           .toList(),
+  //                       SizedBox(height: 5.h),
+  //                       CustomTextWidget(
+  //                         text: "₹${pkg.price.toString()}",
+  //                         textStyle: CustomTextStyles.textFontBold(
+  //                             size: 14.sp, color: primaryColor),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     }),
+  //   );
+  // }
 }
