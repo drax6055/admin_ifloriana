@@ -45,7 +45,7 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
             children: [
               loginScreenHeader(),
-              SizedBox(height: 70.h),
+              SizedBox(height: 60.h),
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(

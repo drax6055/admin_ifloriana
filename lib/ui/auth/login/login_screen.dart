@@ -17,6 +17,13 @@ class LoginScreen extends StatelessWidget {
 
   final LoginController getController = Get.put(LoginController());
   final _formKey = GlobalKey<FormState>();
+  var listOfServices = [
+    'Haircut dghsajkgjkfdsafdsfdsaffds',
+    'Facial fndasjklfhdsajkfdsfafdsfsd',
+    'Massage fdhsafjkldshfddfsfadssfdsaf',
+    'Nail Care fdsjklfhsdjkfdsfsdfsa',
+    'Makeup fdshjfklsdsdfsadfdsafsdf',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +38,20 @@ class LoginScreen extends StatelessWidget {
               //   padding: const EdgeInsets.all(10),
               //   child: Container(
               //     width: double.infinity,
-              //     height: 200.h,
               //     decoration: BoxDecoration(
               //       color: secondaryColor,
               //       borderRadius: BorderRadius.all(
               //         Radius.circular(20.r),
               //       ),
               //     ),
-              //     child: Column(
-              //       children: [
-              //         Padding(
-              //           padding: const EdgeInsets.all(15),
-              //           child: Row(
+              //     child: Padding(
+              //       padding: const EdgeInsets.all(10),
+              //       child: Column(
+              //         spacing: 10.h,
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         mainAxisAlignment: MainAxisAlignment.start,
+              //         children: [
+              //           Row(
               //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //             children: [
               //               CustomTextWidget(
@@ -63,7 +72,7 @@ class LoginScreen extends StatelessWidget {
               //                   padding: const EdgeInsets.only(
               //                       left: 10, right: 10, top: 4, bottom: 4),
               //                   child: CustomTextWidget(
-              //                     text: 'iFloriana',
+              //                     text: 'Annual(40% off)',
               //                     textStyle: CustomTextStyles.textFontRegular(
               //                         size: 12.sp, color: white),
               //                   ),
@@ -71,16 +80,70 @@ class LoginScreen extends StatelessWidget {
               //               ),
               //             ],
               //           ),
-              //         ),
-              //         CustomTextWidget(
-              //           text: 'Basic Package',
-              //           textStyle: CustomTextStyles.textFontBold(
-              //               size: 16.sp, color: white),
-              //         ),
-              //       ],
+              //           //below price container
+              //           Container(
+              //             decoration: BoxDecoration(
+              //               shape: BoxShape.rectangle,
+              //               color: primaryColor,
+              //               borderRadius: BorderRadius.all(
+              //                 Radius.circular(10.r),
+              //               ),
+              //             ),
+              //             child: Padding(
+              //               padding: const EdgeInsets.all(10),
+              //               child: Row(
+              //                 mainAxisSize: MainAxisSize.min,
+              //                 children: [
+              //                   CustomTextWidget(
+              //                     text: '\$149.99',
+              //                     textStyle: CustomTextStyles.textFontBold(
+              //                         size: 26.sp, color: white),
+              //                   ),
+              //                   SizedBox(width: 15.w),
+              //                   CustomTextWidget(
+              //                     text: 'Annual(40% off)',
+              //                     textStyle: CustomTextStyles.textFontRegular(
+              //                         size: 12.sp, color: white),
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //           //listview
+              //           ListView.builder(
+              //             padding: EdgeInsets.zero,
+              //             itemCount: listOfServices.length,
+              //             shrinkWrap: true,
+              //             physics: NeverScrollableScrollPhysics(),
+              //             itemBuilder: (context, index) {
+              //               return Padding(
+              //                 padding: const EdgeInsets.all(5),
+              //                 child: Row(
+              //                   crossAxisAlignment: CrossAxisAlignment.start,
+              //                   children: [
+              //                     Icon(Icons.check_circle,
+              //                         color: primaryColor, size: 20.sp),
+              //                     SizedBox(width: 10.w),
+              //                     Expanded(
+              //                       child: CustomTextWidget(
+              //                         text: listOfServices[index],
+              //                         textStyle:
+              //                             CustomTextStyles.textFontRegular(
+              //                           size: 14.sp,
+              //                           color: white,
+              //                         ),
+              //                       ),
+              //                     ),
+              //                   ],
+              //                 ),
+              //               );
+              //             },
+              //           ),
+              //         ],
+              //       ),
               //     ),
               //   ),
-              // )
+              // ),
               Login_screen(),
             ],
           ),
