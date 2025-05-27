@@ -6,6 +6,7 @@ import 'package:flutter_template/ui/drawer/drawer_controller.dart';
 import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../utils/custom_text_styles.dart';
 import '../../wiget/appbar/commen_appbar.dart';
@@ -17,6 +18,31 @@ class DrawerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DrawermenuController getController = Get.put(DrawermenuController());
+    final List<DrawerItem> drawerItems = [
+      DrawerItem(
+          title: 'Dashboard', icon: FontAwesomeIcons.gauge, pageIndex: 0),
+      DrawerItem(
+          title: 'Booking', icon: FontAwesomeIcons.calendarDays, pageIndex: 1),
+      DrawerItem(
+          title: 'Update Salon Details', icon: Icons.update, pageIndex: 2),
+      DrawerItem(
+          title: 'Booking Details', icon: Icons.calendar_month, pageIndex: 2),
+      DrawerItem(title: 'Logout', icon: Icons.logout, pageIndex: 3),
+    ];
+    final List<Map<String, dynamic>> pages = [
+      {
+        'title': 'Dashboard',
+        'widget': const DashboardScreen(),
+      },
+      {
+        'title': 'CalenderScreen',
+        'widget': const CalenderScreen(),
+      },
+      {
+        'title': 'Update Salon Details',
+        'widget': UpdatesalonScreen(showAppBar: false),
+      },
+    ];
 
     return SafeArea(
       child: Scaffold(
@@ -36,51 +62,36 @@ class DrawerScreen extends StatelessWidget {
               )),
         ),
         body: Obx(() {
+          final selectedIndex = getController.selectedPage.value;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            switch (getController.selectedPage.value) {
-              case 0:
-                getController.appBarTitle.value = 'Dashboard';
-                break;
-              case 1:
-                getController.appBarTitle.value = 'CalenderScreen';
-                break;
-              case 2:
-                getController.appBarTitle.value = 'Update Salon Details';
-                break;
-              default:
-                getController.appBarTitle.value = 'DashboardScreen';
+            if (selectedIndex < pages.length) {
+              getController.appBarTitle.value = pages[selectedIndex]['title'];
+            } else {
+              getController.appBarTitle.value = 'Dashboard';
             }
           });
-          switch (getController.selectedPage.value) {
-            case 0:
-              return DashboardScreen();
-            case 1:
-              return CalenderScreen();
-            case 2:
-              return UpdatesalonScreen(showAppBar: false);
-            default:
-              return DashboardScreen();
+          if (selectedIndex < pages.length) {
+            return pages[selectedIndex]['widget'];
+          } else {
+            return const DashboardScreen();
           }
         }),
         drawer: Drawer(
           child: ListView(
             children: [
-              //strong
-              SizedBox(
-                height: 10.h,
-              ),
+              SizedBox(height: 10.h),
               UserAccountsDrawerHeader(
-                decoration: BoxDecoration(
-                  color: primaryColor,
-                ),
+                decoration: BoxDecoration(color: primaryColor),
                 accountName: Obx(() => CustomTextWidget(
-                    text: getController.fullname.value.toString(),
-                    textStyle: CustomTextStyles.textFontMedium(
-                        size: 14.sp, color: white))),
+                      text: getController.fullname.value.toString(),
+                      textStyle: CustomTextStyles.textFontMedium(
+                          size: 14.sp, color: white),
+                    )),
                 accountEmail: Obx(() => CustomTextWidget(
-                    text: getController.email.value,
-                    textStyle: CustomTextStyles.textFontMedium(
-                        size: 14.sp, color: white))),
+                      text: getController.email.value,
+                      textStyle: CustomTextStyles.textFontMedium(
+                          size: 14.sp, color: white),
+                    )),
                 currentAccountPicture: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
@@ -106,52 +117,37 @@ class DrawerScreen extends StatelessWidget {
                         child: CircleAvatar(
                           radius: 12.r,
                           backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.edit,
-                            size: 12.sp,
-                            color: primaryColor,
-                          ),
+                          child: Icon(Icons.edit,
+                              size: 12.sp, color: primaryColor),
                         ),
                       )
                     ],
                   ),
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.dashboard),
-                title: CustomTextWidget(
-                    text: 'Dashboard',
-                    textStyle: CustomTextStyles.textFontMedium(size: 14.sp)),
-                onTap: () {
-                  getController.selectPage(0);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.calendar_month),
-                title: CustomTextWidget(
-                    text: 'Calender Booking',
-                    textStyle: CustomTextStyles.textFontMedium(size: 14.sp)),
-                onTap: () {
-                  getController.selectPage(1);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.update),
-                title: CustomTextWidget(
-                    text: 'Update Salone Details',
-                    textStyle: CustomTextStyles.textFontMedium(size: 14.sp)),
-                onTap: () async {
-                  getController.selectPage(2);
-                  Navigator.pop(context);
-                },
-              ),
+              ...drawerItems.map((item) {
+                return ListTile(
+                  dense: true,
+                  leading: Icon(
+                    item.icon,
+                    size: 18.sp,
+                  ),
+                  title: CustomTextWidget(
+                    text: item.title,
+                    textStyle: CustomTextStyles.textFontMedium(size: 13.sp),
+                  ),
+                  onTap: () {
+                    getController.selectPage(item.pageIndex);
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
               ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: CustomTextWidget(
-                    text: 'Logout',
-                    textStyle: CustomTextStyles.textFontMedium(size: 14.sp)),
+                  text: 'Logout',
+                  textStyle: CustomTextStyles.textFontMedium(size: 12.sp),
+                ),
                 onTap: () async {
                   await getController.onLogoutPress();
                 },
@@ -162,4 +158,13 @@ class DrawerScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class DrawerItem {
+  final String title;
+  final IconData icon;
+  final int pageIndex;
+
+  DrawerItem(
+      {required this.title, required this.icon, required this.pageIndex});
 }

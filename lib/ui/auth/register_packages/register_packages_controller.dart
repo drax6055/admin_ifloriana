@@ -1,10 +1,11 @@
+import 'dart:io';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:dio/dio.dart' as dio;
 import '../../../main.dart';
 import '../../../network/model/packages_model.dart';
-import '../../../network/model/signup_model.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
@@ -113,12 +114,16 @@ class PackagesController extends GetxController {
         double amount = selectedPackage.price! * 100.0;
         await dioClient.capturePayment(paymentId, amount);
         CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
-
-        await onRegisterData();
+        try {
+          await onRegisterData();
+        } catch (e) {
+          CustomSnackbar.showError('Error', 'Registration failed: $e');
+          print('====onRegisterData error===== $e');
+        }
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Payment capture failed: $e');
-      print('Error --> Payment capture failed: $e');
+      print('====payment capture error=====');
     }
   }
 
@@ -139,33 +144,45 @@ class PackagesController extends GetxController {
       return;
     }
 
-    Map<String, dynamic> register_post_details = {
-      'full_name': registerData['owner_name'].toString(),
-      'salon_name': registerData['salon_name'].toString(),
-      'phone_number': registerData['owner_phone'].toString(),
-      'email': registerData['owner_email'].toString(),
-      'address': registerData['salon_address'].toString(),
-      'package_id': selectedPackageId.value,
-      'salonDetails': {
-        'name': registerData['salon_name'].toString(),
-        'email': registerData['salon_email'].toString(),
-        'phone_number': registerData['salon_phone'].toString(),
-        'description': registerData['salon_description'].toString(),
-        'image': registerData['image'].toString(),
-        'opening_time': registerData['salon_opening_time'].toString(),
-        'closing_time': registerData['salon_closing_time'].toString(),
-        'category': registerData['category'].toString().toLowerCase(),
+    File? imageFile;
+    if (registerData['image'] != null &&
+        registerData['image'].toString().isNotEmpty) {
+      imageFile = File(registerData['image']);
+      if (!imageFile.existsSync()) {
+        CustomSnackbar.showError("Error", "Salon image file not found");
+        return;
       }
-    };
+    }
+
+    final formData = dio.FormData.fromMap({
+      'full_name': registerData['owner_name'],
+      'salon_name': registerData['salon_name'],
+      'phone_number': registerData['owner_phone'],
+      'email': registerData['owner_email'],
+      'address': registerData['salon_address'],
+      'package_id': selectedPackageId.value,
+      'salonDetails[name]': registerData['salon_name'],
+      'salonDetails[email]': registerData['salon_email'],
+      'salonDetails[phone_number]': registerData['salon_phone'],
+      'salonDetails[description]': registerData['salon_description'],
+      'salonDetails[opening_time]': registerData['salon_opening_time'],
+      'salonDetails[closing_time]': registerData['salon_closing_time'],
+      'salonDetails[category]':
+          registerData['category'].toString().toLowerCase(),
+      if (imageFile != null)
+        'salonDetails[image]': await dio.MultipartFile.fromFile(
+          imageFile.path,
+          filename: imageFile.path.split(Platform.pathSeparator).last,
+        ),
+    });
 
     try {
-      final response = await dioClient.postData<Sigm_up_model>(
+      await dioClient.postFormData(
         '${Apis.baseUrl}${Endpoints.register_salon}',
-        register_post_details,
-        (json) => Sigm_up_model.fromJson(json),
+        formData,
+        (data) => data,
       );
-      await prefs.setSignupDetails(response);
-
+      CustomSnackbar.showSuccess('Success', 'Registration completed');
       Get.offAllNamed(Routes.loginScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());

@@ -18,7 +18,7 @@ class PackagesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Select Preferable Package",
+        title: "Preferable Package",
         actions: [
           PopupMenuButton<String>(
             onSelected: (String value) {
@@ -116,8 +116,7 @@ class PackagesScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           child: CustomTextWidget(
-                            text: pkg
-                                .subscriptionPlan!, // e.g. "Annual (40% off)"
+                            text: pkg.subscriptionPlan!,
                             textStyle: CustomTextStyles.textFontRegular(
                               size: 12.sp,
                               color: white,
@@ -196,57 +195,4 @@ class PackagesScreen extends StatelessWidget {
       }),
     );
   }
-
-  // Widget _buildRadioCard(Package_model pkg) {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(left: 15, right: 15),
-  //     child: Obx(() {
-  //       bool isSelected = getController.selectedPackageId.value == pkg.sId;
-  //       return GestureDetector(
-  //         onTap: () => getController.updateSelected(pkg.sId ?? ''),
-  //         child: Card(
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(10),
-  //             side: BorderSide(
-  //               color: isSelected ? primaryColor : transparent,
-  //               width: 2,
-  //             ),
-  //           ),
-  //           elevation: isSelected ? 4 : 0,
-  //           child: Padding(
-  //             padding: const EdgeInsets.all(8.0),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 ListTile(
-  //                   title: CustomTextWidget(
-  //                     text: pkg.packageName.toString(),
-  //                     textStyle: CustomTextStyles.textFontBold(size: 14.sp),
-  //                   ),
-  //                   subtitle: Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       ...pkg.servicesIncluded!
-  //                           .map((service) => CustomTextWidget(
-  //                               text: "• $service",
-  //                               textStyle: CustomTextStyles.textFontRegular(
-  //                                   size: 12.sp)))
-  //                           .toList(),
-  //                       SizedBox(height: 5.h),
-  //                       CustomTextWidget(
-  //                         text: "₹${pkg.price.toString()}",
-  //                         textStyle: CustomTextStyles.textFontBold(
-  //                             size: 14.sp, color: primaryColor),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     }),
-  //   );
-  // }
 }

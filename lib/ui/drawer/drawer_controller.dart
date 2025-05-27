@@ -23,7 +23,6 @@ class DrawermenuController extends GetxController {
 
   void getUserDetails() async {
     final loginUser = await prefs.getUser();
-    print("==> $loginUser");
     fullname.value = '${loginUser?.salonName}';
     email.value = loginUser?.email ?? '';
   }

@@ -34,6 +34,23 @@ class DioClient {
     }
   }
 
+  Future<T> postFormData<T>(
+    String endpoint,
+    FormData formData,
+    T Function(Map<String, dynamic>) fromJson,
+  ) async {
+    try {
+      final response = await dio.post(endpoint, data: formData);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return fromJson(response.data);
+      } else {
+        throw Exception('Failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
   Future<T> postData<T>(String endpoint, Map<String, dynamic> data,
       T Function(Map<String, dynamic>) fromJson) async {
     try {
@@ -47,8 +64,9 @@ class DioClient {
       throw _handleDioError(e);
     }
   }
-  Future<T> putData<T>(
-      String endpoint, Map<String, dynamic> data, T Function(Map<String, dynamic>) fromJson) async {
+
+  Future<T> putData<T>(String endpoint, Map<String, dynamic> data,
+      T Function(Map<String, dynamic>) fromJson) async {
     try {
       final response = await dio.put(endpoint, data: data);
       if (response.statusCode == 201) {

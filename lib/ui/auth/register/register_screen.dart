@@ -78,6 +78,7 @@ class RegisterScreen extends StatelessWidget {
                                     getController.nextStep();
                                   } else {
                                     var register_data = {
+                                      "image": singleImage.value,
                                       "owner_name":
                                           getController.fullnameController.text,
                                       "owner_email":
