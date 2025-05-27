@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:http_parser/http_parser.dart';
 import '../../../main.dart';
 import '../../../network/model/packages_model.dart';
 import '../../../network/network_const.dart';
@@ -154,6 +156,16 @@ class PackagesController extends GetxController {
       }
     }
 
+    final salonDetailsJson = {
+      'name': registerData['salon_name'],
+      'email': registerData['salon_email'],
+      'phone_number': registerData['salon_phone'],
+      'description': registerData['salon_description'],
+      'opening_time': registerData['salon_opening_time'],
+      'closing_time': registerData['salon_closing_time'],
+      'category': registerData['category'].toString().toLowerCase(),
+    };
+
     final formData = dio.FormData.fromMap({
       'full_name': registerData['owner_name'],
       'salon_name': registerData['salon_name'],
@@ -161,16 +173,13 @@ class PackagesController extends GetxController {
       'email': registerData['owner_email'],
       'address': registerData['salon_address'],
       'package_id': selectedPackageId.value,
-      'salonDetails[name]': registerData['salon_name'],
-      'salonDetails[email]': registerData['salon_email'],
-      'salonDetails[phone_number]': registerData['salon_phone'],
-      'salonDetails[description]': registerData['salon_description'],
-      'salonDetails[opening_time]': registerData['salon_opening_time'],
-      'salonDetails[closing_time]': registerData['salon_closing_time'],
-      'salonDetails[category]':
-          registerData['category'].toString().toLowerCase(),
+      'salonDetails': dio.MultipartFile.fromString(
+        jsonEncode(salonDetailsJson),
+        contentType: MediaType('application', 'json'),
+        filename: 'salonDetails.json',
+      ),
       if (imageFile != null)
-        'salonDetails[image]': await dio.MultipartFile.fromFile(
+        'image': await dio.MultipartFile.fromFile(
           imageFile.path,
           filename: imageFile.path.split(Platform.pathSeparator).last,
         ),
