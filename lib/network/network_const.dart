@@ -10,5 +10,6 @@ class Endpoints {
   static const String dashboard = 'c4dbb261-e4a5-4a2e-a174-7870566dc417';
   static const String admin_forgot = 'admin_forgot_password';
   static const String salon = '/salons';
+  static const String update_salon = '/salons/';
   static const String check_mailId = '/auth/check-email';
 }

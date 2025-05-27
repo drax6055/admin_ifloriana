@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_template/commen_items/commen_class.dart';
 import 'package:flutter_template/network/model/udpateSalonModel.dart';
@@ -49,6 +51,21 @@ class UdpatesalonController extends GetxController {
 
   Future<void> onupdateClick() async {
     final loginUser = await prefs.getUser();
+    File? imageFile;
+    String? imagePath;
+
+    if (singleImage.value != null && singleImage.value!.toString().isNotEmpty) {
+      if (singleImage.value is File) {
+        imagePath = singleImage.value!.path;
+      } else {
+        imagePath = singleImage.value!.toString();
+      }
+      imageFile = File(imagePath);
+      if (!imageFile.existsSync()) {
+        CustomSnackbar.showError("Error", "Image file does not exist");
+        return;
+      }
+    }
     Map<String, dynamic> salon_post_details = {
       'name': fullnameController.text,
       'description': descriptionController.text,
@@ -61,16 +78,17 @@ class UdpatesalonController extends GetxController {
       'status': 1,
       'package_id': loginUser!.packageId,
       'signup_id': loginUser.adminId,
-      'image': singleImage.value,
+      if (imageFile != null)
+        'image': await dio.MultipartFile.fromFile(
+          imageFile.path,
+          filename: imageFile.path.split(Platform.pathSeparator).last,
+        ),
     };
-
-    print(
-      "====> $salon_post_details",
-    );
+    print("Salon Post Details: ${loginUser.salonId}");
 
     try {
-      await dioClient.postData<UpdateSalonModel>(
-        '${Apis.baseUrl}${Endpoints.salon}',
+      await dioClient.putData<UpdateSalonModel>(
+        '${Apis.baseUrl}${Endpoints.update_salon}${loginUser.salonId}',
         salon_post_details,
         (json) => UpdateSalonModel.fromJson(json),
       );
