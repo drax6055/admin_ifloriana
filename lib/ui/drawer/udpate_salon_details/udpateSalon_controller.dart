@@ -84,17 +84,19 @@ class UdpatesalonController extends GetxController {
           filename: imageFile.path.split(Platform.pathSeparator).last,
         ),
     };
-    print("Salon Post Details: ${loginUser.salonId}");
 
     try {
-      await dioClient.putData<UpdateSalonModel>(
+      final formData = dio.FormData.fromMap(salon_post_details);
+
+      await dioClient.putFormData<UpdateSalonModel>(
         '${Apis.baseUrl}${Endpoints.update_salon}${loginUser.salonId}',
-        salon_post_details,
+        formData,
         (json) => UpdateSalonModel.fromJson(json),
       );
-      CustomSnackbar.showError("Done", "Salon details updated successfully");
+
+      CustomSnackbar.showSuccess("Done", "Salon details updated successfully");
     } catch (e) {
-      CustomSnackbar.showError("Error", e.toString());
+      CustomSnackbar.showError("Error", "Failed to update salon details: $e");
     }
   }
 }
