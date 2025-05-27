@@ -19,15 +19,16 @@ class DioClient {
     );
   }
 
-  Future<List<T>> getData<T>(
-      String endpoint, T Function(Map<String, dynamic>) fromJson) async {
+  Future<T> getData<T>(
+    String endpoint,
+    T Function(dynamic) fromJson,
+  ) async {
     try {
       final response = await dio.get(endpoint);
       if (response.statusCode == 200) {
-        List<dynamic> jsonList = response.data;
-        return jsonList.map((json) => fromJson(json)).toList();
+        return fromJson(response.data);
       } else {
-        throw Exception('GET Error: ${response.statusCode}');
+        throw Exception('GET Error: \\${response.statusCode}');
       }
     } catch (e) {
       throw _handleDioError(e);
@@ -130,6 +131,7 @@ class DioClient {
       return 'Unexpected error: $error';
     }
   }
+
   Future<T> putFormData<T>(
     String endpoint,
     FormData formData,
@@ -153,5 +155,4 @@ class DioClient {
       throw _handleDioError(e);
     }
   }
-
 }

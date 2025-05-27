@@ -18,6 +18,24 @@ class UdpatesalonController extends GetxController {
   var closetimeController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
 
+  void getUserDetails() async {
+    final signUpResponce = await prefs.getSignupDetails();
+    print("===========> SignUp Response: $signUpResponce");
+    fullnameController.text = signUpResponce!.salonName ?? 'DD';
+    addressController.text = signUpResponce.address ?? '';
+    emailController.text = signUpResponce.email ?? '';
+    phoneController.text = signUpResponce.phoneNumber ?? '';
+    opentimeController.text = signUpResponce.salonDetails?.openingTime ?? '';
+    closetimeController.text = signUpResponce.salonDetails?.closingTime ?? '';
+    selectedcategory.value =
+        signUpResponce.salonDetails?.category?.toUpperCase() ?? 'UNISEX';
+    if (signUpResponce.salonDetails?.image != null) {
+      singleImage.value = signUpResponce.salonDetails!.image! as File?;
+    } else {
+      singleImage.value = null;
+    }
+  }
+
   final List<String> dropdownItems = [
     'MALE',
     'FEMALE',

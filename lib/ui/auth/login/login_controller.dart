@@ -33,6 +33,8 @@ class LoginController extends GetxController {
 
       Get.offNamed(Routes.drawerScreen);
       CustomSnackbar.showSuccess('success', 'Login Successfully');
+      // call for signup details api  and store in shared preferences
+      
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());

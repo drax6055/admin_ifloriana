@@ -11,5 +11,5 @@ class Endpoints {
   static const String admin_forgot = 'admin_forgot_password';
   static const String salon = '/salons';
   static const String update_salon = '/salons/';
-  static const String check_mailId = '/auth/check-email';
+  static const String check_mailId = '/auth/check-email/';
 }

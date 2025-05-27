@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_template/network/model/signup_model.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -35,16 +36,14 @@ class PackagesController extends GetxController {
 
   void fetchPackages() async {
     try {
-      final response =
-          await dioClient.dio.get('${Apis.baseUrl}${Endpoints.packages}');
-      if (response.statusCode == 200) {
-        List<dynamic> jsonData = response.data;
-        packages.value =
-            jsonData.map((e) => Package_model.fromJson(e)).toList();
-        filterPackages();
-      } else {
-        throw Exception('Error: ${response.statusCode}');
-      }
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.packages}',
+        (json) => (json as List<dynamic>)
+            .map((e) => Package_model.fromJson(e))
+            .toList(),
+      );
+      packages.value = response;
+      filterPackages();
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());
     }
@@ -81,20 +80,17 @@ class PackagesController extends GetxController {
 
   Future<void> checkGmailId(String email) async {
     try {
-      final response = await dioClient.dio.get(
-        '${Apis.baseUrl}${Endpoints.check_mailId}',
-        queryParameters: {'email': email},
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.check_mailId}?email=$email',
+        (json) => json,
       );
-      if (response.statusCode == 200 && response.data != null) {
-        final exists = response.data['exists'] == true;
-        if (exists) {
-          CustomSnackbar.showError(
-              'Error', 'Email already exists. Please use a different email.');
-        } else {
-          startPayment();
-        }
+      // response is a Map, not a List
+      final exists = response['exists'] == true;
+      if (exists) {
+        CustomSnackbar.showError(
+            'Error', 'Email already exists. Please use a different email.');
       } else {
-        CustomSnackbar.showError('Error', 'Failed to check email.');
+        startPayment();
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to check email: $e');
@@ -205,12 +201,15 @@ class PackagesController extends GetxController {
     });
 
     try {
-      await dioClient.postFormData(
+      final response = await dioClient.postFormData(
         '${Apis.baseUrl}${Endpoints.register_salon}',
         formData,
         (data) => data,
       );
       CustomSnackbar.showSuccess('Success', 'Registration completed');
+      final signupModel = Sigm_up_model.fromJson(response);
+      await prefs.setSignupDetails(signupModel);
+
       Get.offAllNamed(Routes.loginScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());
