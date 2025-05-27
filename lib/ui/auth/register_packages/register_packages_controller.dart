@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:http_parser/http_parser.dart';
 import '../../../main.dart';
 import '../../../network/model/packages_model.dart';
 import '../../../network/network_const.dart';
@@ -81,6 +79,28 @@ class PackagesController extends GetxController {
     selectedPackageId.value = value;
   }
 
+  Future<void> checkGmailId(String email) async {
+    try {
+      final response = await dioClient.dio.get(
+        '${Apis.baseUrl}${Endpoints.check_mailId}',
+        queryParameters: {'email': email},
+      );
+      if (response.statusCode == 200 && response.data != null) {
+        final exists = response.data['exists'] == true;
+        if (exists) {
+          CustomSnackbar.showError(
+              'Error', 'Email already exists. Please use a different email.');
+        } else {
+          startPayment();
+        }
+      } else {
+        CustomSnackbar.showError('Error', 'Failed to check email.');
+      }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to check email: $e');
+    }
+  }
+
   void startPayment() {
     var selectedPackage =
         packages.firstWhereOrNull((pkg) => pkg.sId == selectedPackageId.value);
@@ -147,24 +167,20 @@ class PackagesController extends GetxController {
     }
 
     File? imageFile;
+    String? imagePath;
     if (registerData['image'] != null &&
         registerData['image'].toString().isNotEmpty) {
-      imageFile = File(registerData['image']);
+      if (registerData['image'] is File) {
+        imagePath = (registerData['image'] as File).path;
+      } else {
+        imagePath = registerData['image'].toString();
+      }
+      imageFile = File(imagePath);
       if (!imageFile.existsSync()) {
         CustomSnackbar.showError("Error", "Salon image file not found");
         return;
       }
     }
-
-    final salonDetailsJson = {
-      'name': registerData['salon_name'],
-      'email': registerData['salon_email'],
-      'phone_number': registerData['salon_phone'],
-      'description': registerData['salon_description'],
-      'opening_time': registerData['salon_opening_time'],
-      'closing_time': registerData['salon_closing_time'],
-      'category': registerData['category'].toString().toLowerCase(),
-    };
 
     final formData = dio.FormData.fromMap({
       'full_name': registerData['owner_name'],
@@ -173,11 +189,14 @@ class PackagesController extends GetxController {
       'email': registerData['owner_email'],
       'address': registerData['salon_address'],
       'package_id': selectedPackageId.value,
-      'salonDetails': dio.MultipartFile.fromString(
-        jsonEncode(salonDetailsJson),
-        contentType: MediaType('application', 'json'),
-        filename: 'salonDetails.json',
-      ),
+      'salonDetails[name]': registerData['salon_name'],
+      'salonDetails[email]': registerData['salon_email'],
+      'salonDetails[phone_number]': registerData['salon_phone'],
+      'salonDetails[description]': registerData['salon_description'],
+      'salonDetails[opening_time]': registerData['salon_opening_time'],
+      'salonDetails[closing_time]': registerData['salon_closing_time'],
+      'salonDetails[category]':
+          registerData['category'].toString().toLowerCase(),
       if (imageFile != null)
         'image': await dio.MultipartFile.fromFile(
           imageFile.path,

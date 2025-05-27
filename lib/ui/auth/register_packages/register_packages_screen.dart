@@ -63,7 +63,8 @@ class PackagesScreen extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: ElevatedButtonExample(
-                      onPressed: () => getController.startPayment(),
+                      onPressed: () => getController.checkGmailId(
+                          getController.registerData['owner_email']),
                       text: "Process to Payment",
                     ),
                   )

@@ -102,6 +102,7 @@ class RegisterScreen extends StatelessWidget {
                                       "category":
                                           getController.selectedcategory.value,
                                     };
+                                    print("====>  ${singleImage.value}");
                                     Get.toNamed(Routes.packagesScreen,
                                         arguments: register_data);
                                     //   if (_formKey.currentState?.validate() ??
