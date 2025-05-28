@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_template/network/model/udpateSalonModel.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import '../network/model/addSalonDetails.dart';
@@ -14,7 +15,6 @@ class SharedPreferenceManager {
 
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
-
   Future<void> setUser(Login_model? user) async {
     if (user != null) {
       await storage.write(key: _keyUser, value: jsonEncode(user.toJson()));
@@ -23,7 +23,7 @@ class SharedPreferenceManager {
     }
   }
 
-  /// Get login user details  
+  /// Get login user details
   Future<Login_model?> getUser() async {
     String? data = await storage.read(key: _keyUser);
     if (data == null || data.isEmpty || data == "null") {
@@ -33,21 +33,24 @@ class SharedPreferenceManager {
   }
 
   // / Save signup details
-  Future<void> setSignupDetails(Sigm_up_model? signup) async {
-    if (signup != null) {
-      await storage.write(key: _keySignup, value: jsonEncode(signup.toJson()));
+  Future<void> setSalonDetails(UpdateSalonModel? getsalonDetails) async {
+    if (getsalonDetails != null) {
+      await storage.write(
+          key: _keySignup, value: jsonEncode(getsalonDetails.toJson()));
+      print("===> salon details saved: ${getsalonDetails.toJson()}");
     } else {
       await storage.delete(key: _keySignup);
     }
   }
 
   /// Get signup details
-  Future<Sigm_up_model?> getSignupDetails() async {
+  Future<UpdateSalonModel?> getSalonDetails() async {
     String? data = await storage.read(key: _keySignup);
     if (data == null || data.isEmpty || data == "null") {
       return null;
     }
-    return Sigm_up_model.fromJson(jsonDecode(data));
+    print("===> salon details retrieved: $data");
+    return UpdateSalonModel.fromJson(jsonDecode(data));
   }
 
   Future<AddsalonDetails?> getCreatedSalondetails() async {
@@ -68,9 +71,9 @@ class SharedPreferenceManager {
   }
 
   /// Get token from stored login user data
-  /// 
-  /// 
-  /// current flowe goes like 
+  ///
+  ///
+  /// current flowe goes like
   Future<String?> getToken() async {
     var user = await getUser();
     return user?.token ?? "";
@@ -79,7 +82,6 @@ class SharedPreferenceManager {
   /// Logout and clear data
   Future<void> onLogout() async {
     await setUser(null);
-    await setSignupDetails(null);
     Get.offAllNamed(Routes.loginScreen);
   }
 }

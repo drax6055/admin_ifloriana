@@ -21,9 +21,9 @@ class DrawermenuController extends GetxController {
     await prefs.onLogout();
   }
 
-  void getUserDetails() async {
-    final loginUser = await prefs.getUser();
-    fullname.value = '${loginUser?.salonName}';
-    email.value = loginUser?.email ?? '';
+  Future<void> getUserDetails() async {
+    final salonDetails = await prefs.getSalonDetails();
+    fullname.value = salonDetails?.data?.name ?? '';
+    email.value = salonDetails?.data?.contactEmail ?? '';
   }
 }

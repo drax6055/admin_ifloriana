@@ -201,15 +201,12 @@ class PackagesController extends GetxController {
     });
 
     try {
-      final response = await dioClient.postFormData(
+      await dioClient.postFormData(
         '${Apis.baseUrl}${Endpoints.register_salon}',
         formData,
         (data) => data,
       );
       CustomSnackbar.showSuccess('Success', 'Registration completed');
-      final signupModel = Sigm_up_model.fromJson(response);
-      await prefs.setSignupDetails(signupModel);
-
       Get.offAllNamed(Routes.loginScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());

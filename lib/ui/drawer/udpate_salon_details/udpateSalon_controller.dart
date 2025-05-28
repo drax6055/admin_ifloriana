@@ -3,10 +3,12 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_template/commen_items/commen_class.dart';
 import 'package:flutter_template/network/model/udpateSalonModel.dart';
+import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import '../../../main.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
+import 'package:flutter_template/ui/drawer/drawer_controller.dart';
 
 class UdpatesalonController extends GetxController {
   var fullnameController = TextEditingController();
@@ -18,21 +20,30 @@ class UdpatesalonController extends GetxController {
   var closetimeController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
 
-  void getUserDetails() async {
-    final signUpResponce = await prefs.getSignupDetails();
-    print("===========> SignUp Response: $signUpResponce");
-    fullnameController.text = signUpResponce!.salonName ?? 'DD';
-    addressController.text = signUpResponce.address ?? '';
-    emailController.text = signUpResponce.email ?? '';
-    phoneController.text = signUpResponce.phoneNumber ?? '';
-    opentimeController.text = signUpResponce.salonDetails?.openingTime ?? '';
-    closetimeController.text = signUpResponce.salonDetails?.closingTime ?? '';
-    selectedcategory.value =
-        signUpResponce.salonDetails?.category?.toUpperCase() ?? 'UNISEX';
-    if (signUpResponce.salonDetails?.image != null) {
-      singleImage.value = signUpResponce.salonDetails!.image! as File?;
-    } else {
-      singleImage.value = null;
+  @override
+  void onInit() {
+    super.onInit();
+    getSalonDetails();
+  }
+
+  void getSalonDetails() async {
+    final salonDetails = await prefs.getSalonDetails();
+    if (salonDetails != null) {
+      fullnameController.text = salonDetails.data!.name ?? '';
+      addressController.text = salonDetails.data!.address ?? '';
+      emailController.text = salonDetails.data!.contactEmail ?? '';
+      phoneController.text = salonDetails.data!.contactNumber ?? '';
+      descriptionController.text = salonDetails.data!.description ?? '';
+      opentimeController.text = salonDetails.data!.openingTime ?? '';
+      closetimeController.text = salonDetails.data!.closingTime ?? '';
+      selectedcategory.value =
+          salonDetails.data!.category?.toUpperCase() ?? 'UNISEX';
+      // if (salonDetails.data!.image != null &&
+      //     salonDetails.data!.image!.isNotEmpty) {
+      //   singleImage.value = File(salonDetails.data!.image!);
+      // } else {
+      //   singleImage.value = null;
+      // }
     }
   }
 
@@ -106,13 +117,17 @@ class UdpatesalonController extends GetxController {
     try {
       final formData = dio.FormData.fromMap(salon_post_details);
 
-      await dioClient.putFormData<UpdateSalonModel>(
+      final response = await dioClient.putFormData<UpdateSalonModel>(
         '${Apis.baseUrl}${Endpoints.update_salon}${loginUser.salonId}',
         formData,
         (json) => UpdateSalonModel.fromJson(json),
       );
-
+      await prefs.setSalonDetails(response);
+      final drawerController = Get.find<DrawermenuController>();
+      await drawerController.getUserDetails();
       CustomSnackbar.showSuccess("Done", "Salon details updated successfully");
+      // Navigate to drawer dashboard after update
+      Get.offAllNamed(Routes.drawerScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", "Failed to update salon details: $e");
     }

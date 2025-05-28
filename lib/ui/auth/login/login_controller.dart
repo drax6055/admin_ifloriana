@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_template/network/model/udpateSalonModel.dart';
 import 'package:get/get.dart';
 import '../../../main.dart';
 import '../../../network/model/login_model.dart';
@@ -7,7 +8,6 @@ import '../../../route/app_route.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class LoginController extends GetxController {
-
   var emailController = TextEditingController();
   var passController = TextEditingController();
   var showPass = false.obs;
@@ -29,15 +29,27 @@ class LoginController extends GetxController {
         (json) => Login_model.fromJson(json),
       );
 
-      await prefs.setUser(loginResponse); 
+      await prefs.setUser(loginResponse);
 
       Get.offNamed(Routes.drawerScreen);
+      callgetSignupApi();
       CustomSnackbar.showSuccess('success', 'Login Successfully');
-      // call for signup details api  and store in shared preferences
-      
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
+  Future<void> callgetSignupApi() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.update_salon}${loginUser!.salonId}',
+        (json) => json,
+      );
+      await prefs.setSalonDetails(UpdateSalonModel.fromJson(response));
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to check email: $e');
     }
   }
 }
