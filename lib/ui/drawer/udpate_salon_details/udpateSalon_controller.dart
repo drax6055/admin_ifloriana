@@ -19,7 +19,8 @@ class UdpatesalonController extends GetxController {
   var opentimeController = TextEditingController();
   var closetimeController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
-
+  // Change singleImage to Rxn<dynamic> to support both File and String (web URL)
+  var singleImage = Rxn<dynamic>();
 
   @override
   void onInit() {
@@ -39,14 +40,26 @@ class UdpatesalonController extends GetxController {
       closetimeController.text = salonDetails.data!.closingTime ?? '';
       selectedcategory.value =
           salonDetails.data!.category?.toUpperCase() ?? 'UNISEX';
-     if (salonDetails.data!.image != null &&
+      if (salonDetails.data!.image != null &&
           salonDetails.data!.image!.isNotEmpty) {
-        singleImage.value = File(salonDetails.data!.image!);
-      } else {
-        singleImage.value = null;
+        final imagePath = salonDetails.data!.image!;
+
+        if (imagePath.startsWith('http')) {
+          singleImage.value = imagePath;
+        } else {
+          try {
+            final file = File(imagePath);
+            if (await file.exists()) {
+              singleImage.value = file;
+            } else {
+              singleImage.value = null;
+            }
+          } catch (e) {
+            CustomSnackbar.showError("Error", "Failed to load image: $e");
+          }
+        }
       }
     }
-
   }
 
   final List<String> dropdownItems = [
@@ -85,16 +98,28 @@ class UdpatesalonController extends GetxController {
     File? imageFile;
     String? imagePath;
 
-   if (singleImage.value != null && singleImage.value!.toString().isNotEmpty) {
+    if (singleImage.value != null && singleImage.value.toString().isNotEmpty) {
       if (singleImage.value is File) {
-        imagePath = singleImage.value!.path;
+        imageFile = singleImage.value as File;
+        imagePath = imageFile.path;
+        if (!imageFile.existsSync()) {
+          CustomSnackbar.showError("Error", "Image file does not exist");
+          return;
+        }
+      } else if (singleImage.value is String &&
+          (singleImage.value as String).startsWith('http')) {
+        // It's a web image, do not try to create a File or check existence
+        imageFile = null;
+        imagePath = singleImage.value as String;
       } else {
-        imagePath = singleImage.value!.toString();
-      }
-      imageFile = File(imagePath);
-      if (!imageFile.existsSync()) {
-        CustomSnackbar.showError("Error", "Image file does not exist");
-        return;
+        imagePath = singleImage.value.toString();
+        if (imagePath.isNotEmpty) {
+          imageFile = File(imagePath);
+          if (!imageFile.existsSync()) {
+            CustomSnackbar.showError("Error", "Image file does not exist");
+            return;
+          }
+        }
       }
     }
     Map<String, dynamic> salon_post_details = {
