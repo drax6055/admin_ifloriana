@@ -20,6 +20,7 @@ class UdpatesalonController extends GetxController {
   var closetimeController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
 
+
   @override
   void onInit() {
     super.onInit();
@@ -38,13 +39,14 @@ class UdpatesalonController extends GetxController {
       closetimeController.text = salonDetails.data!.closingTime ?? '';
       selectedcategory.value =
           salonDetails.data!.category?.toUpperCase() ?? 'UNISEX';
-      // if (salonDetails.data!.image != null &&
-      //     salonDetails.data!.image!.isNotEmpty) {
-      //   singleImage.value = File(salonDetails.data!.image!);
-      // } else {
-      //   singleImage.value = null;
-      // }
+     if (salonDetails.data!.image != null &&
+          salonDetails.data!.image!.isNotEmpty) {
+        singleImage.value = File(salonDetails.data!.image!);
+      } else {
+        singleImage.value = null;
+      }
     }
+
   }
 
   final List<String> dropdownItems = [
@@ -83,7 +85,7 @@ class UdpatesalonController extends GetxController {
     File? imageFile;
     String? imagePath;
 
-    if (singleImage.value != null && singleImage.value!.toString().isNotEmpty) {
+   if (singleImage.value != null && singleImage.value!.toString().isNotEmpty) {
       if (singleImage.value is File) {
         imagePath = singleImage.value!.path;
       } else {

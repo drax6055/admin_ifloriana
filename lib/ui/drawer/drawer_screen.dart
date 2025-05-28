@@ -92,37 +92,16 @@ class DrawerScreen extends StatelessWidget {
                       textStyle: CustomTextStyles.textFontMedium(
                           size: 14.sp, color: white),
                     )),
-                currentAccountPicture: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    Get.toNamed(Routes.updateSalonScreen);
-                  },
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 40.r,
-                        backgroundColor: secondaryColor,
-                        child: Obx(() => CustomTextWidget(
-                              text: getController.fullname.value.isNotEmpty
-                                  ? getController.fullname.value[0]
-                                      .toUpperCase()
-                                  : '',
-                              textStyle: CustomTextStyles.textFontMedium(
-                                  size: 20.sp, color: white),
-                            )),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: CircleAvatar(
-                          radius: 12.r,
-                          backgroundColor: Colors.white,
-                          child: Icon(Icons.edit,
-                              size: 12.sp, color: primaryColor),
-                        ),
-                      )
-                    ],
-                  ),
+                currentAccountPicture: CircleAvatar(
+                  radius: 40.r,
+                  backgroundColor: secondaryColor,
+                  child: Obx(() => CustomTextWidget(
+                        text: getController.fullname.value.isNotEmpty
+                            ? getController.fullname.value[0].toUpperCase()
+                            : '',
+                        textStyle: CustomTextStyles.textFontMedium(
+                            size: 20.sp, color: white),
+                      )),
                 ),
               ),
               ...drawerItems.map((item) {
