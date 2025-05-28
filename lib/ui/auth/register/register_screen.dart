@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/commen_items/commen_class.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/auth/register/register_controller.dart';
 import 'package:flutter_template/utils/app_images.dart';
@@ -12,7 +9,6 @@ import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/utils/validation.dart';
 import 'package:flutter_template/wiget/Custome_button.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
-import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
 import 'package:step_progress/step_progress.dart';
@@ -28,8 +24,6 @@ class RegisterScreen extends StatelessWidget {
 
       case 1:
         return Case2();
-      case 2:
-        return Case3(context);
 
       default:
         return SizedBox.shrink();
@@ -70,71 +64,28 @@ class RegisterScreen extends StatelessWidget {
                             Expanded(
                               child: ElevatedButtonExample(
                                 height: 35.h,
-                                text: getController.currentStep.value == 2
+                                text: getController.currentStep.value == 1
                                     ? 'Select Packages'
                                     : 'Next',
                                 onPressed: () {
-                                  if (getController.currentStep.value < 2) {
+                                  if (getController.currentStep.value < 1) {
                                     getController.nextStep();
                                   } else {
                                     var register_data = {
-                                      "image": singleImage.value,
                                       "owner_name":
                                           getController.fullnameController.text,
-                                      "owner_email":
-                                          getController.emailController.text,
                                       "owner_phone":
                                           getController.phoneController.text,
-                                      "salon_name": getController
-                                          .salonNameController.text,
-                                      "salon_email": getController
-                                          .salonEmailController.text,
-                                      "salon_phone": getController
-                                          .salonPhoneController.text,
+                                      "owner_email":
+                                          getController.emailController.text,
                                       "salon_address":
                                           getController.addressController.text,
-                                      "salon_description": getController
-                                          .descriptionController.text,
-                                      "salon_opening_time":
-                                          getController.opentimeController.text,
-                                      "salon_closing_time": getController
-                                          .closetimeController.text,
-                                      "category":
-                                          getController.selectedcategory.value,
+                                      "salon_name": getController
+                                          .salonNameController.text,
                                     };
-                                    print("====>  ${singleImage.value}");
+
                                     Get.toNamed(Routes.packagesScreen,
                                         arguments: register_data);
-                                    //   if (_formKey.currentState?.validate() ??
-                                    //       false) {
-                                    //     Get.toNamed(Routes.packagesScreen,
-                                    //         arguments: register_data);
-                                    //     getController.fullnameController.text =
-                                    //         "";
-                                    //     getController.salonNameController.text =
-                                    //         "";
-                                    //     getController.phoneController.text = "";
-                                    //     getController.addressController.text = "";
-                                    //     getController.emailController.text = "";
-                                    //     getController.salonEmailController.text =
-                                    //         "";
-                                    //     getController.salonPhoneController.text =
-                                    //         "";
-                                    //     getController.descriptionController.text =
-                                    //         "";
-                                    //     getController.opentimeController.text =
-                                    //         "";
-                                    //     getController.closetimeController.text =
-                                    //         "";
-                                    //     getController.selectedcategory.value =
-                                    //         "UNISEX";
-                                    //     singleImage.value = null;
-                                    //     getController.currentStep.value = 0;
-                                    //   } else {
-                                    //     CustomSnackbar.showError(
-                                    //         'Validation Error',
-                                    //         'Please fill in all fields correctly');
-                                    //   }
                                   }
                                 },
                               ),
@@ -186,17 +137,16 @@ class RegisterScreen extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 35),
+            padding: const EdgeInsets.only(top: 35, left: 30, right: 30),
             child: Align(
               alignment: Alignment.topCenter,
               child: Obx(() => StepProgress(
-                    totalSteps: 3,
+                    totalSteps: 2,
                     currentStep: getController.currentStep.value,
                     stepSize: 24,
                     nodeTitles: const [
                       "Owner's Info",
                       "Salon's Info",
-                      "Extra Infor",
                     ],
                     padding: const EdgeInsets.all(18),
                     theme: const StepProgressThemeData(
@@ -224,8 +174,8 @@ class RegisterScreen extends StatelessWidget {
           ),
         ),
         Positioned(
-          bottom: -50,
-          child: Container(
+            bottom: -50,
+            child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: [
@@ -236,20 +186,12 @@ class RegisterScreen extends StatelessWidget {
                   )
                 ],
               ),
-              child: Obx(
-                () => GestureDetector(
-                  onTap: () => pickImage(isMultiple: false),
-                  child: CircleAvatar(
-                    radius: 70,
-                    backgroundColor: primaryColor,
-                    foregroundImage: singleImage.value != null &&
-                            singleImage.value!.path.isNotEmpty
-                        ? FileImage(File(singleImage.value!.path))
-                        : AssetImage(AppImages.applogo) as ImageProvider,
-                  ),
-                ),
-              )),
-        )
+              child: CircleAvatar(
+                radius: 70,
+                backgroundColor: primaryColor,
+                foregroundImage: AssetImage(AppImages.applogo),
+              ),
+            ))
       ],
     );
   }
@@ -258,7 +200,6 @@ class RegisterScreen extends StatelessWidget {
     return Column(
       spacing: 15.h,
       children: [
-        // Imagepicker(),
         InputTxtfield_fullName(),
         InputTxtfield_Email(),
         InputTxtfield_Phone(),
@@ -272,61 +213,8 @@ class RegisterScreen extends StatelessWidget {
       children: [
         InputTxtfield_saloneName(),
         InputTxtfield_add(),
-        InputTxtfield_SalonPhone(),
-        InputTxtfield_discription(),
       ],
     );
-  }
-
-  Widget Case3(BuildContext context) {
-    return Column(
-      spacing: 15.h,
-      children: [
-        InputTxtfield_salonEmail(),
-        Row(
-          children: [
-            Expanded(child: opening_time(context)),
-            SizedBox(width: 10.w),
-            Expanded(child: closeing_time(context)),
-          ],
-        ),
-        category(),
-      ],
-    );
-  }
-
-  Widget Imagepicker() {
-    return Obx(() {
-      return GestureDetector(
-        onTap: () => pickImage(isMultiple: false),
-        child: Container(
-          height: 80.h,
-          width: 80.w,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: primaryColor,
-              width: 1,
-            ),
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(10.r),
-            color: secondaryColor.withOpacity(0.2),
-          ),
-          child: singleImage.value != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(10.r),
-                  child: Image.file(
-                    singleImage.value!,
-                    fit: BoxFit.cover,
-                  ),
-                )
-              : Icon(
-                  Icons.image_rounded,
-                  color: primaryColor,
-                  size: 30.sp,
-                ),
-        ),
-      );
-    });
   }
 
   Widget InputTxtfield_fullName() {
@@ -377,99 +265,5 @@ class RegisterScreen extends StatelessWidget {
       keyboardType: TextInputType.text,
       validator: (value) => Validation.validateAddress(value),
     );
-  }
-
-  Widget InputTxtfield_SalonPhone() {
-    return CustomTextFormField(
-      controller: getController.salonPhoneController,
-      labelText: "Salon's Phone",
-      keyboardType: TextInputType.phone,
-      validator: (value) => Validation.validatePhone(value),
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(10),
-      ],
-    );
-  }
-
-  Widget InputTxtfield_discription() {
-    return CustomTextFormField(
-      controller: getController.descriptionController,
-      labelText: 'Description',
-      maxLines: 2,
-      keyboardType: TextInputType.text,
-      validator: (value) => Validation.validatedisscription(value),
-    );
-  }
-
-  Widget opening_time(BuildContext context) {
-    return CustomTextFormField(
-      controller: getController.opentimeController,
-      labelText: 'Opening Time',
-      keyboardType: TextInputType.none,
-      validator: (value) => Validation.validateTime(value),
-      suffixIcon: IconButton(
-        onPressed: () async {
-          TimeOfDay initialTime = TimeOfDay.now();
-          TimeOfDay? pickedTime = await showTimePicker(
-            context: context,
-            initialTime: initialTime,
-          );
-          if (pickedTime != null) {
-            String formattedTime = getController.formatTimeToString(pickedTime);
-            getController.opentimeController.text = formattedTime;
-          }
-        },
-        icon: Icon(Icons.access_time),
-      ),
-    );
-  }
-
-  Widget closeing_time(BuildContext context) {
-    return CustomTextFormField(
-      controller: getController.closetimeController,
-      labelText: 'Closeing Time',
-      keyboardType: TextInputType.none,
-      validator: (value) => Validation.validateTime(value),
-      suffixIcon: IconButton(
-        onPressed: () async {
-          TimeOfDay initialTime = TimeOfDay.now();
-          TimeOfDay? pickedTime = await showTimePicker(
-            context: context,
-            initialTime: initialTime,
-          );
-          if (pickedTime != null) {
-            String formattedTime = getController.formatTimeToString(pickedTime);
-            getController.closetimeController.text = formattedTime;
-          }
-        },
-        icon: Icon(Icons.access_time),
-      ),
-    );
-  }
-
-  Widget InputTxtfield_salonEmail() {
-    return CustomTextFormField(
-      controller: getController.salonEmailController,
-      labelText: "Salon's Email",
-      keyboardType: TextInputType.emailAddress,
-      validator: (value) => Validation.validateEmail(value),
-    );
-  }
-
-  Widget category() {
-    return Obx(() => CustomDropdown<String>(
-          value: getController.selectedcategory.value.isEmpty
-              ? null
-              : getController.selectedcategory.value,
-          items: getController.dropdownItems,
-          hintText: 'Select an option',
-          labelText: 'Category',
-          onChanged: (newValue) {
-            if (newValue != null) {
-              getController.selectedcategory(newValue);
-            }
-          },
-        ));
   }
 }

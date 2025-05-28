@@ -22,8 +22,8 @@ class DrawermenuController extends GetxController {
   }
 
   Future<void> getUserDetails() async {
-    final salonDetails = await prefs.getSalonDetails();
-    fullname.value = salonDetails?.data?.name ?? 'Update Salon Details';
-    email.value = salonDetails?.data?.contactEmail ?? 'Update Salon Details';
+    final salonDetails = await prefs.getRegisterdetails();
+    fullname.value = salonDetails!.fullName.toString();
+    email.value = salonDetails.email.toString();
   }
 }

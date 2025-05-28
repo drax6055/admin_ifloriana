@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/route/app_route.dart';
+import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/drawer/calender_booking/calender_screen.dart';
 import 'package:flutter_template/ui/drawer/drawer_controller.dart';
 import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
@@ -23,11 +24,11 @@ class DrawerScreen extends StatelessWidget {
           title: 'Dashboard', icon: FontAwesomeIcons.gauge, pageIndex: 0),
       DrawerItem(
           title: 'Booking', icon: FontAwesomeIcons.calendarDays, pageIndex: 1),
+      DrawerItem(title: 'Branches', icon: Icons.update, pageIndex: 2),
       DrawerItem(
-          title: 'Update Salon Details', icon: Icons.update, pageIndex: 2),
+          title: 'Profile_Update', icon: Icons.account_box, pageIndex: 3),
       DrawerItem(
-          title: 'Booking Details', icon: Icons.calendar_month, pageIndex: 2),
-      DrawerItem(title: 'Logout', icon: Icons.logout, pageIndex: 3),
+          title: 'Logout', icon: Icons.logout, pageIndex: 0, isLogout: true)
     ];
     final List<Map<String, dynamic>> pages = [
       {
@@ -39,8 +40,12 @@ class DrawerScreen extends StatelessWidget {
         'widget': const CalenderScreen(),
       },
       {
-        'title': 'Update Salon Details',
+        'title': 'Branches',
         'widget': UpdatesalonScreen(showAppBar: false),
+      },
+      {
+        'title': 'Profile_Update',
+        'widget': Adminprofilescreen(),
       },
     ];
 
@@ -92,16 +97,22 @@ class DrawerScreen extends StatelessWidget {
                       textStyle: CustomTextStyles.textFontMedium(
                           size: 14.sp, color: white),
                     )),
-                currentAccountPicture: CircleAvatar(
-                  radius: 40.r,
-                  backgroundColor: secondaryColor,
-                  child: Obx(() => CustomTextWidget(
-                        text: getController.fullname.value.isNotEmpty
-                            ? getController.fullname.value[0].toUpperCase()
-                            : '',
-                        textStyle: CustomTextStyles.textFontMedium(
-                            size: 20.sp, color: white),
-                      )),
+                currentAccountPicture: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    getController.selectPage(3);
+                  },
+                  child: CircleAvatar(
+                    radius: 40.r,
+                    backgroundColor: secondaryColor,
+                    child: Obx(() => CustomTextWidget(
+                          text: getController.fullname.value.isNotEmpty
+                              ? getController.fullname.value[0].toUpperCase()
+                              : '',
+                          textStyle: CustomTextStyles.textFontMedium(
+                              size: 20.sp, color: white),
+                        )),
+                  ),
                 ),
               ),
               ...drawerItems.map((item) {
@@ -115,22 +126,16 @@ class DrawerScreen extends StatelessWidget {
                     text: item.title,
                     textStyle: CustomTextStyles.textFontMedium(size: 13.sp),
                   ),
-                  onTap: () {
-                    getController.selectPage(item.pageIndex);
+                  onTap: () async {
                     Navigator.pop(context);
+                    if (item.title == 'Logout') {
+                      await getController.onLogoutPress();
+                    } else {
+                      getController.selectPage(item.pageIndex);
+                    }
                   },
                 );
               }).toList(),
-              ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: CustomTextWidget(
-                  text: 'Logout',
-                  textStyle: CustomTextStyles.textFontMedium(size: 12.sp),
-                ),
-                onTap: () async {
-                  await getController.onLogoutPress();
-                },
-              ),
             ],
           ),
         ),
@@ -143,7 +148,12 @@ class DrawerItem {
   final String title;
   final IconData icon;
   final int pageIndex;
+  final bool isLogout;
 
-  DrawerItem(
-      {required this.title, required this.icon, required this.pageIndex});
+  DrawerItem({
+    required this.title,
+    required this.icon,
+    required this.pageIndex,
+    this.isLogout = false,
+  });
 }

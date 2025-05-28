@@ -12,19 +12,11 @@ import '../../../wiget/custome_snackbar.dart';
 import '../../../wiget/custome_text.dart';
 import 'login_controller.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatelessWidget { 
   LoginScreen({super.key});
 
   final LoginController getController = Get.put(LoginController());
   final _formKey = GlobalKey<FormState>();
-  var listOfServices = [
-    'Haircut dghsajkgjkfdsafdsfdsaffds',
-    'Facial fndasjklfhdsajkfdsfafdsfsd',
-    'Massage fdhsafjkldshfddfsfadssfdsaf',
-    'Nail Care fdsjklfhsdjkfdsfsdfsa',
-    'Makeup fdshjfklsdsdfsadfdsafsdf',
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

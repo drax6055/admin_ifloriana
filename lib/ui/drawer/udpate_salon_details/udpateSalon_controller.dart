@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
-import 'package:flutter_template/commen_items/commen_class.dart';
 import 'package:flutter_template/network/model/udpateSalonModel.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
@@ -19,7 +18,7 @@ class UdpatesalonController extends GetxController {
   var opentimeController = TextEditingController();
   var closetimeController = TextEditingController();
   var selectedcategory = "UNISEX".obs;
-  // Change singleImage to Rxn<dynamic> to support both File and String (web URL)
+
   var singleImage = Rxn<dynamic>();
 
   @override
@@ -108,7 +107,6 @@ class UdpatesalonController extends GetxController {
         }
       } else if (singleImage.value is String &&
           (singleImage.value as String).startsWith('http')) {
-        // It's a web image, do not try to create a File or check existence
         imageFile = null;
         imagePath = singleImage.value as String;
       } else {
@@ -153,7 +151,6 @@ class UdpatesalonController extends GetxController {
       final drawerController = Get.find<DrawermenuController>();
       await drawerController.getUserDetails();
       CustomSnackbar.showSuccess("Done", "Salon details updated successfully");
-      // Navigate to drawer dashboard after update
       Get.offAllNamed(Routes.drawerScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", "Failed to update salon details: $e");

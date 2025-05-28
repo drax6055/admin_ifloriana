@@ -1,3 +1,5 @@
+import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
+
 abstract class Routes {
   static const splashScreen = '/SplashScreen';
   static const drawerScreen = '/DrawerScreen';
@@ -7,4 +9,5 @@ abstract class Routes {
   static const dashboardScreen = '/DashboardScreen';
   static const forgotScreen = '/ForgotScreen';
   static const updateSalonScreen = '/UpdatesalonScreen';
+  static const adminprofilescreen = '/Adminprofilescreen';
 }

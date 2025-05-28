@@ -1,4 +1,5 @@
 import 'package:flutter_template/ui/auth/login/login_screen.dart';
+import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/auth/register_packages/register_packages_screen.dart';
 import 'package:flutter_template/ui/auth/register/register_screen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
@@ -45,5 +46,9 @@ class AppPages {
         name: Routes.updateSalonScreen,
         page: () => UpdatesalonScreen(),
         transition: Transition.rightToLeft),
+        GetPage(
+        name: Routes.adminprofilescreen,
+        page: () => Adminprofilescreen(),
+        )
   ];
 }

@@ -6,19 +6,7 @@ class RegisterController extends GetxController {
   var salonNameController = TextEditingController();
   var addressController = TextEditingController();
   var emailController = TextEditingController();
-  var salonEmailController = TextEditingController();
   var phoneController = TextEditingController();
-  var salonPhoneController = TextEditingController();
-  var descriptionController = TextEditingController();
-  var opentimeController = TextEditingController();
-  var closetimeController = TextEditingController();
-  var selectedcategory = "UNISEX".obs;
-  
-  final List<String> dropdownItems = [
-    'MALE',
-    'FEMALE',
-    'UNISEX',
-  ];
 
   var currentStep = 0.obs;
 
@@ -27,7 +15,7 @@ class RegisterController extends GetxController {
   }
 
   void nextStep() {
-    if (currentStep.value < 2) {
+    if (currentStep.value < 1) {
       currentStep.value++;
     }
   }

@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:flutter_template/network/model/signup_model.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -162,42 +160,14 @@ class PackagesController extends GetxController {
       return;
     }
 
-    File? imageFile;
-    String? imagePath;
-    if (registerData['image'] != null &&
-        registerData['image'].toString().isNotEmpty) {
-      if (registerData['image'] is File) {
-        imagePath = (registerData['image'] as File).path;
-      } else {
-        imagePath = registerData['image'].toString();
-      }
-      imageFile = File(imagePath);
-      if (!imageFile.existsSync()) {
-        CustomSnackbar.showError("Error", "Salon image file not found");
-        return;
-      }
-    }
-
     final formData = dio.FormData.fromMap({
       'full_name': registerData['owner_name'],
-      'salon_name': registerData['salon_name'],
       'phone_number': registerData['owner_phone'],
       'email': registerData['owner_email'],
       'address': registerData['salon_address'],
       'package_id': selectedPackageId.value,
-      'salonDetails[name]': registerData['salon_name'],
-      'salonDetails[email]': registerData['salon_email'],
-      'salonDetails[phone_number]': registerData['salon_phone'],
-      'salonDetails[description]': registerData['salon_description'],
-      'salonDetails[opening_time]': registerData['salon_opening_time'],
-      'salonDetails[closing_time]': registerData['salon_closing_time'],
-      'salonDetails[category]':
-          registerData['category'].toString().toLowerCase(),
-      if (imageFile != null)
-        'image': await dio.MultipartFile.fromFile(
-          imageFile.path,
-          filename: imageFile.path.split(Platform.pathSeparator).last,
-        ),
+      'salonDetails[salon_name]': registerData['salon_name'],
+  
     });
 
     try {

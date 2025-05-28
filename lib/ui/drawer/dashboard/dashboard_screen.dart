@@ -1,13 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
-// import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import 'dashboard_controller.dart';
 
@@ -16,7 +14,7 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DashboardController getController = Get.put(DashboardController());
+    Get.put(DashboardController());
 
     return SafeArea(
       child: Scaffold(

@@ -1,6 +1,5 @@
 class Sigm_up_model {
   String? fullName;
-  String? salonName;
   String? phoneNumber;
   String? email;
   String? address;
@@ -11,7 +10,6 @@ class Sigm_up_model {
 
   Sigm_up_model(
       {this.fullName,
-      this.salonName,
       this.phoneNumber,
       this.email,
       this.address,
@@ -22,7 +20,6 @@ class Sigm_up_model {
 
   Sigm_up_model.fromJson(Map<String, dynamic> json) {
     fullName = json['full_name'];
-    salonName = json['salon_name'];
     phoneNumber = json['phone_number'];
     email = json['email'];
     address = json['address'];
@@ -37,7 +34,6 @@ class Sigm_up_model {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['full_name'] = this.fullName;
-    data['salon_name'] = this.salonName;
     data['phone_number'] = this.phoneNumber;
     data['email'] = this.email;
     data['address'] = this.address;
@@ -52,46 +48,17 @@ class Sigm_up_model {
 }
 
 class SalonDetails {
-  String? name;
-  String? email;
-  String? phoneNumber;
-  String? description;
-  String? image;
-  String? openingTime;
-  String? closingTime;
-  String? category;
+  String? salonName;
 
-  SalonDetails(
-      {this.name,
-      this.email,
-      this.phoneNumber,
-      this.description,
-      this.image,
-      this.openingTime,
-      this.closingTime,
-      this.category});
+  SalonDetails({this.salonName});
 
   SalonDetails.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    email = json['email'];
-    phoneNumber = json['phone_number'];
-    description = json['description'];
-    image = json['image'];
-    openingTime = json['opening_time'];
-    closingTime = json['closing_time'];
-    category = json['category'];
+    salonName = json['salon_name'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['phone_number'] = this.phoneNumber;
-    data['description'] = this.description;
-    data['image'] = this.image;
-    data['opening_time'] = this.openingTime;
-    data['closing_time'] = this.closingTime;
-    data['category'] = this.category;
+    data['salon_name'] = this.salonName;
     return data;
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_template/network/model/udpateSalonModel.dart';
+import 'package:flutter_template/network/model/getRegisterData.dart';
 import 'package:get/get.dart';
 import '../../../main.dart';
 import '../../../network/model/login_model.dart';
@@ -30,10 +30,10 @@ class LoginController extends GetxController {
       );
 
       await prefs.setUser(loginResponse);
-
-      Get.offNamed(Routes.drawerScreen);
       callgetSignupApi();
       CustomSnackbar.showSuccess('success', 'Login Successfully');
+      await Future.delayed(const Duration(seconds: 2));
+      Get.offNamed(Routes.drawerScreen);
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
@@ -44,12 +44,13 @@ class LoginController extends GetxController {
     final loginUser = await prefs.getUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.update_salon}${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.get_register_details}${loginUser!.adminId}',
         (json) => json,
       );
-      await prefs.setSalonDetails(UpdateSalonModel.fromJson(response));
+      await prefs.setRegisterdetails(RegisterDetailsModel.fromJson(response));
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to check email: $e');
     }
   }
+
 }
