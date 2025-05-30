@@ -134,9 +134,10 @@ class PackagesController extends GetxController {
         await dioClient.capturePayment(paymentId, amount);
         CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
 
-        // ✅ Show loading overlay while registering
+        // ✅ Show loading overlay for 2 seconds before registration
         await Get.showOverlay(
           asyncFunction: () async {
+            await Future.delayed(const Duration(seconds: 2));
             await onRegisterData();
           },
           loadingWidget: const Center(child: CustomLoadingAvatar()),
@@ -147,7 +148,6 @@ class PackagesController extends GetxController {
       print('====payment capture error=====');
     }
   }
-
 
   // void _handlePaymentSuccess(PaymentSuccessResponse response) async {
   //   try {
@@ -195,7 +195,6 @@ class PackagesController extends GetxController {
       'address': registerData['salon_address'],
       'package_id': selectedPackageId.value,
       'salonDetails[salon_name]': registerData['salon_name'],
-  
     });
 
     try {

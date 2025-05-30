@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_template/network/model/getRegisterData.dart';
 import 'package:get/get.dart';
 import '../../../main.dart';
@@ -6,6 +7,7 @@ import '../../../network/model/login_model.dart';
 import '../../../network/network_const.dart';
 import '../../../route/app_route.dart';
 import '../../../wiget/custome_snackbar.dart';
+import '../../../wiget/loading.dart';
 
 class LoginController extends GetxController {
   var emailController = TextEditingController();
@@ -32,7 +34,12 @@ class LoginController extends GetxController {
       await prefs.setUser(loginResponse);
       callgetSignupApi();
       CustomSnackbar.showSuccess('success', 'Login Successfully');
-      await Future.delayed(const Duration(seconds: 2));
+      await Get.showOverlay(
+        asyncFunction: () async {
+          await Future.delayed(const Duration(seconds: 2));
+        },
+        loadingWidget: const Center(child: CustomLoadingAvatar()),
+      );
       Get.offNamed(Routes.drawerScreen);
     } catch (e) {
       print('==> here Error: $e');
@@ -52,5 +59,4 @@ class LoginController extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to check email: $e');
     }
   }
-
 }
