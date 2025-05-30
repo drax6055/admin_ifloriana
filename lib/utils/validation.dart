@@ -49,7 +49,8 @@ class Validation {
 
     return null;
   }
-    static String? validateTime(String? value) {
+
+  static String? validateTime(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please Select Time';
     }
@@ -61,7 +62,7 @@ class Validation {
     if (value == null || value.isEmpty) {
       return 'Please enter Address';
     }
-    if (value.length < 50) {
+    if (value.length < 10) {
       return 'Please enter a valid Address';
     }
     return null;
@@ -77,7 +78,7 @@ class Validation {
     return null;
   }
 
-   static String? validationPincode(String? value) {
+  static String? validationPincode(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter Pincode';
     }
@@ -86,7 +87,6 @@ class Validation {
     }
     return null;
   }
-
 
   static String? validateisBlanck(String? value) {
     if (value == null || value.isEmpty) {
