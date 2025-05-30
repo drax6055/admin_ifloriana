@@ -14,9 +14,11 @@ class CustomTextFormField extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final FormFieldValidator<String>? validator;
-  final TextStyle labelStyle = CustomTextStyles.textFontMedium(size: 14.sp);
+  final FormFieldSetter<String>? onSaved;
+  final ValueChanged<String>? onFieldSubmitted;
   final int? maxLines;
-  final List<TextInputFormatter>? inputFormatters;  
+  final List<TextInputFormatter>? inputFormatters;
+  final TextStyle labelStyle = CustomTextStyles.textFontMedium(size: 14.sp);
 
   CustomTextFormField({
     Key? key,
@@ -28,8 +30,10 @@ class CustomTextFormField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.onSaved,
+    this.onFieldSubmitted,
     this.maxLines = 1,
-    this.inputFormatters, 
+    this.inputFormatters,
   }) : super(key: key);
 
   @override
@@ -39,9 +43,11 @@ class CustomTextFormField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
+      onSaved: onSaved,
+      onFieldSubmitted: onFieldSubmitted,
       cursorColor: primaryColor,
       maxLines: maxLines,
-      inputFormatters: inputFormatters,  
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,

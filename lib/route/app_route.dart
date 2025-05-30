@@ -1,4 +1,3 @@
-import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 
 abstract class Routes {
   static const splashScreen = '/SplashScreen';

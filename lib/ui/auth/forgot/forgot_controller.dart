@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../../main.dart';
 import '../../../network/model/forgot_model.dart';
 import '../../../network/network_const.dart';
-import '../../../route/app_route.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class ForgotController extends GetxController {
@@ -15,22 +14,17 @@ class ForgotController extends GetxController {
     };
 
     try {
-      final response = await dioClient.postData<forgot_model>(
+      forgot_model forgotResponse = await dioClient.postData<forgot_model>(
         '${Apis.baseUrl}${Endpoints.admin_forgot}',
         forgotData,
         (json) => forgot_model.fromJson(json),
       );
-
-      if (response.status == true) {
-        CustomSnackbar.showSuccess(
-            'Success', 'We have emailed your password reset link!');
-        Get.offNamed(Routes.loginScreen);
-      } else {
-        CustomSnackbar.showError('Error', 'Something went wrong. Try again.');
-      }
+      CustomSnackbar.showSuccess(
+          'Succcess', 'Password reset link sent to your email');
+      await prefs.onLogout();
     } catch (e) {
-      CustomSnackbar.showError(
-          'Error', 'Something went wrong. Please try again.');
+      print('==> here Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
     }
   }
 }

@@ -8,7 +8,6 @@ import '../network/model/addSalonDetails.dart';
 import '../network/model/login_model.dart';
 
 class SharedPreferenceManager {
-  static const String _accessTokenKey = 'accessToken';
   static const String _keyUser = "login_user";
   static const String _keySignup = "signup_user";
   static const String _keySalonDetails = "salon_details";

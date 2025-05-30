@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/drawer/calender_booking/calender_screen.dart';
 import 'package:flutter_template/ui/drawer/drawer_controller.dart';
+import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart';
 import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
@@ -26,7 +26,9 @@ class DrawerScreen extends StatelessWidget {
           title: 'Booking', icon: FontAwesomeIcons.calendarDays, pageIndex: 1),
       DrawerItem(title: 'Branches', icon: Icons.update, pageIndex: 2),
       DrawerItem(
-          title: 'Profile_Update', icon: Icons.account_box, pageIndex: 3),
+          title: 'Staff', icon: Icons.account_circle_sharp, pageIndex: 4),
+      DrawerItem(
+          title: 'Profile Update', icon: Icons.account_box, pageIndex: 3),
       DrawerItem(
           title: 'Logout', icon: Icons.logout, pageIndex: 0, isLogout: true)
     ];
@@ -44,9 +46,13 @@ class DrawerScreen extends StatelessWidget {
         'widget': UpdatesalonScreen(showAppBar: false),
       },
       {
-        'title': 'Profile_Update',
+        'title': 'Profile Update',
         'widget': Adminprofilescreen(),
       },
+      {
+        'title': 'Staff',
+        'widget': const Staffdetailsscreen(),
+      }
     ];
 
     return SafeArea(

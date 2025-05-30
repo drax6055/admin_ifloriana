@@ -77,6 +77,17 @@ class Validation {
     return null;
   }
 
+   static String? validationPincode(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Pincode';
+    }
+    if (value.length < 6) {
+      return 'Please enter a valid Pincode';
+    }
+    return null;
+  }
+
+
   static String? validateisBlanck(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter Details';
