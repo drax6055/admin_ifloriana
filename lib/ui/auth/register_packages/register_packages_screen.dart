@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../network/model/packages_model.dart';
@@ -48,7 +49,9 @@ class PackagesScreen extends StatelessWidget {
             Expanded(
               child: Obx(() {
                 if (getController.filteredPackages.isEmpty) {
-                  return Center(child: CircularProgressIndicator());
+                  return Center(
+                    child: CustomLoadingAvatar(),
+                  );
                 }
                 return ListView.builder(
                   itemCount: getController.filteredPackages.length,

@@ -32,7 +32,7 @@ class Staffdetailsscreen extends StatelessWidget {
               child: CustomTextWidget(
             text: 'No Staff Found',
             textAlign: TextAlign.center,
-            textStyle: TextStyle(fontSize: 18, color: Colors.grey),
+            textStyle: TextStyle(fontSize: 18, color: grey),
           ));
         }
         return StaffExpandableList(staffList: getController.staffList);
