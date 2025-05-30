@@ -68,6 +68,11 @@ class RegisterScreen extends StatelessWidget {
                                     ? 'Select Packages'
                                     : 'Next',
                                 onPressed: () {
+                                  // Validate the form before proceeding
+                                  final isValid =
+                                      _formKey.currentState?.validate() ??
+                                          false;
+                                  if (!isValid) return;
                                   if (getController.currentStep.value < 1) {
                                     getController.nextStep();
                                   } else {
