@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
-import 'package:flutter_template/utils/app_images.dart';
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
@@ -31,8 +31,11 @@ class Staffdetailsscreen extends StatelessWidget {
           return Center(
               child: CustomTextWidget(
             text: 'No Staff Found',
-            textAlign: TextAlign.center,
-            textStyle: TextStyle(fontSize: 18, color: grey),
+            textStyle: 
+             CustomTextStyles.textFontRegular(
+              size: 12.sp,
+              color: white,
+            ),
           ));
         }
         return StaffExpandableList(staffList: getController.staffList);
