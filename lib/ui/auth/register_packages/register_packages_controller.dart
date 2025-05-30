@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_template/route/app_route.dart';
+import 'package:flutter_template/wiget/loading.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -130,18 +133,43 @@ class PackagesController extends GetxController {
         double amount = selectedPackage.price! * 100.0;
         await dioClient.capturePayment(paymentId, amount);
         CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
-        try {
-          await onRegisterData();
-        } catch (e) {
-          CustomSnackbar.showError('Error', 'Registration failed: $e');
-          print('====onRegisterData error===== $e');
-        }
+
+        // ✅ Show loading overlay while registering
+        await Get.showOverlay(
+          asyncFunction: () async {
+            await onRegisterData();
+          },
+          loadingWidget: const Center(child: CustomLoadingAvatar()),
+        );
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Payment capture failed: $e');
       print('====payment capture error=====');
     }
   }
+
+
+  // void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+  //   try {
+  //     String paymentId = response.paymentId ?? '';
+  //     var selectedPackage = packages
+  //         .firstWhereOrNull((pkg) => pkg.sId == selectedPackageId.value);
+  //     if (selectedPackage != null) {
+  //       double amount = selectedPackage.price! * 100.0;
+  //       await dioClient.capturePayment(paymentId, amount);
+  //       CustomSnackbar.showSuccess('Success', 'Payment captured successfully');
+  //       try {
+  //         await onRegisterData();
+  //       } catch (e) {
+  //         CustomSnackbar.showError('Error', 'Registration failed: $e');
+  //         print('====onRegisterData error===== $e');
+  //       }
+  //     }
+  //   } catch (e) {
+  //     CustomSnackbar.showError('Error', 'Payment capture failed: $e');
+  //     print('====payment capture error=====');
+  //   }
+  // }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     CustomSnackbar.showError('Error', 'Payment failed: ${response.message}');
