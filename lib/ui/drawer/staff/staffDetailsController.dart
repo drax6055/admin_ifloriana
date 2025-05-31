@@ -115,7 +115,7 @@ class StaffExpandableList extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.15),
+                      color: secondaryColor.withOpacity(0.15),
                       spreadRadius: 1,
                       blurRadius: 5,
                       offset: const Offset(0, 3),
