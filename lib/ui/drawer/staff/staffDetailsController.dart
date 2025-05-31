@@ -94,7 +94,8 @@ class Staffdetailscontroller extends GetxController {
 
 class StaffExpandableList extends StatelessWidget {
   final List<Data> staffList;
-  const StaffExpandableList({super.key, required this.staffList});
+  StaffExpandableList({super.key, required this.staffList});
+  var isSwitched = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +183,7 @@ class StaffExpandableList extends StatelessWidget {
                                           : '0'),
                                       textStyle:
                                           CustomTextStyles.textFontRegular(
-                                        size: 12.sp,
+                                        size: 14.sp,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -210,9 +211,73 @@ class StaffExpandableList extends StatelessWidget {
                                 text:
                                     'Branch: ${staff.branchId?.name ?? 'N/A'}',
                                 textStyle: CustomTextStyles.textFontRegular(
-                                  size: 12.sp,
+                                  size: 16.sp,
                                   color: Colors.grey,
                                 ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Switch on the left
+                                  Switch(
+                                    value: isSwitched.value,
+                                    onChanged: (value) {
+                                      isSwitched.value = value;
+                                      CustomSnackbar.showSuccess(
+                                        'Status Changed',
+                                        'Staff status updated successfully.',
+                                      );
+                                    },
+                                    activeColor: primaryColor,
+                                    inactiveThumbColor: grey,
+                                  ),
+
+                                  // Icons (edit + delete) on the right
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          CustomSnackbar.showError(
+                                            'Delete',
+                                            'This feature is not implemented yet.',
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          margin: const EdgeInsets.only(
+                                              right:
+                                                  8), // spacing between icons
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Icon(Icons.edit,
+                                              color: Colors.white, size: 20.sp),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          CustomSnackbar.showError(
+                                            'Delete',
+                                            'Are you sure you want to delete this staff member?',
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Icon(Icons.delete,
+                                              color: Colors.white, size: 20.sp),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ],
                           ),
