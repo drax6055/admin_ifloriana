@@ -142,11 +142,11 @@ class StaffExpandableList extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              "Service Details",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
+                                            CustomTextWidget(
+                                              text: "Service Details",
+                                              textStyle: CustomTextStyles
+                                                  .textFontRegular(
+                                                size: 18.sp,
                                               ),
                                             ),
                                             const SizedBox(height: 10),
@@ -180,30 +180,32 @@ class StaffExpandableList extends StatelessWidget {
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: [
-                                                            Text(
-                                                              service.name ??
+                                                            CustomTextWidget(
+                                                              text: service
+                                                                      .name ??
                                                                   'Unnamed',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                fontSize: 16,
+                                                              textStyle:
+                                                                  CustomTextStyles
+                                                                      .textFontBold(
+                                                                size: 16.sp,
                                                               ),
                                                             ),
-                                                            Text(
-                                                              "Duration: ${service.serviceDuration ?? 0} min",
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                color: Colors
-                                                                    .grey[700],
+                                                            CustomTextWidget(
+                                                              text:
+                                                                  "Duration: ${service.serviceDuration ?? 0} min",
+                                                              textStyle:
+                                                                  CustomTextStyles
+                                                                      .textFontRegular(
+                                                                size: 14,
                                                               ),
                                                             ),
-                                                            Text(
-                                                              "Regular: ₹${service.regularPrice ?? '-'}, Member: ₹${service.membersPrice ?? '-'}",
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                                color: Colors
-                                                                    .grey[700],
+                                                            CustomTextWidget(
+                                                              text:
+                                                                  "Regular: ₹${service.regularPrice ?? '-'}, Member: ₹${service.membersPrice ?? '-'}",
+                                                              textStyle:
+                                                                  CustomTextStyles
+                                                                      .textFontRegular(
+                                                                size: 14,
                                                               ),
                                                             ),
                                                           ],
