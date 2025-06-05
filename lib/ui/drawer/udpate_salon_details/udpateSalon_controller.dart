@@ -149,7 +149,7 @@ class UdpatesalonController extends GetxController {
       );
       await prefs.setSalonDetails(response);
       final drawerController = Get.find<DrawermenuController>();
-      await drawerController.getUserDetails();
+      // await drawerController.getUserDetails();
       CustomSnackbar.showSuccess("Done", "Salon details updated successfully");
       Get.offAllNamed(Routes.drawerScreen);
     } catch (e) {

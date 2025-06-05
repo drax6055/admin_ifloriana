@@ -42,13 +42,13 @@ class Addnewstaffcontroller extends GetxController {
   var salaryController = TextEditingController();
   var durationController = TextEditingController();
   var LunchStarttimeController = TextEditingController();
-  
 
   var showPass = false.obs;
   var showPass2 = false.obs;
 
   RxList<Service> serviceList = <Service>[].obs;
   Rx<Service?> selectedService = Rx<Service?>(null);
+  RxList<Service> selectedServices = <Service>[].obs;
   var branchList = <Branch>[].obs;
   var selectedBranch = Rx<Branch?>(null);
 
@@ -127,6 +127,45 @@ class Addnewstaffcontroller extends GetxController {
       branchList.value = data.map((e) => Branch.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
+  }
+
+  Future onAddStaffPress() async {
+    Map<String, dynamic> staffData = {
+      'full_name': fullnameController.text,
+      'email': emailController.text,
+      'phone_number': phoneController.text,
+      'password': passwordController.text,
+      'confirm_password': confirmpasswordController.text,
+      'gender': selectedGender.value,
+      'branch_id': selectedBranch.value?.id,
+      'service_id': selectedServices.map((s) => s.id).toList(),
+      'status': 1,
+      // 'image': singleImage.value is String
+      //     ? singleImage.value
+      //     : null,
+      'image': null,
+      'salary': int.tryParse(salaryController.text) ?? 0,
+      'assign_shift[start_shift]': shiftStarttimeController.text,
+      'assign_shift[end_shift]': shiftEndtimeController.text,
+'lunch_time[duration]' : int.tryParse(durationController.text) ?? 0,
+      // 'lunch_time': {
+      //   'duration': int.tryParse(durationController.text) ?? 0,
+      //   'timing': LunchStarttimeController.text,
+      // },
+    };
+
+    try {
+      await dioClient.postData(
+        '${Apis.baseUrl}${Endpoints.getStaffDetails}',
+        staffData,
+        (json) => json, // Replace with your model if needed
+      );
+      CustomSnackbar.showSuccess('Success', 'Staff added successfully');
+      // Add navigation or reset logic if needed
+    } catch (e) {
+      print('==> Add Staff Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
     }
   }
 }

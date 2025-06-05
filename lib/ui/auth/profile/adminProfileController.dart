@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/network/model/getAdminDetails.dart';
 import 'package:flutter_template/network/model/getRegisterData.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/route/app_route.dart';
@@ -56,11 +57,11 @@ class Adminprofilecontroller extends GetxController {
 
   void getProfileData() async {
     final profileDetails = await prefs.getRegisterdetails();
-    fullnameController.text = profileDetails?.fullName ?? '';
-    salonNameController.text = profileDetails?.salonName ?? '';
-    addressController.text = profileDetails?.address ?? '';
-    emailController.text = profileDetails?.email ?? '';
-    phoneController.text = profileDetails?.phoneNumber ?? '';
+    fullnameController.text = profileDetails?.admin?.fullName ?? '';
+    salonNameController.text = profileDetails?.salonDetails?.salonName ?? '';
+    addressController.text = profileDetails?.admin?.address ?? '';
+    emailController.text = profileDetails?.admin?.email ?? '';
+    phoneController.text = profileDetails?.admin?.phoneNumber ?? '';
   }
 
   Future<void> onProdileUpdate() async {
@@ -79,7 +80,7 @@ class Adminprofilecontroller extends GetxController {
         formData,
         (data) => data,
       );
-      await prefs.setRegisterdetails(RegisterDetailsModel.fromJson(response));
+      await prefs.setRegisterdetails(GetAdminDetails.fromJson(response));
       Get.offAllNamed(Routes.drawerScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());

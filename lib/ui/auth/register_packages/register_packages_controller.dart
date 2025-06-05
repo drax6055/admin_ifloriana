@@ -208,5 +208,6 @@ class PackagesController extends GetxController {
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());
     }
+    
   }
 }

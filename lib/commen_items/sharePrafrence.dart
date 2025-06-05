@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_template/network/model/getAdminDetails.dart';
 import 'package:flutter_template/network/model/getRegisterData.dart';
 import 'package:flutter_template/network/model/udpateSalonModel.dart';
 import 'package:flutter_template/route/app_route.dart';
@@ -32,8 +33,7 @@ class SharedPreferenceManager {
     return Login_model.fromJson(jsonDecode(data));
   }
 
-
-  Future<void> setRegisterdetails(RegisterDetailsModel? getRegisterDetails) async {
+  Future<void> setRegisterdetails(GetAdminDetails? getRegisterDetails) async {
     if (getRegisterDetails != null) {
       await storage.write(
           key: _keySignup, value: jsonEncode(getRegisterDetails.toJson()));
@@ -43,15 +43,14 @@ class SharedPreferenceManager {
     }
   }
 
-  Future<RegisterDetailsModel?> getRegisterdetails() async {
+  Future<GetAdminDetails?> getRegisterdetails() async {
     String? data = await storage.read(key: _keySignup);
     if (data == null || data.isEmpty || data == "null") {
       return null;
     }
     print("===> get register  details : $data");
-    return RegisterDetailsModel.fromJson(jsonDecode(data));
+    return GetAdminDetails.fromJson(jsonDecode(data));
   }
-
 
   // / Save signup details
   Future<void> setSalonDetails(UpdateSalonModel? getsalonDetails) async {

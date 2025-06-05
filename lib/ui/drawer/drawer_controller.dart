@@ -23,7 +23,7 @@ class DrawermenuController extends GetxController {
 
   Future<void> getUserDetails() async {
     final salonDetails = await prefs.getRegisterdetails();
-    fullname.value = salonDetails!.fullName.toString();
-    email.value = salonDetails.email.toString();
+    fullname.value = salonDetails!.admin!.fullName.toString();
+    email.value = salonDetails.admin!.email.toString();
   }
 }

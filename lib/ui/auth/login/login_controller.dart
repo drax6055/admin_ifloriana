@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/network/model/getAdminDetails.dart';
 import 'package:flutter_template/network/model/getRegisterData.dart';
 import 'package:get/get.dart';
 import '../../../main.dart';
@@ -54,7 +55,7 @@ class LoginController extends GetxController {
         '${Apis.baseUrl}${Endpoints.get_register_details}${loginUser!.adminId}',
         (json) => json,
       );
-      await prefs.setRegisterdetails(RegisterDetailsModel.fromJson(response));
+      await prefs.setRegisterdetails(GetAdminDetails.fromJson(response));
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to check email: $e');
     }

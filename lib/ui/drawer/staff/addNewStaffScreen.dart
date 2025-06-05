@@ -101,7 +101,7 @@ class Addnewstaffscreen extends StatelessWidget {
                                   if (getController.currentStep.value < 1) {
                                     getController.nextStep();
                                   } else {
-                                    //do something
+                                    getController.onAddStaffPress();
                                   }
                                 },
                               ),
@@ -135,13 +135,8 @@ class Addnewstaffscreen extends StatelessWidget {
     return Column(
       spacing: 15.h,
       children: [
-        Row(
-          children: [
-            Expanded(child: serviceDropdown()),
-            SizedBox(width: 10.w),
-            Expanded(child: branchDropdown()),
-          ],
-        ),
+        serviceDropdown(),
+        branchDropdown(),
         InputTxtfield_Phone(),
         Row(
           children: [
@@ -373,26 +368,51 @@ class Addnewstaffscreen extends StatelessWidget {
 
   Widget serviceDropdown() {
     return Obx(() {
-      return DropdownButton<Service>(
-        value: getController.selectedService.value,
-        hint: Text("Select Service"),
-        items: getController.serviceList.map((Service service) {
-          return DropdownMenuItem<Service>(
-            value: service,
-            child: Text(service.name ?? ''),
-          );
-        }).toList(),
-        onChanged: (Service? newValue) {
-          if (newValue != null) {
-            getController.selectedService.value = newValue;
+      final allSelected = getController.selectedServices.length ==
+              getController.serviceList.length &&
+          getController.serviceList.isNotEmpty;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: [
+              // Select All chip
+              FilterChip(
+                label: Text(allSelected ? 'Deselect All' : 'Select All'),
+                selected: allSelected,
+                onSelected: (selected) {
+                  if (selected) {
+                    getController.selectedServices
+                        .assignAll(getController.serviceList);
+                  } else {
+                    getController.selectedServices.clear();
+                  }
+                },
+                disabledColor: secondaryColor.withOpacity(0.2),
+                selectedColor: primaryColor.withOpacity(0.2),
+              ),
 
-            // Show snackbar with service ID
-            CustomSnackbar.showSuccess(
-              'Service Selected',
-              'ID: ${newValue.id}',
-            );
-          }
-        },
+              ...getController.serviceList.map((service) {
+                final isSelected =
+                    getController.selectedServices.contains(service);
+                return FilterChip(
+                  label: Text(service.name ?? ''),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    if (selected) {
+                      getController.selectedServices.add(service);
+                    } else {
+                      getController.selectedServices.remove(service);
+                    }
+                  },
+                  selectedColor: primaryColor.withOpacity(0.2),
+                );
+              }).toList(),
+            ],
+          ),
+        ],
       );
     });
   }
