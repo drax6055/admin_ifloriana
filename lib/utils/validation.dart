@@ -50,6 +50,20 @@ class Validation {
     return null;
   }
 
+  static String? validateSalary(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Salary';
+    }
+
+    return null;
+  }
+   static String? validateDuration(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter Salary';
+    }
+
+    return null;
+  }
   static String? validateTime(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please Select Time';

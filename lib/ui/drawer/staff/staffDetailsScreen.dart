@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
@@ -45,7 +46,7 @@ class Staffdetailsscreen extends StatelessWidget {
         backgroundColor: primaryColor,
         onPressed: () {
           // Add your action here
-          CustomSnackbar.showSuccess('Add', 'Add new staff tapped!');
+          Get.toNamed(Routes.addNewStaff);
         },
         child: const Icon(Icons.add, color: Colors.white, size: 32),
       ),
@@ -56,7 +57,6 @@ class Staffdetailsscreen extends StatelessWidget {
 class StaffExpandableList extends StatelessWidget {
   final List<Data> staffList;
   StaffExpandableList({super.key, required this.staffList});
-  var isSwitched = false.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +64,7 @@ class StaffExpandableList extends StatelessWidget {
       itemCount: staffList.length,
       itemBuilder: (context, index) {
         final staff = staffList[index];
+        var isSwitched = (staff.status == 1).obs;
         var isExpanded = false.obs;
         return Obx(() => GestureDetector(
               onTap: () => isExpanded.value = !isExpanded.value,
@@ -263,31 +264,29 @@ class StaffExpandableList extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CustomTextWidget(
-                                text: ' ${staff.branchId?.name ?? 'N/A'}',
-                                textStyle: CustomTextStyles.textFontRegular(
-                                  size: 16.sp,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                              Obx(() {
+                                return CustomTextWidget(
+                                  text:
+                                      isSwitched.value ? 'Active' : 'Deactive',
+                                  textStyle: CustomTextStyles.textFontBold(
+                                    size: 14.sp,
+                                    color: isSwitched.value
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                );
+                              }),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Obx(() {
-                                    return Switch(
-                                      value: isSwitched.value,
-                                      onChanged: (value) {
-                                        isSwitched.value = value;
-                                        CustomSnackbar.showSuccess(
-                                          'Status Changed',
-                                          'Staff status updated successfully.',
-                                        );
-                                      },
-                                      activeColor: primaryColor,
-                                      inactiveThumbColor: grey,
-                                    );
-                                  }),
+                                  CustomTextWidget(
+                                    text: ' ${staff.branchId?.name ?? 'N/A'}',
+                                    textStyle: CustomTextStyles.textFontRegular(
+                                      size: 16.sp,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
                                   Row(
                                     children: [
                                       GestureDetector(

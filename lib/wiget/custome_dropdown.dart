@@ -13,6 +13,7 @@ class CustomDropdown<T> extends StatelessWidget {
   final IconData? prefixIcon;
   final Function(T?) onChanged;
   final FormFieldValidator<T>? validator;
+  final String Function(T)? itemToString;
   final TextStyle labelStyle = CustomTextStyles.textFontMedium(size: 14.sp);
 
   CustomDropdown({
@@ -24,6 +25,7 @@ class CustomDropdown<T> extends StatelessWidget {
     this.labelText,
     this.prefixIcon,
     this.validator,
+     this.itemToString, 
   }) : super(key: key);
 
   @override

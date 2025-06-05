@@ -26,6 +26,7 @@ class Data {
   BranchId? branchId;
   String? image;
   List<Service>? serviceId;
+    int? status;
 
   Data({
     this.fullName,
@@ -33,6 +34,8 @@ class Data {
     this.branchId,
     this.image,
     this.serviceId,
+     this.status,
+     
   });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -41,7 +44,7 @@ class Data {
     branchId =
         json['branch_id'] != null ? BranchId.fromJson(json['branch_id']) : null;
     image = json['image'];
-
+    status = json['status'];
     serviceId = [];
     if (json['service_id'] != null && json['service_id'] is List) {
       for (var item in json['service_id']) {
@@ -75,7 +78,7 @@ class Service {
   String? description;
   int? status;
   String? salonId;
-  String? createdAt;
+  String? createdAt; 
   String? updatedAt;
   int? v;
   int? membersPrice;

@@ -9,4 +9,5 @@ abstract class Routes {
   static const forgotScreen = '/ForgotScreen';
   static const updateSalonScreen = '/UpdatesalonScreen';
   static const adminprofilescreen = '/Adminprofilescreen';
+  static const addNewStaff = '/Addnewstaffscreen';
 }
