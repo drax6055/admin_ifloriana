@@ -122,7 +122,7 @@ class Addnewstaffscreen extends StatelessWidget {
     return Column(
       spacing: 15.h,
       children: [
-        Imagepicker(),
+        // Imagepicker(),
         InputTxtfield_fullName(),
         InputTxtfield_Email(),
         InputTxtfield_Pass(),

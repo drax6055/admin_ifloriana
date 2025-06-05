@@ -155,4 +155,25 @@ class DioClient {
       throw _handleDioError(e);
     }
   }
+  Future<T> deleteData<T>(
+    String endpoint,
+    T Function(Map<String, dynamic>) fromJson,
+  ) async {
+    try {
+      final response = await dio.delete(endpoint);
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        if (response.data != null && response.data is Map<String, dynamic>) {
+          return fromJson(response.data);
+        } else {
+          return fromJson({});
+        }
+      } else {
+        throw Exception('DELETE Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
 }

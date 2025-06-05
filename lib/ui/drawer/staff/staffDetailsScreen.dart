@@ -57,7 +57,8 @@ class Staffdetailsscreen extends StatelessWidget {
 class StaffExpandableList extends StatelessWidget {
   final List<Data> staffList;
   StaffExpandableList({super.key, required this.staffList});
-
+  final Staffdetailscontroller getController =
+      Get.put(Staffdetailscontroller());
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -311,10 +312,8 @@ class StaffExpandableList extends StatelessWidget {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          CustomSnackbar.showError(
-                                            'Delete',
-                                            'Are you sure you want to delete this staff member?',
-                                          );
+                                          getController.deleteStaff(staff.id!);
+                                          
                                         },
                                         child: Container(
                                           padding: const EdgeInsets.all(5),

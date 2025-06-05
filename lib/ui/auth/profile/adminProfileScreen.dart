@@ -163,11 +163,15 @@ class Adminprofilescreen extends StatelessWidget {
                                             spacing: 10,
                                             children: [
                                               SizedBox(height: 1.h),
+                                              InputTxtfield_Oldpassword(),
                                               InputTxtfield_password(),
                                               InputTxtfield_confirmPassword(),
                                               SizedBox(height: 20.h),
                                               ElevatedButtonExample(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  getController
+                                                      .onChangePAssword();
+                                                },
                                                 text: "Change Password",
                                               ),
                                             ],
@@ -306,6 +310,26 @@ class Adminprofilescreen extends StatelessWidget {
             },
             icon: Icon(
               getController.showConfirmPassword.value
+                  ? Icons.visibility
+                  : Icons.visibility_off,
+              color: grey,
+            ),
+          ),
+          validator: (value) => Validation.validatePassword(value),
+        ));
+  }
+
+  Widget InputTxtfield_Oldpassword() {
+    return Obx(() => CustomTextFormField(
+          controller: getController.oldPasswordController,
+          labelText: 'Password',
+          obscureText: !getController.showOldPassword.value,
+          suffixIcon: IconButton(
+            onPressed: () {
+              getController.toggleShowOldPass();
+            },
+            icon: Icon(
+              getController.showOldPassword.value
                   ? Icons.visibility
                   : Icons.visibility_off,
               color: grey,

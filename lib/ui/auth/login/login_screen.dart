@@ -12,7 +12,7 @@ import '../../../wiget/custome_snackbar.dart';
 import '../../../wiget/custome_text.dart';
 import 'login_controller.dart';
 
-class LoginScreen extends StatelessWidget { 
+class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final LoginController getController = Get.put(LoginController());

@@ -21,24 +21,26 @@ class GetStaffDetails {
 }
 
 class Data {
+  String? id;
   String? fullName;
   String? email;
   BranchId? branchId;
   String? image;
   List<Service>? serviceId;
-    int? status;
+  int? status;
 
   Data({
+    this.id,
     this.fullName,
     this.email,
     this.branchId,
     this.image,
     this.serviceId,
-     this.status,
-     
+    this.status,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
+    id = json['_id']?.toString() ?? json['id']?.toString();
     fullName = json['full_name'];
     email = json['email'];
     branchId =
@@ -78,7 +80,7 @@ class Service {
   String? description;
   int? status;
   String? salonId;
-  String? createdAt; 
+  String? createdAt;
   String? updatedAt;
   int? v;
   int? membersPrice;
@@ -130,10 +132,11 @@ class Staffdetailscontroller extends GetxController {
   }
 
   Future<void> getCustomerDetails() async {
+    final loginUser = await prefs.getUser();
     isLoading.value = true;
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getStaffDetails}',
+        '${Apis.baseUrl}${Endpoints.getStaffDetails}${loginUser!.salonId}',
         (json) => GetStaffDetails.fromJson(json),
       );
       staffList.value = response.data ?? [];
@@ -141,6 +144,20 @@ class Staffdetailscontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to check email: $e');
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> deleteStaff(String staffId) async {
+    final loginUser = await prefs.getUser();
+    try {
+      await dioClient.deleteData(
+        '${Apis.baseUrl}${Endpoints.postStaffDetails}/$staffId/?salon_id=${loginUser!.salonId}',
+        (json) => json,
+      );
+      CustomSnackbar.showSuccess('Success', 'Staff deleted successfully');
+      getCustomerDetails(); 
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to delete staff: $e');
     }
   }
 }

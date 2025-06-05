@@ -137,32 +137,31 @@ class Addnewstaffcontroller extends GetxController {
       'phone_number': phoneController.text,
       'password': passwordController.text,
       'confirm_password': confirmpasswordController.text,
-      'gender': selectedGender.value,
+      'gender': selectedGender.value.toLowerCase(),
       'branch_id': selectedBranch.value?.id,
       'service_id': selectedServices.map((s) => s.id).toList(),
       'status': 1,
-      // 'image': singleImage.value is String
-      //     ? singleImage.value
-      //     : null,
+      'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
       'salary': int.tryParse(salaryController.text) ?? 0,
-      'assign_shift[start_shift]': shiftStarttimeController.text,
-      'assign_shift[end_shift]': shiftEndtimeController.text,
-'lunch_time[duration]' : int.tryParse(durationController.text) ?? 0,
-      // 'lunch_time': {
-      //   'duration': int.tryParse(durationController.text) ?? 0,
-      //   'timing': LunchStarttimeController.text,
-      // },
+      'assign_time': {
+        'start_shift': shiftStarttimeController.text,
+        'end_shift': shiftEndtimeController.text,
+      },
+      'lunch_time': {
+        'duration': int.tryParse(durationController.text) ?? 0,
+        'timing': LunchStarttimeController.text,
+      },
     };
-
+    print("===> ${staffData.toString()}");
     try {
       await dioClient.postData(
-        '${Apis.baseUrl}${Endpoints.getStaffDetails}',
+        '${Apis.baseUrl}${Endpoints.postStaffDetails}',
         staffData,
-        (json) => json, // Replace with your model if needed
+        (json) => json,
       );
+      print("===> ${staffData.toString()}");
       CustomSnackbar.showSuccess('Success', 'Staff added successfully');
-      // Add navigation or reset logic if needed
     } catch (e) {
       print('==> Add Staff Error: $e');
       CustomSnackbar.showError('Error', e.toString());

@@ -13,11 +13,14 @@ class Endpoints {
   static const String update_salon = '/salons/';
   static const String check_mailId = '/auth/check-email/';
   static const String get_register_details = '/admin/';
-  static const String getStaffDetails = '/staffs';
+  static const String getStaffDetails = '/staffs?salon_id=';
+  static const String postStaffDetails = '/staffs';
   static const String getCustomersDetails = '/customers';
   static const String getBranchAllDetails = '/branches';
   static const String getBranchName = '/branches/names?salon_id=';
   static const String getServices = '/services';
   static const String getServiceNames = '/services/names?salon_id=';
-}
+  static const String postServiceDetails = '/auth/reset-password-with-old';
+  static const String resetPass = '/auth/reset-password-with-old';
 
+}

@@ -16,9 +16,11 @@ class Adminprofilecontroller extends GetxController {
   var phoneController = TextEditingController();
 
   var passwordController = TextEditingController();
+  var oldPasswordController = TextEditingController();
   var confirmPasswordController = TextEditingController();
 
   var showPassword = false.obs;
+  var showOldPassword = false.obs;
   var showConfirmPassword = false.obs;
 
   void toggleShowPassword() {
@@ -27,6 +29,10 @@ class Adminprofilecontroller extends GetxController {
 
   void toggleShowConfirmPass() {
     showConfirmPassword.value = !showConfirmPassword.value;
+  }
+
+  void toggleShowOldPass() {
+    showOldPassword.value = !showOldPassword.value;
   }
 
   // var pincodeController = TextEditingController();
@@ -84,6 +90,31 @@ class Adminprofilecontroller extends GetxController {
       Get.offAllNamed(Routes.drawerScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());
+    }
+  }
+
+  Future onChangePAssword() async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> changeData = {
+      'email': loginUser!.email,
+      'old_password': oldPasswordController.text,
+      'new_password': passwordController.text,
+      'confirm_password': confirmPasswordController.text,
+    };
+
+    try {
+      await dioClient.postData(
+        '${Apis.baseUrl}${Endpoints.resetPass}',
+        changeData,
+        (json) => json,
+      );
+
+      print("===> ${changeData.toString()}");
+      CustomSnackbar.showSuccess('Success', 'password update  successfully');
+      await prefs.onLogout();
+    } catch (e) {
+      print('==> Add Staff Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
     }
   }
 
