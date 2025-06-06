@@ -48,7 +48,7 @@ class Addnewservicescontroller extends GetxController {
         serviceData,
         (json) => CreateServiceCategory.fromJson(json),
       );
-
+      callCategories();
       CustomSnackbar.showSuccess('success', 'Added Successfully');
     } catch (e) {
       print('==> here Error: $e');
@@ -81,6 +81,7 @@ class Addnewservicescontroller extends GetxController {
         '${Apis.baseUrl}${Endpoints.postServiceCategory}/$id/?salon_id=${loginUser!.salonId}',
         (json) => json,
       );
+      callCategories();
       CustomSnackbar.showSuccess('Success', 'deleted successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', ' to delete : $e');

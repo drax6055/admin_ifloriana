@@ -17,121 +17,139 @@ class AddNewServicesScreen extends StatelessWidget {
   final Addnewservicescontroller getController =
       Get.put(Addnewservicescontroller());
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              service_screen(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget InputTxtfield_name() {
-    return CustomTextFormField(
-      controller: getController.nameController,
-      labelText: 'Name',
-      keyboardType: TextInputType.text,
-      validator: (value) => Validation.validatename(value),
-    );
-  }
-
-  Widget Btn_serviceCategory() {
-    return ElevatedButtonExample(
-      text: "Add Category",
-      onPressed: () {
-        if (_formKey.currentState?.validate() ?? false) {
-          getController.onAddCategoryPress();
-        } else {
-          CustomSnackbar.showError(
-              'Validation Error', 'Please fill in all fields correctly');
+      appBar: AppBar(title: Text("Service Categories")),
+      body: Obx(() {
+        if (getController.serviceList.isEmpty) {
+          return Center(child: Text("No services found."));
         }
-      },
-    );
-  }
-
-  Widget serviceScreen_body() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(child: Imagepicker()),
-              SizedBox(width: 16.w),
-              Expanded(flex: 2, child: InputTxtfield_name()),
-            ],
-          ),
-          Obx(() => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomTextWidget(
-                    text: 'Status',
-                    textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
-                  ),
-                  Switch(
-                    value: getController.isActive.value,
-                    onChanged: (value) {
-                      getController.isActive.value = value;
-                    },
-                    activeColor: primaryColor,
-                  ),
-                ],
-              )),
-          SizedBox(height: 16.h),
-          Btn_serviceCategory(),
-          SizedBox(height: 16.h),
-          serviceCategoryList(),
-        ],
+        return ListView.builder(
+          padding: EdgeInsets.only(bottom: 80.h),
+          itemCount: getController.serviceList.length,
+          itemBuilder: (context, index) {
+            final item = getController.serviceList[index];
+            return Card(
+              margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+              child: ListTile(
+                leading: Icon(Icons.image_not_supported),
+                title: Text(item.name ?? 'No Name'),
+                subtitle: Text((item.status == 1) ? "Active" : "Deactive"),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        getController.nameController.text = item.name ?? '';
+                        getController.isActive.value = (item.status ?? 0) == 1;
+                        showAddCategorySheet(context);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        getController.deleteCategory(item.id ?? '');
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          getController.nameController.clear();
+          getController.isActive.value = true;
+          showAddCategorySheet(context);
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
 
-  Widget serviceCategoryList() {
-    return Obx(() {
-      if (getController.serviceList.isEmpty) {
-        return Center(child: Text("No services found."));
-      }
-      return ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: getController.serviceList.length,
-        itemBuilder: (context, index) {
-          final item = getController.serviceList[index];
-          return Card(
-            margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
-            child: ListTile(
-              leading: Icon(Icons.image_not_supported),
-              title: Text(item.name ?? 'No Name'),
-              trailing: Row(
+  void showAddCategorySheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16.w,
+            right: 16.w,
+            top: 16.h,
+          ),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.edit, color: Colors.blue),
+                  Row(
+                    children: [
+                      Expanded(child: Imagepicker()),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: CustomTextFormField(
+                          controller: getController.nameController,
+                          labelText: 'Name',
+                          keyboardType: TextInputType.text,
+                          validator: (value) => Validation.validatename(value),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            text: 'Status',
+                            textStyle:
+                                CustomTextStyles.textFontRegular(size: 14.sp),
+                          ),
+                          Switch(
+                            value: getController.isActive.value,
+                            onChanged: (value) {
+                              getController.isActive.value = value;
+                            },
+                            activeColor: primaryColor,
+                          ),
+                        ],
+                      )),
+                  SizedBox(height: 16.h),
+                  ElevatedButtonExample(
+                    text: "Add Category",
                     onPressed: () {
-                      getController.nameController.text = item.name ?? '';
-                      getController.isActive.value = (item.status ?? 0) == 1;
+                      if (_formKey.currentState?.validate() ?? false) {
+                        getController.onAddCategoryPress();
+                        Navigator.pop(context); // Close the bottom sheet
+                      } else {
+                        CustomSnackbar.showError('Validation Error',
+                            'Please fill in all fields correctly');
+                      }
                     },
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      getController.deleteCategory(item.id ?? '');
-                    },
-                  ),
+                  SizedBox(height: 16.h),
                 ],
               ),
             ),
-          );
-        },
-      );
-    });
+          ),
+        );
+      },
+    );
   }
 
   Widget Imagepicker() {
@@ -139,13 +157,13 @@ class AddNewServicesScreen extends StatelessWidget {
       return GestureDetector(
         onTap: () => pickImage(isMultiple: false),
         child: Container(
-          height: 60.h,
+          height: 50.h,
+          width: double.infinity,
           decoration: BoxDecoration(
             border: Border.all(
               color: primaryColor,
               width: 1,
             ),
-            shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10.r),
             color: secondaryColor.withOpacity(0.2),
           ),
@@ -155,24 +173,18 @@ class AddNewServicesScreen extends StatelessWidget {
                   child: Image.file(
                     singleImage.value!,
                     fit: BoxFit.cover,
+                    width: double.infinity,
                   ),
                 )
-              : Icon(
-                  Icons.image_rounded,
-                  color: primaryColor,
-                  size: 30.sp,
+              : Center(
+                  child: Icon(
+                    Icons.image_rounded,
+                    color: primaryColor,
+                    size: 40.sp,
+                  ),
                 ),
         ),
       );
     });
-  }
-
-  Widget service_screen() {
-    return Column(
-      children: [
-        SizedBox(height: 45.h),
-        serviceScreen_body(),
-      ],
-    );
   }
 }
