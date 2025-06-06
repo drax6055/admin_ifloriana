@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/network/model/getAdminDetails.dart';
-import 'package:flutter_template/network/model/getRegisterData.dart';
 import 'package:get/get.dart';
 import '../../../main.dart';
 import '../../../network/model/login_model.dart';

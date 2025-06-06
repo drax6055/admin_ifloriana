@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/model/getAdminDetails.dart';
-import 'package:flutter_template/network/model/getRegisterData.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';

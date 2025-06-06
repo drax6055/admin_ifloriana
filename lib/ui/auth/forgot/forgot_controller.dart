@@ -14,7 +14,7 @@ class ForgotController extends GetxController {
     };
 
     try {
-      forgot_model forgotResponse = await dioClient.postData<forgot_model>(
+       await dioClient.postData<forgot_model>(
         '${Apis.baseUrl}${Endpoints.admin_forgot}',
         forgotData,
         (json) => forgot_model.fromJson(json),

@@ -58,7 +58,7 @@ class LoginScreen extends StatelessWidget {
               color: grey,
             ),
           ),
-          validator: (value) => Validation.validatePassword(value),
+          // validator: (value) => Validation.validatePassword(value),
         ));
   }
 

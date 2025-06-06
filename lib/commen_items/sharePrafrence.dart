@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_template/network/model/getAdminDetails.dart';
-import 'package:flutter_template/network/model/getRegisterData.dart';
 import 'package:flutter_template/network/model/udpateSalonModel.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
