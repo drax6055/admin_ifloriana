@@ -1,4 +1,3 @@
-
 abstract class Routes {
   static const splashScreen = '/SplashScreen';
   static const drawerScreen = '/DrawerScreen';
@@ -11,4 +10,6 @@ abstract class Routes {
   static const adminprofilescreen = '/Adminprofilescreen';
   static const addNewStaff = '/Addnewstaffscreen';
   static const addNewServicesScreen = '/AddNewServicesScreen';
+
+  static const addService = '/AddNewService';
 }
