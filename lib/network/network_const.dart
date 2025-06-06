@@ -23,5 +23,5 @@ class Endpoints {
   static const String postServiceDetails = '/auth/reset-password-with-old';
   static const String resetPass = '/auth/reset-password-with-old';
   static const String postServiceCategory = '/categories';
-
+  static const String postServiceCategoryGet = '/categories?salon_id=';
 }

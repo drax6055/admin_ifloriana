@@ -87,9 +87,51 @@ class AddNewServicesScreen extends StatelessWidget {
           SizedBox(height: 16.h),
           Btn_serviceCategory(),
           SizedBox(height: 16.h),
+          serviceCategoryList(),
         ],
       ),
     );
+  }
+
+  Widget serviceCategoryList() {
+    return Obx(() {
+      if (getController.serviceList.isEmpty) {
+        return Center(child: Text("No services found."));
+      }
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: getController.serviceList.length,
+        itemBuilder: (context, index) {
+          final item = getController.serviceList[index];
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+            child: ListTile(
+              leading: Icon(Icons.image_not_supported),
+              title: Text(item.name ?? 'No Name'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () {
+                      getController.nameController.text = item.name ?? '';
+                      getController.isActive.value = (item.status ?? 0) == 1;
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      getController.deleteCategory(item.id ?? '');
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    });
   }
 
   Widget Imagepicker() {
