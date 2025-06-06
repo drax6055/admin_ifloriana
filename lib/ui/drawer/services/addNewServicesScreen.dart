@@ -32,6 +32,7 @@ class AddNewServicesScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = getController.serviceList[index];
             return Card(
+              color: white,
               margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
               child: ListTile(
                 leading: Icon(Icons.image_not_supported),
@@ -41,14 +42,14 @@ class AddNewServicesScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.edit, color: Colors.blue),
+                      icon: Icon(Icons.edit, color: primaryColor),
                       onPressed: () {
                         getController.startEditing(item);
                         showAddCategorySheet(context);
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
+                      icon: Icon(Icons.delete, color: primaryColor),
                       onPressed: () {
                         getController.deleteCategory(item.id ?? '');
                       },
