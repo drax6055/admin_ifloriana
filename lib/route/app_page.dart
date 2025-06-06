@@ -3,7 +3,7 @@ import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/auth/register_packages/register_packages_screen.dart';
 import 'package:flutter_template/ui/auth/register/register_screen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
-import 'package:flutter_template/ui/drawer/services/addNewServicesScreen.dart';
+import 'package:flutter_template/ui/drawer/services/categotys/addNewServicesScreen.dart';
 import 'package:flutter_template/ui/drawer/staff/addNewStaffScreen.dart';
 import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
 import 'package:get/get.dart';
@@ -61,7 +61,7 @@ class AppPages {
     ) , 
     GetPage(
         name: Routes.addNewServicesScreen,
-        page: () => AddNewServicesScreen(),
+        page: () => AddNewCategotyScreen(),
         transition: Transition.rightToLeft
 
         

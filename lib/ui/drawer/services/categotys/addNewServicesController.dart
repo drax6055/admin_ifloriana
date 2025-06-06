@@ -23,7 +23,7 @@ class CreateServiceCategory {
   }
 }
 
-class Addnewservicescontroller extends GetxController {
+class AddNewCategotyController  extends GetxController {
   var nameController = TextEditingController();
   var isActive = true.obs;
 

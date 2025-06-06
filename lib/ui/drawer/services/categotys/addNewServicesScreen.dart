@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/commen_items/commen_class.dart';
-import 'package:flutter_template/ui/drawer/services/addNewServicesController.dart';
+import 'package:flutter_template/ui/drawer/services/categotys/addNewServicesController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
-import '../../../utils/validation.dart';
-import '../../../wiget/Custome_textfield.dart';
-import '../../../wiget/Custome_button.dart';
-import '../../../wiget/custome_snackbar.dart';
+import '../../../../utils/validation.dart';
+import '../../../../wiget/Custome_textfield.dart';
+import '../../../../wiget/Custome_button.dart';
+import '../../../../wiget/custome_snackbar.dart';
 
-class AddNewServicesScreen extends StatelessWidget {
-  AddNewServicesScreen({super.key});
+class AddNewCategotyScreen extends StatelessWidget {
+  AddNewCategotyScreen({super.key});
 
-  final Addnewservicescontroller getController =
-      Get.put(Addnewservicescontroller());
+  final AddNewCategotyController getController =
+      Get.put(AddNewCategotyController());
   final _formKey = GlobalKey<FormState>();
 
   @override
