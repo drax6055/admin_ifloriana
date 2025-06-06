@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/commen_items/commen_class.dart';
 import 'package:flutter_template/ui/drawer/services/addNewServicesController.dart';
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/utils/custom_text_styles.dart';
+import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
 import '../../../utils/validation.dart';
 import '../../../wiget/Custome_textfield.dart';
@@ -42,10 +44,10 @@ class AddNewServicesScreen extends StatelessWidget {
 
   Widget Btn_serviceCategory() {
     return ElevatedButtonExample(
-      text: "Add Service Category",
+      text: "Add Category",
       onPressed: () {
         if (_formKey.currentState?.validate() ?? false) {
-          getController.onLoginPress();
+          getController.onAddCategoryPress();
         } else {
           CustomSnackbar.showError(
               'Validation Error', 'Please fill in all fields correctly');
@@ -69,9 +71,9 @@ class AddNewServicesScreen extends StatelessWidget {
           Obx(() => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Status",
-                    style: TextStyle(fontSize: 16.sp),
+                  CustomTextWidget(
+                    text: 'Status',
+                    textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
                   ),
                   Switch(
                     value: getController.isActive.value,

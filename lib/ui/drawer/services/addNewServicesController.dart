@@ -10,12 +10,12 @@ class Addnewservicescontroller extends GetxController {
   var nameController = TextEditingController();
   var isActive = true.obs;
 
-   Future onLoginPress() async {
-      final loginUser = await prefs.getUser();
+  Future onAddCategoryPress() async {
+    final loginUser = await prefs.getUser();
     Map<String, dynamic> serviceData = {
       'name': nameController.text,
-      'status': isActive.value ? 1 : 0, 
-      'salon_id':loginUser!.salonId,
+      'status': isActive.value ? 1 : 0,
+      'salon_id': loginUser!.salonId,
     };
 
     try {
@@ -26,11 +26,11 @@ class Addnewservicescontroller extends GetxController {
       );
 
       CustomSnackbar.showSuccess('success', 'Added Successfully');
-    
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
     }
   }
 
+  
 }
