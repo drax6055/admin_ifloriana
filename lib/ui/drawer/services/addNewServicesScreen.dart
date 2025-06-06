@@ -43,8 +43,7 @@ class AddNewServicesScreen extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.edit, color: Colors.blue),
                       onPressed: () {
-                        getController.nameController.text = item.name ?? '';
-                        getController.isActive.value = (item.status ?? 0) == 1;
+                        getController.startEditing(item);
                         showAddCategorySheet(context);
                       },
                     ),
@@ -63,8 +62,7 @@ class AddNewServicesScreen extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          getController.nameController.clear();
-          getController.isActive.value = true;
+          getController.resetForm();
           showAddCategorySheet(context);
         },
         child: Icon(Icons.add),
@@ -130,18 +128,20 @@ class AddNewServicesScreen extends StatelessWidget {
                         ],
                       )),
                   SizedBox(height: 16.h),
-                  ElevatedButtonExample(
-                    text: "Add Category",
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        getController.onAddCategoryPress();
-                        Navigator.pop(context); // Close the bottom sheet
-                      } else {
-                        CustomSnackbar.showError('Validation Error',
-                            'Please fill in all fields correctly');
-                      }
-                    },
-                  ),
+                  Obx(() => ElevatedButtonExample(
+                        text: getController.isEditing.value
+                            ? "Update Category"
+                            : "Add Category",
+                        onPressed: () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            getController.onAddOrUpdateCategoryPress();
+                            Navigator.pop(context);
+                          } else {
+                            CustomSnackbar.showError('Validation Error',
+                                'Please fill in all fields correctly');
+                          }
+                        },
+                      )),
                   SizedBox(height: 16.h),
                 ],
               ),

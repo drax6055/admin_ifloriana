@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
-import 'package:flutter_template/network/model/AddserviceCategory.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
@@ -27,14 +26,40 @@ class CreateServiceCategory {
 class Addnewservicescontroller extends GetxController {
   var nameController = TextEditingController();
   var isActive = true.obs;
+
   RxList<CreateServiceCategory> serviceList = <CreateServiceCategory>[].obs;
+  RxBool isEditing = false.obs;
+  Rxn<CreateServiceCategory> editingItem = Rxn<CreateServiceCategory>();
+
   @override
   void onInit() {
     super.onInit();
     callCategories();
   }
 
-  Future onAddCategoryPress() async {
+  void startEditing(CreateServiceCategory item) {
+    isEditing.value = true;
+    editingItem.value = item;
+    nameController.text = item.name ?? '';
+    isActive.value = (item.status ?? 0) == 1;
+  }
+
+  void resetForm() {
+    nameController.clear();
+    isActive.value = true;
+    isEditing.value = false;
+    editingItem.value = null;
+  }
+
+  Future<void> onAddOrUpdateCategoryPress() async {
+    if (isEditing.value && editingItem.value != null) {
+      await onEditPress(editingItem.value!.id ?? '');
+    } else {
+      await onAddCategoryPress();
+    }
+  }
+
+  Future<void> onAddCategoryPress() async {
     final loginUser = await prefs.getUser();
     Map<String, dynamic> serviceData = {
       'name': nameController.text,
@@ -49,10 +74,29 @@ class Addnewservicescontroller extends GetxController {
         (json) => CreateServiceCategory.fromJson(json),
       );
       callCategories();
-      CustomSnackbar.showSuccess('success', 'Added Successfully');
+      CustomSnackbar.showSuccess('Success', 'Added Successfully');
     } catch (e) {
-      print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
+  Future<void> onEditPress(String id) async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> staffData = {
+      'name': nameController.text,
+      'status': isActive.value ? 1 : 0,
+      'salon_id': loginUser!.salonId,
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.postServiceCategory}/$id',
+        staffData,
+        (json) => json,
+      );
+      callCategories();
+      CustomSnackbar.showSuccess('Success', 'Updated Successfully');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed: $e');
     }
   }
 
@@ -82,9 +126,10 @@ class Addnewservicescontroller extends GetxController {
         (json) => json,
       );
       callCategories();
-      CustomSnackbar.showSuccess('Success', 'deleted successfully');
+      CustomSnackbar.showSuccess('Success', 'Deleted Successfully');
     } catch (e) {
-      CustomSnackbar.showError('Error', ' to delete : $e');
+      CustomSnackbar.showError('Error', 'Failed to delete: $e');
     }
   }
 }
+
