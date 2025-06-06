@@ -26,4 +26,5 @@ class Endpoints {
   static const String postServiceCategoryGet = '/categories?salon_id=';
 
   static const String getServiceCategotyName = "/categories/names?salon_id=";
+ static const String getAllServices = "/services?salon_id=";
 }

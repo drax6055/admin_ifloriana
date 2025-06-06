@@ -14,57 +14,82 @@ import 'package:get/get.dart';
 class AddNewService extends StatelessWidget {
   AddNewService({super.key});
   final Addservicescontroller getController = Get.put(Addservicescontroller());
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          spacing: 10,
-          children: [
-            Imagepicker(),
-            CustomTextFormField(
-              controller: getController.nameController,
-              labelText: 'Name',
-              keyboardType: TextInputType.text,
-              validator: (value) => Validation.validatename(value),
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Imagepicker(),
+                CustomTextFormField(
+                  controller: getController.nameController,
+                  labelText: 'Name',
+                  keyboardType: TextInputType.text,
+                  validator: (value) => Validation.validatename(value),
+                ),
+                CustomTextFormField(
+                  controller: getController.serviceDuration,
+                  labelText: 'Service Duration',
+                  keyboardType: TextInputType.number,
+                  validator: (value) => Validation.validateisBlanck(value),
+                ),
+                CustomTextFormField(
+                  controller: getController.regularPrice,
+                  labelText: 'Regular Price',
+                  keyboardType: TextInputType.number,
+                  validator: (value) => Validation.validateisBlanck(value),
+                ),
+                branchDropdown(),
+                InputTxtfield_discription(),
+                Obx(() => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          text: 'Status',
+                          textStyle:
+                              CustomTextStyles.textFontRegular(size: 14.sp),
+                        ),
+                        Switch(
+                          value: getController.isActive.value,
+                          onChanged: (value) {
+                            getController.isActive.value = value;
+                          },
+                          activeColor: primaryColor,
+                        ),
+                      ],
+                    )),
+                Btn_serviceAdd(),
+                const SizedBox(height: 10),
+                Obx(() {
+                  return getController.serviceList.isEmpty
+                      ? Text("No services available.")
+                      : SizedBox(
+                          height: 300.h,
+                          child: ListView.builder(
+                            itemCount: getController.serviceList.length,
+                            itemBuilder: (context, index) {
+                              final service = getController.serviceList[index];
+                              return Card(
+                                child: ListTile(
+                                  title: Text(service.name ?? ''),
+                                  subtitle: Text(
+                                      '₹${service.price} • ${service.duration} mins'),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                }),
+              ],
             ),
-            CustomTextFormField(
-              controller: getController.serviceDuration,
-              labelText: 'Service Duration',
-              keyboardType: TextInputType.number,
-              validator: (value) => Validation.validateisBlanck(value),
-            ),
-            CustomTextFormField(
-              controller: getController.regularPrice,
-              labelText: 'Regular Price',
-              keyboardType: TextInputType.number,
-              validator: (value) => Validation.validateisBlanck(value),
-            ),
-            branchDropdown(),
-            InputTxtfield_discription(),
-            Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextWidget(
-                      text: 'Status',
-                      textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
-                    ),
-                    Switch(
-                      value: getController.isActive.value,
-                      onChanged: (value) {
-                        getController.isActive.value = value;
-                      },
-                      activeColor: primaryColor,
-                    ),
-                  ],
-                )),
-            Btn_serviceAdd()
-          ],
+          ),
         ),
       ),
-    ));
+    );
   }
 
   Widget Imagepicker() {
@@ -75,10 +100,7 @@ class AddNewService extends StatelessWidget {
           height: 120.h,
           width: 120.w,
           decoration: BoxDecoration(
-            border: Border.all(
-              color: primaryColor,
-              width: 1,
-            ),
+            border: Border.all(color: primaryColor),
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10.r),
             color: secondaryColor.withOpacity(0.2),
@@ -91,11 +113,7 @@ class AddNewService extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 )
-              : Icon(
-                  Icons.image_rounded,
-                  color: primaryColor,
-                  size: 30.sp,
-                ),
+              : Icon(Icons.image_rounded, color: primaryColor, size: 30.sp),
         ),
       );
     });
@@ -114,8 +132,9 @@ class AddNewService extends StatelessWidget {
   Widget branchDropdown() {
     return Obx(() {
       return DropdownButton<Category>(
+        isExpanded: true,
         value: getController.selectedBranch.value,
-        hint: Text("Select Branch"),
+        hint: const Text("Select Category"),
         items: getController.branchList.map((Category branch) {
           return DropdownMenuItem<Category>(
             value: branch,
@@ -126,7 +145,7 @@ class AddNewService extends StatelessWidget {
           if (newValue != null) {
             getController.selectedBranch.value = newValue;
             CustomSnackbar.showSuccess(
-              'Branch Selected',
+              'Category Selected',
               'ID: ${newValue.id}',
             );
           }
@@ -139,9 +158,9 @@ class AddNewService extends StatelessWidget {
     return ElevatedButtonExample(
       text: "Add Service",
       onPressed: () {
-        //call add service
         getController.onServicePress();
       },
     );
   }
 }
+

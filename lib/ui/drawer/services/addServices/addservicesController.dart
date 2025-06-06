@@ -2,9 +2,33 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/model/addService.dart';
 import 'package:flutter_template/network/network_const.dart';
-import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
+class Service {
+  String? id;
+  String? name;
+  String? image;
+  int? duration;
+  int? price;
+
+  Service({
+    this.id,
+    this.name,
+    this.image,
+    this.duration,
+    this.price,
+  });
+
+  factory Service.fromJson(Map<String, dynamic> json) {
+    return Service(
+      id: json['_id'],
+      name: json['name'],
+      image: json['image'],
+      duration: json['service_duration'],
+      price: json['regular_price'],
+    );
+  }
+}
 
 class Category {
   final String? id;
@@ -28,11 +52,13 @@ class Addservicescontroller extends GetxController {
   var isActive = true.obs;
   var selectedBranch = Rx<Category?>(null);
   var branchList = <Category>[].obs;
+    var serviceList = <Service>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     getCategorys();
+    getAllServices();
   }
 
   Future<void> getCategorys() async {
@@ -73,4 +99,24 @@ class Addservicescontroller extends GetxController {
       CustomSnackbar.showError('Error', e.toString());
     }
   }
+
+
+  Future<void> getAllServices() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getAllServices}${loginUser!.salonId}',
+        (json) => json,
+      );
+
+      if (response['data'] != null) {
+        List<dynamic> servicesJson = response['data'];
+        serviceList.value =
+            servicesJson.map((e) => Service.fromJson(e)).toList();
+      }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to fetch services: $e');
+    } 
+  }
+
 }

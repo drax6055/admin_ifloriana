@@ -23,7 +23,7 @@ class CreateServiceCategory {
   }
 }
 
-class AddNewCategotyController  extends GetxController {
+class AddNewCategotyController extends GetxController {
   var nameController = TextEditingController();
   var isActive = true.obs;
 
@@ -131,5 +131,5 @@ class AddNewCategotyController  extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to delete: $e');
     }
   }
-}
 
+}

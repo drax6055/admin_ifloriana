@@ -60,6 +60,7 @@ class AppPages {
     GetPage(
         name: Routes.addService,
         page: () => AddNewService(),
-        transition: Transition.rightToLeft) 
+        transition: Transition.rightToLeft),
+
   ];
 }
