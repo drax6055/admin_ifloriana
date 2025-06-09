@@ -4,12 +4,14 @@ import 'package:flutter_template/network/model/addService.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
+
 class Service {
   String? id;
   String? name;
   String? image;
   int? duration;
   int? price;
+  int? status;
 
   Service({
     this.id,
@@ -17,16 +19,17 @@ class Service {
     this.image,
     this.duration,
     this.price,
+    this.status,
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
-      id: json['_id'],
-      name: json['name'],
-      image: json['image'],
-      duration: json['service_duration'],
-      price: json['regular_price'],
-    );
+        id: json['_id'],
+        name: json['name'],
+        image: json['image'],
+        duration: json['service_duration'],
+        price: json['regular_price'],
+        status: json['status']);
   }
 }
 
@@ -52,7 +55,7 @@ class Addservicescontroller extends GetxController {
   var isActive = true.obs;
   var selectedBranch = Rx<Category?>(null);
   var branchList = <Category>[].obs;
-    var serviceList = <Service>[].obs;
+  var serviceList = <Service>[].obs;
 
   @override
   void onInit() {
@@ -100,7 +103,6 @@ class Addservicescontroller extends GetxController {
     }
   }
 
-
   Future<void> getAllServices() async {
     final loginUser = await prefs.getUser();
     try {
@@ -116,7 +118,6 @@ class Addservicescontroller extends GetxController {
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch services: $e');
-    } 
+    }
   }
-
 }

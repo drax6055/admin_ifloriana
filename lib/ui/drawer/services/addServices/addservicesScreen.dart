@@ -77,7 +77,7 @@ class AddNewService extends StatelessWidget {
                                 child: ListTile(
                                   title: Text(service.name ?? ''),
                                   subtitle: Text(
-                                      '₹${service.price} • ${service.duration} mins'),
+                                      '₹${service.price} • ${service.duration} mins ${service.status == 1 ? 'Active' : 'Deactive'}'),
                                 ),
                               );
                             },
@@ -163,4 +163,3 @@ class AddNewService extends StatelessWidget {
     );
   }
 }
-
