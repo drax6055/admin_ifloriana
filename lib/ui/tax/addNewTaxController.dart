@@ -5,6 +5,39 @@ import '../../../main.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
+class TaxModel {
+  final String? id;
+  final String? title;
+  final int? value;
+  final String? type;
+  final String? taxType;
+  final int? status;
+  final List<Branch>? branches;
+
+  TaxModel({
+    this.id,
+    this.title,
+    this.value,
+    this.type,
+    this.taxType,
+    this.status,
+    this.branches,
+  });
+
+  factory TaxModel.fromJson(Map<String, dynamic> json) {
+    return TaxModel(
+      id: json['_id'],
+      title: json['title'],
+      value: json['value'],
+      type: json['type'],
+      taxType: json['tax_type'],
+      status: json['status'],
+      branches:
+          (json['branch_id'] as List).map((b) => Branch.fromJson(b)).toList(),
+    );
+  }
+}
+
 class Branch {
   final String? id;
   final String? name;
@@ -28,6 +61,7 @@ class Addnewtaxcontroller extends GetxController {
   var branchList = <Branch>[].obs;
   var selectedBranches = <Branch>[].obs;
   bool get allSelected => selectedBranches.length == branchList.length;
+  var taxList = <TaxModel>[].obs;
 
   final List<String> dropdownType = [
     'Percent',
@@ -42,6 +76,33 @@ class Addnewtaxcontroller extends GetxController {
   void onInit() {
     super.onInit();
     getBranches();
+    getTaxes();
+  }
+
+  void editTax(TaxModel tax) {
+    titleController.text = tax.title ?? '';
+    valueController.text = tax.value?.toString() ?? '';
+    selectedDropdownType.value = tax.type?.capitalizeFirst ?? 'Percent';
+    selectedDropdownModule.value = tax.taxType?.capitalizeFirst ?? 'Services';
+    isActive.value = tax.status == 1;
+
+    selectedBranches.value = tax.branches ?? [];
+  }
+
+  Future<void> deleteTax(String? taxId) async {
+    final loginUser = await prefs.getUser();
+    if (taxId == null) return;
+    try {
+      await dioClient.deleteData(
+        '${Apis.baseUrl}${Endpoints.postTex}/$taxId?salon_id=${loginUser!.salonId}',
+        (json) => json,
+      );
+      taxList.removeWhere((tax) => tax.id == taxId);
+      getTaxes();
+      CustomSnackbar.showSuccess('Success', 'Tax deleted');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Delete failed: $e');
+    }
   }
 
   Future onTaxadded() async {
@@ -63,6 +124,7 @@ class Addnewtaxcontroller extends GetxController {
         taxData,
         (json) => AddTex.fromJson(json),
       );
+      getTaxes();
       CustomSnackbar.showSuccess('Succcess', 'tax added');
     } catch (e) {
       print('==> here Error: $e');
@@ -80,6 +142,20 @@ class Addnewtaxcontroller extends GetxController {
 
       final data = response['data'] as List;
       branchList.value = data.map((e) => Branch.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
+  }
+
+  Future<void> getTaxes() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getTex}${loginUser!.salonId}',
+        (json) => json,
+      );
+      final data = response['data'] as List;
+      taxList.value = data.map((e) => TaxModel.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }

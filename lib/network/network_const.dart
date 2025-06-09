@@ -28,4 +28,5 @@ class Endpoints {
   static const String getServiceCategotyName = "/categories/names?salon_id=";
   static const String getAllServices = "/services?salon_id=";
   static const String postTex = "/taxes";
+  static const String getTex = "/taxes?salon_id=";
 }

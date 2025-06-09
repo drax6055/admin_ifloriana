@@ -17,19 +17,123 @@ class Addnewtaxscreen extends StatelessWidget {
   final Addnewtaxcontroller getController = Get.put(Addnewtaxcontroller());
   final _formKey = GlobalKey<FormState>();
 
+  void _openBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            top: 16,
+            left: 16,
+            right: 16,
+          ),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  tax_screen(),
+                  SizedBox(height: 10.h),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              tax_screen(),
-            ],
-          ),
-        ),
+      appBar: AppBar(title: const Text('Add New Tax')),
+     body: Obx(() {
+        if (getController.taxList.isEmpty) {
+          return Center(child: Text('No taxes found'));
+        }
+        return ListView.builder(
+          padding: EdgeInsets.all(16),
+          itemCount: getController.taxList.length,
+          itemBuilder: (context, index) {
+            final tax = getController.taxList[index];
+            return Card(
+              child: ListTile(
+                title: Text(
+                    '${tax.title} - ${tax.value}${tax.type == 'percent' ? '%' : ''}'),
+                subtitle: Text(
+                    'Module: ${tax.taxType?.capitalize} | Status: ${tax.status == 1 ? 'Active' : 'Inactive'}'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        getController.editTax(tax);
+                        _openBottomSheet(context);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => getController.deleteTax(tax.id),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }),
+
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: primaryColor,
+        onPressed: () => _openBottomSheet(context),
+        child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  Widget tax_screen() {
+    return Column(
+      children: [
+        InputTxtfield_title(),
+        Obx(() => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  text: 'Status',
+                  textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
+                ),
+                Switch(
+                  value: getController.isActive.value,
+                  onChanged: (value) {
+                    getController.isActive.value = value;
+                  },
+                  activeColor: primaryColor,
+                ),
+              ],
+            )),
+        SizedBox(height: 10.h),
+        Row(
+          children: [
+            Expanded(child: type()),
+            SizedBox(width: 10.w),
+            Expanded(child: module()),
+          ],
+        ),
+        SizedBox(height: 10.h),
+        InputTxtfield_value(),
+        SizedBox(height: 10.h),
+        branchChips(),
+        SizedBox(height: 10.h),
+        Btn_tax(),
+      ],
     );
   }
 
@@ -53,7 +157,7 @@ class Addnewtaxscreen extends StatelessWidget {
 
   Widget Btn_tax() {
     return ElevatedButtonExample(
-      text: "Continue",
+      text: "Submit",
       onPressed: () {
         if (_formKey.currentState?.validate() ?? false) {
           getController.onTaxadded();
@@ -62,39 +166,6 @@ class Addnewtaxscreen extends StatelessWidget {
               'Validation Error', 'Please fill in all fields correctly');
         }
       },
-    );
-  }
-
-  Widget tax_screen() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          InputTxtfield_title(),
-          Obx(() => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomTextWidget(
-                    text: 'Status',
-                    textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
-                  ),
-                  Switch(
-                    value: getController.isActive.value,
-                    onChanged: (value) {
-                      getController.isActive.value = value;
-                    },
-                    activeColor: primaryColor,
-                  ),
-                ],
-              )),
-          SizedBox(height: 30.h),
-          type(),
-          module(),
-          InputTxtfield_value(),
-          branchChips(),
-          Btn_tax(),
-        ],
-      ),
     );
   }
 
@@ -130,20 +201,13 @@ class Addnewtaxscreen extends StatelessWidget {
         ));
   }
 
-  Widget forgot_screen() {
-    return Column(
-      children: [
-        tax_screen(),
-      ],
-    );
-  }
-Widget branchChips() {
+  Widget branchChips() {
     return Obx(() {
       return Wrap(
         spacing: 8.0,
         runSpacing: 8.0,
         children: [
-                  FilterChip(
+          FilterChip(
             label:
                 Text(getController.allSelected ? 'Deselect All' : 'Select All'),
             selected: getController.allSelected,
@@ -157,7 +221,6 @@ Widget branchChips() {
             },
             selectedColor: primaryColor.withOpacity(0.2),
           ),
-          // Branch Chips
           ...getController.branchList.map((branch) {
             final isSelected = getController.selectedBranches.contains(branch);
             return FilterChip(
@@ -177,5 +240,4 @@ Widget branchChips() {
       );
     });
   }
-
 }
