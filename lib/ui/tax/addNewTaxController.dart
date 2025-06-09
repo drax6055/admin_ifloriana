@@ -62,7 +62,10 @@ class Addnewtaxcontroller extends GetxController {
   var selectedBranches = <Branch>[].obs;
   bool get allSelected => selectedBranches.length == branchList.length;
   var taxList = <TaxModel>[].obs;
+var isEditMode = false.obs;
+  String? editingTaxId; 
 
+  
   final List<String> dropdownType = [
     'Percent',
     'Fixed',
@@ -80,6 +83,9 @@ class Addnewtaxcontroller extends GetxController {
   }
 
   void editTax(TaxModel tax) {
+    isEditMode.value = true;
+    editingTaxId = tax.id;
+
     titleController.text = tax.title ?? '';
     valueController.text = tax.value?.toString() ?? '';
     selectedDropdownType.value = tax.type?.capitalizeFirst ?? 'Percent';
@@ -88,6 +94,7 @@ class Addnewtaxcontroller extends GetxController {
 
     selectedBranches.value = tax.branches ?? [];
   }
+
 
   Future<void> deleteTax(String? taxId) async {
     final loginUser = await prefs.getUser();
@@ -160,4 +167,34 @@ class Addnewtaxcontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
   }
+
+  Future<void> updateTax() async {
+    final loginUser = await prefs.getUser();
+    if (editingTaxId == null) return;
+
+    Map<String, dynamic> taxData = {
+      "salon_id": loginUser!.salonId,
+      "branch_id": selectedBranches.map((e) => e.id).toList(),
+      "title": titleController.text.trim(),
+      "value": int.tryParse(valueController.text.trim()) ?? 0,
+      "type": selectedDropdownType.value.toLowerCase(),
+      "tax_type": selectedDropdownModule.value.toLowerCase(),
+      "status": isActive.value ? 1 : 0,
+    };
+
+    try {
+       await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.postTex}/$editingTaxId',
+        taxData,
+        (json) => json,
+      );
+      isEditMode.value = false;
+      editingTaxId = null;
+      getTaxes();
+      CustomSnackbar.showSuccess('Success', 'Tax updated');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Update failed: $e');
+    }
+  }
+
 }

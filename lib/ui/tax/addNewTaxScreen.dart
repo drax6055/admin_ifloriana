@@ -54,7 +54,7 @@ class Addnewtaxscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Add New Tax')),
-     body: Obx(() {
+      body: Obx(() {
         if (getController.taxList.isEmpty) {
           return Center(child: Text('No taxes found'));
         }
@@ -90,7 +90,6 @@ class Addnewtaxscreen extends StatelessWidget {
           },
         );
       }),
-
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
         onPressed: () => _openBottomSheet(context),
@@ -156,17 +155,18 @@ class Addnewtaxscreen extends StatelessWidget {
   }
 
   Widget Btn_tax() {
-    return ElevatedButtonExample(
-      text: "Submit",
-      onPressed: () {
-        if (_formKey.currentState?.validate() ?? false) {
-          getController.onTaxadded();
-        } else {
-          CustomSnackbar.showError(
-              'Validation Error', 'Please fill in all fields correctly');
-        }
-      },
-    );
+    return Obx(() => ElevatedButtonExample(
+          text: getController.isEditMode.value ? "Update" : "Submit",
+          onPressed: () {
+            if (_formKey.currentState?.validate() ?? false) {
+              if (getController.isEditMode.value) {
+                getController.updateTax();
+              } else {
+                getController.onTaxadded();
+              }
+            }
+          },
+        ));
   }
 
   Widget type() {
@@ -222,15 +222,20 @@ class Addnewtaxscreen extends StatelessWidget {
             selectedColor: primaryColor.withOpacity(0.2),
           ),
           ...getController.branchList.map((branch) {
-            final isSelected = getController.selectedBranches.contains(branch);
+            final isSelected =
+                getController.selectedBranches.any((b) => b.id == branch.id);
             return FilterChip(
               label: Text(branch.name ?? ''),
               selected: isSelected,
               onSelected: (selected) {
                 if (selected) {
-                  getController.selectedBranches.add(branch);
+                  if (!getController.selectedBranches
+                      .any((b) => b.id == branch.id)) {
+                    getController.selectedBranches.add(branch);
+                  }
                 } else {
-                  getController.selectedBranches.remove(branch);
+                  getController.selectedBranches
+                      .removeWhere((b) => b.id == branch.id);
                 }
               },
               selectedColor: primaryColor.withOpacity(0.2),
