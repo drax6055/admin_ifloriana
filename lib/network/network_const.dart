@@ -29,4 +29,5 @@ class Endpoints {
   static const String getAllServices = "/services?salon_id=";
   static const String postTex = "/taxes";
   static const String getTex = "/taxes?salon_id=";
+  static const String getCoupons  = "/coupons?salon_id=";
 }
