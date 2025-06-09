@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 import 'package:flutter_template/utils/app_images.dart';
-import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 
 class Staffdetailsscreen extends StatelessWidget {
@@ -13,10 +12,6 @@ class Staffdetailsscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Staff Details"),
-        backgroundColor: primaryColor,
-      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());

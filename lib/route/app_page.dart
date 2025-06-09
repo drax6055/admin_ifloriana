@@ -7,6 +7,7 @@ import 'package:flutter_template/ui/drawer/services/addServices/addservicesScree
 import 'package:flutter_template/ui/drawer/staff/addNewStaffScreen.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart' show Staffdetailsscreen;
 import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
+import 'package:flutter_template/ui/tax/addNewTaxScreen.dart';
 import 'package:get/get.dart';
 import '../ui/auth/forgot/forgot_screen.dart';
 import '../ui/drawer/dashboard/dashboard_screen.dart';
@@ -66,6 +67,11 @@ class AppPages {
          GetPage(
         name: Routes.gerStaff,
         page: () => Staffdetailsscreen(),
+        transition: Transition.rightToLeft),
+
+          GetPage(
+        name: Routes.addtex,
+        page: () => Addnewtaxscreen(),
         transition: Transition.rightToLeft),
 
   ];
