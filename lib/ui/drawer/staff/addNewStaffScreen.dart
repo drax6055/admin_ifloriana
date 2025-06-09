@@ -432,7 +432,6 @@ class Addnewstaffscreen extends StatelessWidget {
           if (newValue != null) {
             getController.selectedBranch.value = newValue;
 
-            // Show snackbar with branch ID
             CustomSnackbar.showSuccess(
               'Branch Selected',
               'ID: ${newValue.id}',

@@ -12,4 +12,5 @@ abstract class Routes {
   static const addNewServicesScreen = '/AddNewServicesScreen';
 
   static const addService = '/AddNewService';
+  static const gerStaff = '/Staffdetailsscreen';
 }

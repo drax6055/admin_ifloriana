@@ -51,7 +51,7 @@ class DrawerScreen extends StatelessWidget {
       },
       {
         'title': 'Staff',
-        'widget': const Staffdetailsscreen(),
+        'widget': Staffdetailsscreen(),
       }
     ];
 
