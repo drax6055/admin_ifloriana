@@ -6,6 +6,7 @@ import 'package:flutter_template/ui/drawer/coupons/addNewCoupon/addCouponScreen.
 import 'package:flutter_template/ui/drawer/coupons/couponsScreen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/ui/drawer/services/addServices/addservicesScreen.dart';
+import 'package:flutter_template/ui/drawer/services/subCategory/subCategotySCreen.dart';
 import 'package:flutter_template/ui/drawer/staff/addNewStaffScreen.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart' show Staffdetailsscreen;
 import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
@@ -86,6 +87,10 @@ class AppPages {
         page: () => AddCouponScreen(),
         transition: Transition.rightToLeft),
 
+    GetPage(
+        name: Routes.addSubcategory,
+        page: () => Subcategotyscreen(),
+        transition: Transition.rightToLeft),
 
 
 

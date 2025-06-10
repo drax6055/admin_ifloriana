@@ -31,4 +31,9 @@ class Endpoints {
   static const String getTex = "/taxes?salon_id=";
   static const String getCoupons = "/coupons?salon_id=";
   static const String coupons = "/coupons";
+
+  static const String addSubCategory = "/subcategories";
+
+    static const String getSubCategory = "/subcategories?salon_id=";
+
 }

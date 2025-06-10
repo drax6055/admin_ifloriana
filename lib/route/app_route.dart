@@ -18,4 +18,7 @@ abstract class Routes {
   static const getCoupons = '/CouponsScreen';
   static const addCoupon = '/AddCouponScreen';
 
+  static const addSubcategory = '/Subcategotyscreen';
+  
+
 }
