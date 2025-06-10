@@ -3,7 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:intl/intl.dart';
 //////////////////////////////////// START IMAGE PICKER /////////////////////////////////////////
 
 final ImagePicker _picker = ImagePicker();
@@ -144,3 +144,30 @@ String? getSelectedTimeString() {
 }
 
 ////////////////////////////////////  END TIME /////////////////////////////////////////
+
+
+String formatTimeToString(TimeOfDay timeOfDay) {
+  final now = DateTime.now();
+  final time =
+      DateTime(now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+  return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}";
+}
+
+
+Future<void> pickAndSetDate({
+  required BuildContext context,
+  required TextEditingController controller,
+  String format = 'yyyy-MM-dd',
+}) async {
+  final DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2100),
+  );
+
+  if (pickedDate != null) {
+    final formattedDate = DateFormat(format).format(pickedDate);
+    controller.text = formattedDate;
+  }
+}

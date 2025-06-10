@@ -16,4 +16,6 @@ abstract class Routes {
 
   static const addtex = '/Addnewtaxscreen';
   static const getCoupons = '/CouponsScreen';
+  static const addCoupon = '/AddCouponScreen';
+
 }

@@ -93,12 +93,12 @@ class Addnewstaffcontroller extends GetxController {
     }
   }
 
-  String formatTimeToString(TimeOfDay timeOfDay) {
-    final now = DateTime.now();
-    final time = DateTime(
-        now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
-    return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}";
-  }
+  // String formatTimeToString(TimeOfDay timeOfDay) {
+  //   final now = DateTime.now();
+  //   final time = DateTime(
+  //       now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
+  //   return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}";
+  // }
 
   Future<void> getServices() async {
     final loginUser = await prefs.getUser();

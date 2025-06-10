@@ -255,7 +255,7 @@ class Addnewstaffscreen extends StatelessWidget {
             initialTime: initialTime,
           );
           if (pickedTime != null) {
-            String formattedTime = getController.formatTimeToString(pickedTime);
+            String formattedTime = formatTimeToString(pickedTime);
             getController.shiftStarttimeController.text = formattedTime;
           }
         },
@@ -278,7 +278,7 @@ class Addnewstaffscreen extends StatelessWidget {
             initialTime: initialTime,
           );
           if (pickedTime != null) {
-            String formattedTime = getController.formatTimeToString(pickedTime);
+            String formattedTime = formatTimeToString(pickedTime);
             getController.LunchStarttimeController.text = formattedTime;
           }
         },
@@ -301,7 +301,7 @@ class Addnewstaffscreen extends StatelessWidget {
             initialTime: initialTime,
           );
           if (pickedTime != null) {
-            String formattedTime = getController.formatTimeToString(pickedTime);
+            String formattedTime = formatTimeToString(pickedTime);
             getController.shiftEndtimeController.text = formattedTime;
           }
         },

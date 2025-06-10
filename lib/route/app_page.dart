@@ -2,6 +2,7 @@ import 'package:flutter_template/ui/auth/login/login_screen.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/auth/register_packages/register_packages_screen.dart';
 import 'package:flutter_template/ui/auth/register/register_screen.dart';
+import 'package:flutter_template/ui/drawer/coupons/addNewCoupon/addCouponScreen.dart';
 import 'package:flutter_template/ui/drawer/coupons/couponsScreen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/ui/drawer/services/addServices/addservicesScreen.dart';
@@ -79,6 +80,13 @@ class AppPages {
         name: Routes.getCoupons,
         page: () => CouponsScreen(),
         transition: Transition.rightToLeft),
+
+          GetPage(
+        name: Routes.addCoupon,
+        page: () => AddCouponScreen(),
+        transition: Transition.rightToLeft),
+
+
 
 
   ];

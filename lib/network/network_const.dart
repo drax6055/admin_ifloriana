@@ -1,5 +1,5 @@
 class Apis {
-  static const baseUrl = 'http://192.168.1.9:5000/api';
+  static const baseUrl = 'http://192.168.1.28:5000/api';
 }
 
 class Endpoints {
@@ -29,5 +29,6 @@ class Endpoints {
   static const String getAllServices = "/services?salon_id=";
   static const String postTex = "/taxes";
   static const String getTex = "/taxes?salon_id=";
-  static const String getCoupons  = "/coupons?salon_id=";
+  static const String getCoupons = "/coupons?salon_id=";
+  static const String coupons = "/coupons";
 }
