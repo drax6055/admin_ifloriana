@@ -17,6 +17,7 @@ class Category {
     );
   }
 }
+
 class SubCategory {
   final String id;
   final String name;
@@ -30,6 +31,7 @@ class SubCategory {
     );
   }
 }
+
 class Subcategorycontroller extends GetxController {
   @override
   void onInit() {
@@ -43,7 +45,6 @@ class Subcategorycontroller extends GetxController {
   var nameController = TextEditingController();
   var isActive = true.obs;
   var subCategoryList = <SubCategory>[].obs;
-
 
   Future<void> getCategorys() async {
     final loginUser = await prefs.getUser();
@@ -59,7 +60,7 @@ class Subcategorycontroller extends GetxController {
     }
   }
 
-   Future<void> getSubCategory() async {
+  Future<void> getSubCategory() async {
     final loginUser = await prefs.getUser();
     try {
       var response = await dioClient.getData(
@@ -72,7 +73,8 @@ class Subcategorycontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
   }
-Future<void> deleteSubCategory(String? subCategoryId) async {
+
+  Future<void> deleteSubCategory(String? subCategoryId) async {
     final loginUser = await prefs.getUser();
     if (subCategoryId == null) return;
     try {
@@ -82,6 +84,7 @@ Future<void> deleteSubCategory(String? subCategoryId) async {
       );
 
       subCategoryList.removeWhere((s) => s.id == subCategoryId);
+      getSubCategory();
       CustomSnackbar.showSuccess('Deleted', 'Subcategory removed successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to delete subcategory: $e');
@@ -104,6 +107,7 @@ Future<void> deleteSubCategory(String? subCategoryId) async {
         staffData,
         (json) => json,
       );
+      getSubCategory();
       CustomSnackbar.showSuccess('Success', 'Staff added successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());

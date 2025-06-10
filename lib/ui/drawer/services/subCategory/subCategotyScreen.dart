@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/commen_items/commen_class.dart';
-import 'package:flutter_template/route/app_route.dart';
 import 'package:flutter_template/ui/drawer/services/subCategory/subCategoryController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
@@ -22,74 +21,98 @@ class Subcategotyscreen extends StatelessWidget {
         child: Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          spacing: 10,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Imagepicker(),
+        child: Obx(() {
+          return ListView.builder(
+            itemCount: getController.subCategoryList.length,
+            itemBuilder: (context, index) {
+              final subCategory = getController.subCategoryList[index];
+              return ListTile(
+                title: Text(subCategory.name),
+                trailing: IconButton(
+                  icon: Icon(Icons.delete, color: Colors.red),
+                  onPressed: () {
+                    getController.deleteSubCategory(subCategory.id);
+                  },
                 ),
-                SizedBox(
-                  width: 5.w,
-                ),
-                Expanded(
-                  flex: 3,
-                  child: CustomTextFormField(
-                    controller: getController.nameController,
-                    labelText: "Name",
-                    keyboardType: TextInputType.text,
-                    validator: (value) => Validation.validatename(value),
-                  ),
-                ),
-              ],
-            ),
-            branchDropdown(),
-            Expanded(
-              child: Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomTextWidget(
-                        text: 'Status',
-                        textStyle:
-                            CustomTextStyles.textFontRegular(size: 14.sp),
-                      ),
-                      Switch(
-                        value: getController.isActive.value,
-                        onChanged: (value) {
-                          getController.isActive.value = value;
-                        },
-                        activeColor: primaryColor,
-                      ),
-                    ],
-                  )),
-            ),
-            Btn_Subcategory(),
-            Expanded(child: Obx(() {
-              return ListView.builder(
-                itemCount: getController.subCategoryList.length,
-                itemBuilder: (context, index) {
-                  final subCategory = getController.subCategoryList[index];
-                  return ListTile(
-                    title: Text(subCategory.name),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        getController.deleteSubCategory(subCategory.id);
-                      },
-                    ),
-                  );
-                },
               );
-            })),
-          ],
-        ),
+            },
+          );
+        }),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => showAddCategorySheet(context),
         child: Icon(Icons.add),
       ),
     ));
+  }
+
+  void showAddCategorySheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 16.w,
+            right: 16.w,
+            top: 16.h,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Imagepicker(),
+                    ),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: CustomTextFormField(
+                        controller: getController.nameController,
+                        labelText: "Name",
+                        keyboardType: TextInputType.text,
+                        validator: (value) => Validation.validatename(value),
+                      ),
+                    ),
+                  ],
+                ),
+                branchDropdown(),
+                Obx(() => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          text: 'Status',
+                          textStyle:
+                              CustomTextStyles.textFontRegular(size: 14.sp),
+                        ),
+                        Switch(
+                          value: getController.isActive.value,
+                          onChanged: (value) {
+                            getController.isActive.value = value;
+                          },
+                          activeColor: primaryColor,
+                        ),
+                      ],
+                    )),
+                Btn_Subcategory(),
+                SizedBox(
+                  height: 20.h,
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget branchDropdown() {
