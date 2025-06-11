@@ -112,6 +112,8 @@ class Postbranchesscreen extends StatelessWidget {
                   ),
                 ],
               )
+
+              //pincode field
             ],
           ),
         ),
@@ -145,9 +147,8 @@ class Postbranchesscreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 120, // Maximum height of 120
-            ),
+            constraints:
+                BoxConstraints(maxHeight: 120, minWidth: double.infinity),
             child: Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -173,6 +174,7 @@ class Postbranchesscreen extends StatelessWidget {
                       },
                       disabledColor: secondaryColor.withOpacity(0.2),
                       selectedColor: primaryColor.withOpacity(0.2),
+                      checkmarkColor: primaryColor,
                     ),
 
                     // Service Chips
@@ -190,6 +192,7 @@ class Postbranchesscreen extends StatelessWidget {
                           }
                         },
                         selectedColor: primaryColor.withOpacity(0.2),
+                        checkmarkColor: primaryColor,
                       );
                     }).toList(),
                   ],
@@ -211,9 +214,8 @@ class Postbranchesscreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 120, // Limit max height to 120
-            ),
+            constraints:
+                BoxConstraints(maxHeight: 120, minWidth: double.infinity),
             child: Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -237,8 +239,9 @@ class Postbranchesscreen extends StatelessWidget {
                           getController.selectedPaymentMethod.clear();
                         }
                       },
-                      selectedColor: Colors.blue.withOpacity(0.2),
+                      selectedColor: secondaryColor.withOpacity(0.2),
                       disabledColor: Colors.grey[200],
+                      checkmarkColor: primaryColor,
                     ),
 
                     // Payment method chips
@@ -256,8 +259,8 @@ class Postbranchesscreen extends StatelessWidget {
                                 .remove(category);
                           }
                         },
-                        selectedColor: Colors.blue.withOpacity(0.2),
-                        checkmarkColor: Colors.blue,
+                        selectedColor: secondaryColor.withOpacity(0.2),
+                        checkmarkColor: primaryColor,
                       );
                     }).toList(),
                   ],

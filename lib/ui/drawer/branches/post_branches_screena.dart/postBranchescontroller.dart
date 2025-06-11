@@ -45,8 +45,12 @@ class Postbranchescontroller extends GetxController {
   RxString locationText = "Press the button to get location".obs;
   final RxList<String> selectedPaymentMethod = <String>[].obs;
 
+  // In Postbranchescontroller
+  // var postalDetails = Rxn<Map<String, dynamic>>();
+
   var latController = TextEditingController();
   var lngController = TextEditingController();
+  // RxList<String> possibleLandmarks = <String>[].obs; // add this
 
   final List<String> dropdownItemSelectedCategory = [
     'Male',
@@ -80,7 +84,8 @@ class Postbranchescontroller extends GetxController {
 
   Future<void> fetchLocation() async {
     isLoading.value = true;
-          CustomSnackbar.showSuccess('Locatotion Featching: ', "Wait for a while we're Featching your location ");
+    CustomSnackbar.showSuccess('Location Fetching:',
+        "Wait for a while, we're fetching your location.");
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       await Geolocator.openLocationSettings();
@@ -106,6 +111,7 @@ class Postbranchescontroller extends GetxController {
     longitude.value = position.longitude.toString();
     isLoading.value = false;
   }
+
 
   Future onBranchAdd() async {
     final loginUser = await prefs.getUser();
@@ -136,7 +142,7 @@ class Postbranchescontroller extends GetxController {
         branchData,
         (json) => AddBranch.fromJson(json),
       );
-      CustomSnackbar.showSuccess('Succcess', 'Branch add Successfully');
+      CustomSnackbar.showSuccess('Success', 'Branch added successfully');
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
