@@ -34,6 +34,6 @@ class Endpoints {
 
   static const String addSubCategory = "/subcategories";
 
-    static const String getSubCategory = "/subcategories?salon_id=";
-
+  static const String getSubCategory = "/subcategories?salon_id=";
+  static const String postBranchs = "/branches";
 }

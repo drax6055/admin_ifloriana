@@ -19,6 +19,6 @@ abstract class Routes {
   static const addCoupon = '/AddCouponScreen';
 
   static const addSubcategory = '/Subcategotyscreen';
-  
 
+  static const postBranchs = "/Postbranchesscreen";
 }
