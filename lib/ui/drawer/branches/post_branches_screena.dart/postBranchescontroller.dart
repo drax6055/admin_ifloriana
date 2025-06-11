@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/network/model/addModel.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
-import '../../../main.dart';
+import '../../../../main.dart';
 
 class Service {
   String? id;
@@ -41,8 +42,11 @@ class Postbranchescontroller extends GetxController {
   var isActive = true.obs;
   RxList<Service> selectedServices = <Service>[].obs;
   RxList<Service> serviceList = <Service>[].obs;
-
+  RxString locationText = "Press the button to get location".obs;
   final RxList<String> selectedPaymentMethod = <String>[].obs;
+
+  var latController = TextEditingController();
+  var lngController = TextEditingController();
 
   final List<String> dropdownItemSelectedCategory = [
     'Male',
@@ -54,6 +58,10 @@ class Postbranchescontroller extends GetxController {
     'Cash',
     'UPI',
   ];
+
+  var isLoading = false.obs;
+  var latitude = ''.obs;
+  var longitude = ''.obs;
 
   Future<void> getServices() async {
     final loginUser = await prefs.getUser();
@@ -68,6 +76,35 @@ class Postbranchescontroller extends GetxController {
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
+  }
+
+  Future<void> fetchLocation() async {
+    isLoading.value = true;
+          CustomSnackbar.showSuccess('Locatotion Featching: ', "Wait for a while we're Featching your location ");
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      isLoading.value = false;
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.always &&
+          permission != LocationPermission.whileInUse) {
+        isLoading.value = false;
+        return;
+      }
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    latitude.value = position.latitude.toString();
+    longitude.value = position.longitude.toString();
+    isLoading.value = false;
   }
 
   Future onBranchAdd() async {
