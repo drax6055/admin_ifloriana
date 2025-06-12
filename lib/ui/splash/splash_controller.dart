@@ -11,7 +11,7 @@ class SplashController extends GetxController {
     navigateToNextScreen();
   }
 
-  navigateToNextScreen() async {
+  navigateToNextScreen() async { 
     try {
       var duration = const Duration(seconds: 2);
 
@@ -21,7 +21,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.offNamed(Routes.postBranchs);
+          Get.offNamed(Routes.managerScreen);
           // Get.offNamed(Routes.drawerScreen);
         }
       });

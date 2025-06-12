@@ -21,4 +21,7 @@ abstract class Routes {
   static const addSubcategory = '/Subcategotyscreen';
 
   static const postBranchs = "/Postbranchesscreen";
+  static const getBranches = "/Getbranchesscreen";
+
+  static const managerScreen = "/Managerscreen";
 }
