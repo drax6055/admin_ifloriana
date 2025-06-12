@@ -92,4 +92,27 @@ class Managercontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
   }
+
+  Future<void> updateManager(String id) async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> managerData = {
+      "first_name": firstNameController.text,
+      "last_name": lastNameController.text,
+      "email": emailController.text,
+      "contact_number": contactNumberController.text,
+      'gender': selectedGender.value.toLowerCase(),
+      "salon_id": loginUser!.salonId,
+      'branch_id': selectedBranch.value?.id,
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.addManager}/$id',
+        managerData,
+        (json) => json,
+      );
+      CustomSnackbar.showSuccess('Success', 'Manager updated successfully');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to update manager: $e');
+    }
+  }
 }

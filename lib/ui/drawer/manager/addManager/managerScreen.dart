@@ -9,15 +9,38 @@ import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
+import 'package:flutter_template/ui/drawer/manager/getManager/getmanagerController.dart';
 
 import '../../../../utils/colors.dart';
 
 class Managerscreen extends StatelessWidget {
-  Managerscreen({super.key});
+  final Manager? manager;
+  Managerscreen({super.key, this.manager});
   final Managercontroller getController = Get.put(Managercontroller());
+
+  void prefillFields() {
+    if (manager != null) {
+      getController.firstNameController.text = manager!.firstName;
+      getController.lastNameController.text = manager!.lastName;
+      getController.emailController.text = manager!.email;
+      getController.contactNumberController.text = manager!.contactNumber;
+      // No gender field in Manager model, so skip gender prefill
+      // Branch prefill can be handled after branchList is loaded
+      if (manager!.branchId != null) {
+        ever(getController.branchList, (_) {
+          final branch = getController.branchList
+              .firstWhereOrNull((b) => b.id == manager!.branchId);
+          if (branch != null) {
+            getController.selectedBranch.value = branch;
+          }
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    prefillFields();
     return Scaffold(
         appBar: CustomAppBar(
           title: "done",
@@ -39,7 +62,7 @@ class Managerscreen extends StatelessWidget {
                   InputTxtfield_confirmPassword(),
                   Gender(),
                   branchDropdown(),
-                  Btn_addManager(),
+                  Btn_saveManager(context),
                 ],
               )),
         ));
@@ -166,11 +189,16 @@ class Managerscreen extends StatelessWidget {
     });
   }
 
-  Widget Btn_addManager() {
+  Widget Btn_saveManager(BuildContext context) {
     return ElevatedButtonExample(
-      text: "Add Manager",
-      onPressed: () {
-        getController.onManagerAdd();
+      text: manager == null ? "Add Manager" : "Save Changes",
+      onPressed: () async {
+        if (manager == null) {
+          await getController.onManagerAdd();
+        } else {
+          await getController.updateManager(manager!.id);
+        }
+        Navigator.of(context).pop();
       },
     );
   }

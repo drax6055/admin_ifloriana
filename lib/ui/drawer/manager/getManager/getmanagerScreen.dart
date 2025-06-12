@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/ui/drawer/manager/getManager/getmanagerController.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:get/get.dart';
+import 'package:flutter_template/ui/drawer/manager/addManager/managerScreen.dart';
 
 class Getmanagerscreen extends StatelessWidget {
   Getmanagerscreen({super.key});
@@ -24,6 +25,27 @@ class Getmanagerscreen extends StatelessWidget {
             return ExpansionTile(
               shape: Border.all(color: Colors.transparent),
               title: Text('${manager.firstName} ${manager.lastName}'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => Managerscreen(manager: manager),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      getController.deleteManager(manager.id);
+                    },
+                  ),
+                ],
+              ),
               children: [
                 Text('Email: ${manager.email}'),
                 Text('Contact: ${manager.contactNumber}'),
