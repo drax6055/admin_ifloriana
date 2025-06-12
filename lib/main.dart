@@ -10,7 +10,7 @@ import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'network/dio.dart';
 
-FlutterSecureStorage? storage;  
+FlutterSecureStorage? storage;
 final dioClient = DioClient();
 final SharedPreferenceManager prefs = SharedPreferenceManager();
 
@@ -55,4 +55,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

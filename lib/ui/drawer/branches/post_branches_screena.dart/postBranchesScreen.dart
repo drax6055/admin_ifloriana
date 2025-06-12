@@ -81,58 +81,31 @@ class Postbranchesscreen extends StatelessWidget {
                 keyboardType: TextInputType.text,
                 validator: (value) => Validation.validatedisscription(value),
               ),
-
-              // CustomTextFormField(
-              //   controller: getController.pincodeController,
-              //   labelText: 'Pincode',
-              //   keyboardType: TextInputType.phone,
-              //   validator: (value) => Validation.validationPincode(value),
-              //   inputFormatters: [
-              //     FilteringTextInputFormatter.digitsOnly,
-              //     LengthLimitingTextInputFormatter(6),
-              //   ],
-              //   onFieldSubmitted: (value) {
-              //     if (value.isNotEmpty) {
-              //       getController.fetchLocationDetails(value);
-              //     }
-              //   },
-              // ),
-
-              // ),
-              SizedBox(height: 10),
-              Obx(() {
-                if (getController.isLoading.value) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (getController.error.isNotEmpty) {
-                  return Text(getController.error.value,
-                      style: TextStyle(color: Colors.red));
-                } else if (getController.country.value.isNotEmpty ||
-                    getController.state.value.isNotEmpty ||
-                    getController.district.value.isNotEmpty ||
-                    getController.block.value.isNotEmpty) {
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (getController.country.value.isNotEmpty)
-                            Text('${getController.country.value}'),
-                          if (getController.state.value.isNotEmpty)
-                            Text('${getController.state.value}'),
-                          if (getController.district.value.isNotEmpty)
-                            Text('${getController.district.value}'),
-                          if (getController.block.value.isNotEmpty)
-                            Text('${getController.block.value}'),
-                        ],
-                      ),
-                    ),
-                  );
-                } else {
-                  return SizedBox.shrink();
-                }
-              }),
+              CustomTextFormField(
+                controller: getController.landmarkController,
+                labelText: 'Landmark',
+                keyboardType: TextInputType.text,
+              ),
+              CustomTextFormField(
+                controller: getController.countryController,
+                labelText: 'Country',
+                keyboardType: TextInputType.text,
+              ),
+              CustomTextFormField(
+                controller: getController.stateController,
+                labelText: 'State',
+                keyboardType: TextInputType.text,
+              ),
+              CustomTextFormField(
+                controller: getController.cityController,
+                labelText: 'City',
+                keyboardType: TextInputType.text,
+              ),
+              CustomTextFormField(
+                controller: getController.postalCodeController,
+                labelText: 'Postal Code',
+                keyboardType: TextInputType.text,
+              ),
               Row(
                 children: [
                   Expanded(

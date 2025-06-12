@@ -25,8 +25,12 @@ class Postbranchescontroller extends GetxController {
   void onInit() async {
     super.onInit();
     getServices();
-    fetchLocationDetails();
     final locationDetails = await getUserLocationDetails();
+    landmarkController.text = locationDetails['landmark'] ?? '';
+    countryController.text = locationDetails['country'] ?? '';
+    stateController.text = locationDetails['state'] ?? '';
+    cityController.text = locationDetails['city'] ?? '';
+    postalCodeController.text = locationDetails['postal_code'] ?? '';
     print(locationDetails); // You will get landmark, country, etc.
   }
 
@@ -71,6 +75,10 @@ class Postbranchescontroller extends GetxController {
   var district = ''.obs;
   var block = ''.obs;
   var error = ''.obs;
+
+  var landmark = ''.obs;
+  var city = ''.obs;
+  var postalCode = ''.obs;
 
   Future<void> getServices() async {
     final loginUser = await prefs.getUser();
@@ -173,11 +181,11 @@ class Postbranchescontroller extends GetxController {
       "payment_method":
           selectedPaymentMethod.map((e) => e.toLowerCase()).toList(),
       'service_id': selectedServices.map((s) => s.id).toList(),
-      "landmark": "demo",
-      "country": "demo",
-      "state": "demo",
-      "city": "demo",
-      "postal_code": "387002",
+      "landmark": landmarkController.text,
+      "country": countryController.text,
+      "state": stateController.text,
+      "city": cityController.text,
+      "postal_code": postalCodeController.text,
       "latitude": latitude.value,
       "longitude": longitude.value,
       "description": discriptionController.text,
@@ -195,32 +203,6 @@ class Postbranchescontroller extends GetxController {
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
-    }
-  }
-
-  Future<void> fetchLocationDetails() async {
-    isLoading.value = true;
-    error.value = '';
-
-    try {
-      final response = await dioClient.getData(
-        'https://api.postalpincode.in/pincode/387002',
-        (data) => data,
-      );
-
-      if (response != null && response[0]['Status'] == 'Success') {
-        final postOffice = response[0]['PostOffice'][0];
-        country.value = postOffice['Country'] ?? '';
-        state.value = postOffice['State'] ?? '';
-        district.value = postOffice['District'] ?? '';
-        block.value = postOffice['Block'] ?? '';
-      } else {
-        error.value = 'Invalid Pincode or no data found.';
-      }
-    } catch (e) {
-      error.value = 'Failed to fetch data: $e';
-    } finally {
-      isLoading.value = false;
     }
   }
 }
