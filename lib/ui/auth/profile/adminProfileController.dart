@@ -22,6 +22,8 @@ class Adminprofilecontroller extends GetxController {
   var showOldPassword = false.obs;
   var showConfirmPassword = false.obs;
 
+  
+
   void toggleShowPassword() {
     showPassword.value = !showPassword.value;
   }
@@ -34,14 +36,14 @@ class Adminprofilecontroller extends GetxController {
     showOldPassword.value = !showOldPassword.value;
   }
 
-  // var pincodeController = TextEditingController();
+  var pincodeController = TextEditingController();
 
-  // var country = ''.obs;
-  // var state = ''.obs;
-  // var district = ''.obs;
-  // var block = ''.obs;
-  // var isLoading = false.obs;
-  // var error = ''.obs;
+  var country = ''.obs;
+  var state = ''.obs;
+  var district = ''.obs;
+  var block = ''.obs;
+  var isLoading = false.obs;
+  var error = ''.obs;
 
   var isExpanded_Details = false.obs;
   var isExpanded_pass = false.obs;
@@ -117,29 +119,29 @@ class Adminprofilecontroller extends GetxController {
     }
   }
 
-  // Future<void> fetchLocationDetails(String pincode) async {
-  //   isLoading.value = true;
-  //   error.value = '';
+  Future<void> fetchLocationDetails(String pincode) async {
+    isLoading.value = true;
+    error.value = '';
 
-  //   try {
-  //     final response = await dioClient.getData(
-  //       'https://api.postalpincode.in/pincode/$pincode',
-  //       (data) => data,
-  //     );
+    try {
+      final response = await dioClient.getData(
+        'https://api.postalpincode.in/pincode/$pincode',
+        (data) => data,
+      );
 
-  //     if (response != null && response[0]['Status'] == 'Success') {
-  //       final postOffice = response[0]['PostOffice'][0];
-  //       country.value = postOffice['Country'] ?? '';
-  //       state.value = postOffice['State'] ?? '';
-  //       district.value = postOffice['District'] ?? '';
-  //       block.value = postOffice['Block'] ?? '';
-  //     } else {
-  //       error.value = 'Invalid Pincode or no data found.';
-  //     }
-  //   } catch (e) {
-  //     error.value = 'Failed to fetch data: $e';
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
+      if (response != null && response[0]['Status'] == 'Success') {
+        final postOffice = response[0]['PostOffice'][0];
+        country.value = postOffice['Country'] ?? '';
+        state.value = postOffice['State'] ?? '';
+        district.value = postOffice['District'] ?? '';
+        block.value = postOffice['Block'] ?? '';
+      } else {
+        error.value = 'Invalid Pincode or no data found.';
+      }
+    } catch (e) {
+      error.value = 'Failed to fetch data: $e';
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:geocoding/geocoding.dart';
 
 import '../../../../main.dart';
 
@@ -21,9 +22,12 @@ class Service {
 
 class Postbranchescontroller extends GetxController {
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     getServices();
+    fetchLocationDetails();
+    final locationDetails = await getUserLocationDetails();
+    print(locationDetails); // You will get landmark, country, etc.
   }
 
   var nameController = TextEditingController();
@@ -34,8 +38,6 @@ class Postbranchescontroller extends GetxController {
   var stateController = TextEditingController();
   var countryController = TextEditingController();
   var postalCodeController = TextEditingController();
-  var LatitudeController = TextEditingController();
-  var longtitudeController = TextEditingController();
   var discriptionController = TextEditingController();
   var addressController = TextEditingController();
   var selectedCategory = "Male".obs;
@@ -44,13 +46,10 @@ class Postbranchescontroller extends GetxController {
   RxList<Service> serviceList = <Service>[].obs;
   RxString locationText = "Press the button to get location".obs;
   final RxList<String> selectedPaymentMethod = <String>[].obs;
-
-  // In Postbranchescontroller
-  // var postalDetails = Rxn<Map<String, dynamic>>();
+  var pincodeController = TextEditingController();
 
   var latController = TextEditingController();
   var lngController = TextEditingController();
-  // RxList<String> possibleLandmarks = <String>[].obs; // add this
 
   final List<String> dropdownItemSelectedCategory = [
     'Male',
@@ -66,6 +65,12 @@ class Postbranchescontroller extends GetxController {
   var isLoading = false.obs;
   var latitude = ''.obs;
   var longitude = ''.obs;
+
+  var country = ''.obs;
+  var state = ''.obs;
+  var district = ''.obs;
+  var block = ''.obs;
+  var error = ''.obs;
 
   Future<void> getServices() async {
     final loginUser = await prefs.getUser();
@@ -112,6 +117,49 @@ class Postbranchescontroller extends GetxController {
     isLoading.value = false;
   }
 
+  Future<Map<String, String>> getUserLocationDetails() async {
+    // 1. Check location permission
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception('Location services are disabled.');
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw Exception('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      throw Exception('Location permissions are permanently denied');
+    }
+
+    // 2. Get current position
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    // 3. Reverse geocode the coordinates
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    if (placemarks.isNotEmpty) {
+      final placemark = placemarks.first;
+
+      return {
+        "landmark": placemark.street ?? "",
+        "country": placemark.country ?? "",
+        "state": placemark.administrativeArea ?? "",
+        "city": placemark.locality ?? placemark.subAdministrativeArea ?? "",
+        "postal_code": placemark.postalCode ?? "",
+      };
+    } else {
+      throw Exception('Failed to get placemark data');
+    }
+  }
 
   Future onBranchAdd() async {
     final loginUser = await prefs.getUser();
@@ -122,20 +170,21 @@ class Postbranchescontroller extends GetxController {
       'status': isActive.value ? 1 : 0,
       "contact_email": contactEmailController.text,
       "contact_number": contactNumberController.text,
-      "payment_method": selectedPaymentMethod.toList(),
+      "payment_method":
+          selectedPaymentMethod.map((e) => e.toLowerCase()).toList(),
       'service_id': selectedServices.map((s) => s.id).toList(),
-      "landmark": landmarkController.text,
-      "country": countryController.text,
-      "state": stateController.text,
-      "city": cityController.text,
-      "postal_code": postalCodeController.text,
-      "latitude": int.tryParse(LatitudeController.text),
-      "longitude": int.tryParse(longtitudeController.text),
+      "landmark": "demo",
+      "country": "demo",
+      "state": "demo",
+      "city": "demo",
+      "postal_code": "387002",
+      "latitude": latitude.value,
+      "longitude": longitude.value,
       "description": discriptionController.text,
       "image": null,
       "address": addressController.text
     };
-
+    print("===> $branchData");
     try {
       await dioClient.postData<AddBranch>(
         '${Apis.baseUrl}${Endpoints.postBranchs}',
@@ -146,6 +195,32 @@ class Postbranchescontroller extends GetxController {
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
+  Future<void> fetchLocationDetails() async {
+    isLoading.value = true;
+    error.value = '';
+
+    try {
+      final response = await dioClient.getData(
+        'https://api.postalpincode.in/pincode/387002',
+        (data) => data,
+      );
+
+      if (response != null && response[0]['Status'] == 'Success') {
+        final postOffice = response[0]['PostOffice'][0];
+        country.value = postOffice['Country'] ?? '';
+        state.value = postOffice['State'] ?? '';
+        district.value = postOffice['District'] ?? '';
+        block.value = postOffice['Block'] ?? '';
+      } else {
+        error.value = 'Invalid Pincode or no data found.';
+      }
+    } catch (e) {
+      error.value = 'Failed to fetch data: $e';
+    } finally {
+      isLoading.value = false;
     }
   }
 }

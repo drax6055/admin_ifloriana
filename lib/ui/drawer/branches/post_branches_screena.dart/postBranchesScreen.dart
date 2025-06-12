@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/branches/post_branches_screena.dart/postBranchescontroller.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/utils/validation.dart';
+import 'package:flutter_template/wiget/Custome_button.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
 import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_dropdown.dart';
@@ -79,6 +81,58 @@ class Postbranchesscreen extends StatelessWidget {
                 keyboardType: TextInputType.text,
                 validator: (value) => Validation.validatedisscription(value),
               ),
+
+              // CustomTextFormField(
+              //   controller: getController.pincodeController,
+              //   labelText: 'Pincode',
+              //   keyboardType: TextInputType.phone,
+              //   validator: (value) => Validation.validationPincode(value),
+              //   inputFormatters: [
+              //     FilteringTextInputFormatter.digitsOnly,
+              //     LengthLimitingTextInputFormatter(6),
+              //   ],
+              //   onFieldSubmitted: (value) {
+              //     if (value.isNotEmpty) {
+              //       getController.fetchLocationDetails(value);
+              //     }
+              //   },
+              // ),
+
+              // ),
+              SizedBox(height: 10),
+              Obx(() {
+                if (getController.isLoading.value) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (getController.error.isNotEmpty) {
+                  return Text(getController.error.value,
+                      style: TextStyle(color: Colors.red));
+                } else if (getController.country.value.isNotEmpty ||
+                    getController.state.value.isNotEmpty ||
+                    getController.district.value.isNotEmpty ||
+                    getController.block.value.isNotEmpty) {
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (getController.country.value.isNotEmpty)
+                            Text('${getController.country.value}'),
+                          if (getController.state.value.isNotEmpty)
+                            Text('${getController.state.value}'),
+                          if (getController.district.value.isNotEmpty)
+                            Text('${getController.district.value}'),
+                          if (getController.block.value.isNotEmpty)
+                            Text('${getController.block.value}'),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              }),
               Row(
                 children: [
                   Expanded(
@@ -111,9 +165,8 @@ class Postbranchesscreen extends StatelessWidget {
                         )),
                   ),
                 ],
-              )
-
-              //pincode field
+              ),
+              Btn_addBranch()
             ],
           ),
         ),
@@ -203,6 +256,15 @@ class Postbranchesscreen extends StatelessWidget {
         ],
       );
     });
+  }
+
+  Widget Btn_addBranch() {
+    return ElevatedButtonExample(
+      text: "Add Branch",
+      onPressed: () {
+        getController.onBranchAdd();
+      },
+    );
   }
 
   Widget paymentMethodChipView() {

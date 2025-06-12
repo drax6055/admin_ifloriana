@@ -86,8 +86,8 @@ class Data {
     state = json['state'];
     city = json['city'];
     postalCode = json['postal_code'];
-    latitude = json['latitude'];
-    longitude = json['longitude'];
+    latitude = (json['latitude'] as num?)?.toDouble();
+    longitude = (json['longitude'] as num?)?.toDouble();
     description = json['description'];
     image = json['image'];
     ratingStar = json['rating_star'];

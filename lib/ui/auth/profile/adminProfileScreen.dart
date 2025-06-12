@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileController.dart';
 import 'package:flutter_template/utils/colors.dart';
+import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/utils/validation.dart';
 import 'package:flutter_template/wiget/Custome_button.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
+import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -182,52 +184,52 @@ class Adminprofilescreen extends StatelessWidget {
                                 ),
                               ),
                             )),
-                      )
+                      ),
 
-                      // InputTxtfield_pincode(),
-                      // SizedBox(height: 20),
-                      // Obx(() {
-                      //   if (getController.isLoading.value) {
-                      //     return CircularProgressIndicator();
-                      //   } else if (getController.error.isNotEmpty) {
-                      //     return Text(getController.error.value,
-                      //         style: TextStyle(color: Colors.red));
-                      //   } else {
-                      //     return Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //       children: [
-                      //         CustomTextWidget(
-                      //           text: "${getController.country.value}",
-                      //           textStyle: CustomTextStyles.textFontRegular(
-                      //             size: 16.sp,
-                      //             color: black,
-                      //           ),
-                      //         ),
-                      //         CustomTextWidget(
-                      //           text: "${getController.state.value}",
-                      //           textStyle: CustomTextStyles.textFontRegular(
-                      //             size: 16.sp,
-                      //             color: black,
-                      //           ),
-                      //         ),
-                      //         CustomTextWidget(
-                      //           text: "${getController.district.value}",
-                      //           textStyle: CustomTextStyles.textFontRegular(
-                      //             size: 16.sp,
-                      //             color: black,
-                      //           ),
-                      //         ),
-                      //         CustomTextWidget(
-                      //           text: "${getController.block.value}",
-                      //           textStyle: CustomTextStyles.textFontRegular(
-                      //             size: 16.sp,
-                      //             color: black,
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     );
-                      //   }
-                      // }),
+                      InputTxtfield_pincode(),
+                      SizedBox(height: 20),
+                      Obx(() {
+                        if (getController.isLoading.value) {
+                          return CircularProgressIndicator();
+                        } else if (getController.error.isNotEmpty) {
+                          return Text(getController.error.value,
+                              style: TextStyle(color: Colors.red));
+                        } else {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomTextWidget(
+                                text: "${getController.country.value}",
+                                textStyle: CustomTextStyles.textFontRegular(
+                                  size: 16.sp,
+                                  color: black,
+                                ),
+                              ),
+                              CustomTextWidget(
+                                text: "${getController.state.value}",
+                                textStyle: CustomTextStyles.textFontRegular(
+                                  size: 16.sp,
+                                  color: black,
+                                ),
+                              ),
+                              CustomTextWidget(
+                                text: "${getController.district.value}",
+                                textStyle: CustomTextStyles.textFontRegular(
+                                  size: 16.sp,
+                                  color: black,
+                                ),
+                              ),
+                              CustomTextWidget(
+                                text: "${getController.block.value}",
+                                textStyle: CustomTextStyles.textFontRegular(
+                                  size: 16.sp,
+                                  color: black,
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      }),
                     ],
                   ),
                 ),
@@ -349,21 +351,23 @@ class Adminprofilescreen extends StatelessWidget {
     );
   }
 
-  // Widget InputTxtfield_pincode() {
-  //   return CustomTextFormField(
-  //     controller: getController.pincodeController,
-  //     labelText: 'Pincode',
-  //     keyboardType: TextInputType.phone,
-  //     validator: (value) => Validation.validationPincode(value),
-  //     inputFormatters: [
-  //       FilteringTextInputFormatter.digitsOnly,
-  //       LengthLimitingTextInputFormatter(6),
-  //     ],
-  //     onFieldSubmitted: (value) {
-  //       if (value.isNotEmpty) {
-  //         getController.fetchLocationDetails(value);
-  //       }
-  //     },
-  //   );
-  // }
+  Widget InputTxtfield_pincode() {
+    return CustomTextFormField(
+      controller: getController.pincodeController,
+      labelText: 'Pincode',
+      keyboardType: TextInputType.phone,
+      validator: (value) => Validation.validationPincode(value),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(6),
+      ],
+      onFieldSubmitted: (value) {
+        if (value.isNotEmpty) {
+          getController.fetchLocationDetails(value);
+        }
+      },
+    );
+  }
+
+
 }

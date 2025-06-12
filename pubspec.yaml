@@ -54,6 +54,7 @@ dependencies:
   step_progress: ^2.5.0
   font_awesome_flutter: ^10.8.0
   geolocator: ^11.0.0
+  geocoding: ^2.1.0
 
 
 dev_dependencies:
