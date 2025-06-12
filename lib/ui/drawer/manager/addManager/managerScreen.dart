@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/ui/drawer/manager/managerController.dart';
+import 'package:flutter_template/ui/drawer/manager/addManager/managerController.dart';
 import 'package:flutter_template/utils/validation.dart';
 import 'package:flutter_template/wiget/Custome_button.dart';
 import 'package:flutter_template/wiget/Custome_textfield.dart';
@@ -10,7 +10,7 @@ import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 
-import '../../../utils/colors.dart';
+import '../../../../utils/colors.dart';
 
 class Managerscreen extends StatelessWidget {
   Managerscreen({super.key});

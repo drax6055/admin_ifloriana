@@ -6,7 +6,8 @@ import 'package:flutter_template/ui/drawer/branches/post_branches_screena.dart/p
 import 'package:flutter_template/ui/drawer/coupons/addNewCoupon/addCouponScreen.dart';
 import 'package:flutter_template/ui/drawer/coupons/couponsScreen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
-import 'package:flutter_template/ui/drawer/manager/managerScreen.dart';
+import 'package:flutter_template/ui/drawer/manager/addManager/managerScreen.dart';
+import 'package:flutter_template/ui/drawer/manager/getManager/getmanagerScreen.dart';
 import 'package:flutter_template/ui/drawer/services/addServices/addservicesScreen.dart';
 import 'package:flutter_template/ui/drawer/services/subCategory/subCategotySCreen.dart';
 import 'package:flutter_template/ui/drawer/staff/addNewStaffScreen.dart';
@@ -108,5 +109,11 @@ GetPage(
         name: Routes.managerScreen,
         page: () => Managerscreen(),
         transition: Transition.rightToLeft),
+
+      GetPage(
+        name: Routes.getManager,
+        page: () => Getmanagerscreen(),
+        transition: Transition.rightToLeft
+      )
   ];
 }

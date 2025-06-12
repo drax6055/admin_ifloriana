@@ -40,4 +40,5 @@ class Endpoints {
   static const String getBranches = "/branches?salon_id=";
 
   static const String addManager = "/managers";
+  static const String getManager = "/managers?salon_id=";
 }

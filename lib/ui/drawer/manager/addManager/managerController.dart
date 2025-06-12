@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_template/network/model/AddManager.dart';
 import 'package:get/get.dart';
-import '../../../main.dart';
-import '../../../network/network_const.dart';
-import '../../../wiget/custome_snackbar.dart';
+import '../../../../main.dart';
+import '../../../../network/network_const.dart';
+import '../../../../wiget/custome_snackbar.dart';
 
 class Branch {
   final String? id;

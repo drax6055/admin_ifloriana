@@ -22,7 +22,7 @@ class AddManaget {
 class Data {
   String? firstName;
   String? lastName;
-  Null? image;
+  String? image;
   String? email;
   String? contactNumber;
   String? password;
