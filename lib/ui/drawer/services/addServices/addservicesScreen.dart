@@ -33,6 +33,12 @@ class AddNewService extends StatelessWidget {
                           title: Text(service.name ?? ''),
                           subtitle: Text(
                               '₹${service.price} • ${service.duration} mins ${service.status == 1 ? 'Active' : 'Deactive'}'),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              getController.deleteService(service.id!);
+                            },
+                          ),
                         ),
                       );
                     },

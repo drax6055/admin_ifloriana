@@ -122,4 +122,24 @@ class Addservicescontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to fetch services: $e');
     }
   }
+
+  Future<void> deleteService(String id) async {
+      final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.deleteData(
+        '${Apis.baseUrl}${Endpoints.getServices}/$id?salon_id=${loginUser!.salonId}',
+        (json) => json,
+      );
+      await getAllServices();
+      // if (response['status'] == true) {
+      //   await getAllServices();
+        CustomSnackbar.showSuccess('Success', 'Service deleted successfully');
+      // } else {
+        // CustomSnackbar.showError(
+            // 'Error', response['message'] ?? 'Failed to delete service');
+      // }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to delete service: $e');
+    }
+  }
 }
