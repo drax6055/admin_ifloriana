@@ -1,48 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/model/addCoupons.dart';
+import 'package:flutter_template/network/model/coupon_model.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/ui/drawer/coupons/couponsController.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
-
-class CouponModel {
-  final String? id;
-  final String? name;
-  final String? code;
-  final String? description;
-  final String? type;
-  final String? discountType;
-  final int? discountAmount;
-  final int? useLimit;
-  final int? status;
-
-  CouponModel({
-    this.id,
-    this.name,
-    this.code,
-    this.description,
-    this.type,
-    this.discountType,
-    this.discountAmount,
-    this.useLimit,
-    this.status,
-  });
-
-  factory CouponModel.fromJson(Map<String, dynamic> json) {
-    return CouponModel(
-      id: json['_id'],
-      name: json['name'],
-      code: json['coupon_code'],
-      description: json['description'],
-      type: json['coupon_type'],
-      discountType: json['discount_type'],
-      discountAmount: json['discount_amount'],
-      useLimit: json['use_limit'],
-      status: json['status'],
-    );
-  }
-}
 
 class Branch {
   final String? id;
@@ -63,7 +26,44 @@ class Addcouponcontroller extends GetxController {
   void onInit() {
     super.onInit();
     getBranches();
+    // Check if we're in edit mode
+    final coupon = Get.arguments as CouponModel?;
+    if (coupon != null) {
+      isEditMode.value = true;
+      editingCouponId.value = coupon.id;
+      // Pre-fill the form
+      nameController.text = coupon.name ?? '';
+      descriptionController.text = coupon.description ?? '';
+      coponCodeController.text = coupon.code ?? '';
+      discountAmtController.text = coupon.discountAmount?.toString() ?? '';
+      userLimitController.text = coupon.useLimit?.toString() ?? '';
+      selectedCouponType.value = coupon.type?.capitalize ?? 'Custom';
+      selectedDiscountType.value = coupon.discountType?.capitalize ?? 'Percent';
+      isActive.value = coupon.status == 1;
+
+      // Format dates to YYYY-MM-DD
+      if (coupon.startDate != null) {
+        final startDate = DateTime.parse(coupon.startDate!);
+        StarttimeController.text =
+            "${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}";
+      }
+      if (coupon.endDate != null) {
+        final endDate = DateTime.parse(coupon.endDate!);
+        EndtimeController.text =
+            "${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}";
+      }
+
+      // Select branches if they exist
+      if (coupon.branchIds != null) {
+        selectedBranches.value = branchList
+            .where((branch) => coupon.branchIds!.contains(branch.id))
+            .toList();
+      }
+    }
   }
+
+  var isEditMode = false.obs;
+  var editingCouponId = RxnString();
 
   var nameController = TextEditingController();
   var descriptionController = TextEditingController();
@@ -88,6 +88,15 @@ class Addcouponcontroller extends GetxController {
   ];
 
   final List<String> dropdownDiscountTypeItem = ['Percent', 'Fixed'];
+
+  // Add this method to handle branch selection after branches are loaded
+  void selectBranches(List<String>? branchIds) {
+    if (branchIds != null && branchList.isNotEmpty) {
+      selectedBranches.value =
+          branchList.where((branch) => branchIds.contains(branch.id)).toList();
+    }
+  }
+
   Future<void> getBranches() async {
     final loginUser = await prefs.getUser();
     try {
@@ -98,6 +107,12 @@ class Addcouponcontroller extends GetxController {
 
       final data = response['data'] as List;
       branchList.value = data.map((e) => Branch.fromJson(e)).toList();
+
+      // After branches are loaded, check if we need to select any
+      final coupon = Get.arguments as CouponModel?;
+      if (coupon != null) {
+        selectBranches(coupon.branchIds);
+      }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
@@ -120,16 +135,29 @@ class Addcouponcontroller extends GetxController {
       'salon_id': loginUser!.salonId,
       "branch_id": selectedBranches.map((e) => e.id).toList(),
     };
+
     try {
-      await dioClient.postData<AddCoupons>(
-        '${Apis.baseUrl}${Endpoints.coupons}',
-        couponData,
-        (json) => AddCoupons.fromJson(json),
-      );
+      if (isEditMode.value && editingCouponId.value != null) {
+        // Update existing coupon
+        await dioClient.putData(
+          '${Apis.baseUrl}${Endpoints.coupons}/${editingCouponId.value}?salon_id=${loginUser!.salonId}',
+          couponData,
+          (json) => json,
+        );
+        CustomSnackbar.showSuccess('Success', 'Coupon updated successfully');
+      } else {
+        // Create new coupon
+        await dioClient.postData<AddCoupons>(
+          '${Apis.baseUrl}${Endpoints.coupons}',
+          couponData,
+          (json) => AddCoupons.fromJson(json),
+        );
+        CustomSnackbar.showSuccess('Success', 'Coupon added successfully');
+      }
+
       var updateList = Get.put(CouponsController());
       updateList.getCoupons();
       Get.back();
-      CustomSnackbar.showSuccess('success', 'Login Successfully');
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());

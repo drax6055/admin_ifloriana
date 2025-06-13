@@ -68,71 +68,69 @@ class Subcategotyscreen extends StatelessWidget {
       getController.selectedBranch.value = null;
       getController.isActive.value = true;
     }
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
+
+    Get.bottomSheet(
+      Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 16.w,
+          right: 16.w,
+          top: 16.h,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Imagepicker(),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: CustomTextFormField(
+                      controller: getController.nameController,
+                      labelText: "Name",
+                      keyboardType: TextInputType.text,
+                      validator: (value) => Validation.validatename(value),
+                    ),
+                  ),
+                ],
+              ),
+              branchDropdown(),
+              Obx(() => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        text: 'Status',
+                        textStyle:
+                            CustomTextStyles.textFontRegular(size: 14.sp),
+                      ),
+                      Switch(
+                        value: getController.isActive.value,
+                        onChanged: (value) {
+                          getController.isActive.value = value;
+                        },
+                        activeColor: primaryColor,
+                      ),
+                    ],
+                  )),
+              Btn_Subcategory(subCategory: subCategory),
+              SizedBox(
+                height: 20.h,
+              )
+            ],
+          ),
+        ),
+      ),
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 16.w,
-            right: 16.w,
-            top: 16.h,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Imagepicker(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: CustomTextFormField(
-                        controller: getController.nameController,
-                        labelText: "Name",
-                        keyboardType: TextInputType.text,
-                        validator: (value) => Validation.validatename(value),
-                      ),
-                    ),
-                  ],
-                ),
-                branchDropdown(),
-                Obx(() => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextWidget(
-                          text: 'Status',
-                          textStyle:
-                              CustomTextStyles.textFontRegular(size: 14.sp),
-                        ),
-                        Switch(
-                          value: getController.isActive.value,
-                          onChanged: (value) {
-                            getController.isActive.value = value;
-                          },
-                          activeColor: primaryColor,
-                        ),
-                      ],
-                    )),
-                Btn_Subcategory(subCategory: subCategory),
-                SizedBox(
-                  height: 20.h,
-                )
-              ],
-            ),
-          ),
-        );
-      },
+      isScrollControlled: true,
     );
   }
 

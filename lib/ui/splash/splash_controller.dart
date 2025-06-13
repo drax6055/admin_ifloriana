@@ -21,7 +21,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.offNamed(Routes.getCoupons);
+          Get.offNamed(Routes.addService);
         }
       });
     } catch (e) {

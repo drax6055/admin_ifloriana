@@ -96,6 +96,8 @@ class Addservicescontroller extends GetxController {
         loginData,
         (json) => AddService.fromJson(json),
       );
+      getAllServices();
+      Get.back();
       CustomSnackbar.showSuccess('success', 'Login Successfully');
     } catch (e) {
       print('==> here Error: $e');

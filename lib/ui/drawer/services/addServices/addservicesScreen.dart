@@ -21,72 +21,29 @@ class AddNewService extends StatelessWidget {
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Imagepicker(),
-                CustomTextFormField(
-                  controller: getController.nameController,
-                  labelText: 'Name',
-                  keyboardType: TextInputType.text,
-                  validator: (value) => Validation.validatename(value),
-                ),
-                CustomTextFormField(
-                  controller: getController.serviceDuration,
-                  labelText: 'Service Duration',
-                  keyboardType: TextInputType.number,
-                  validator: (value) => Validation.validateisBlanck(value),
-                ),
-                CustomTextFormField(
-                  controller: getController.regularPrice,
-                  labelText: 'Regular Price',
-                  keyboardType: TextInputType.number,
-                  validator: (value) => Validation.validateisBlanck(value),
-                ),
-                branchDropdown(),
-                InputTxtfield_discription(),
-                Obx(() => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextWidget(
-                          text: 'Status',
-                          textStyle:
-                              CustomTextStyles.textFontRegular(size: 14.sp),
+          child: Obx(() {
+            return getController.serviceList.isEmpty
+                ? Text("No services available.")
+                : ListView.builder(
+                    itemCount: getController.serviceList.length,
+                    itemBuilder: (context, index) {
+                      final service = getController.serviceList[index];
+                      return Card(
+                        child: ListTile(
+                          title: Text(service.name ?? ''),
+                          subtitle: Text(
+                              '₹${service.price} • ${service.duration} mins ${service.status == 1 ? 'Active' : 'Deactive'}'),
                         ),
-                        Switch(
-                          value: getController.isActive.value,
-                          onChanged: (value) {
-                            getController.isActive.value = value;
-                          },
-                          activeColor: primaryColor,
-                        ),
-                      ],
-                    )),
-                Btn_serviceAdd(),
-                const SizedBox(height: 10),
-                Obx(() {
-                  return getController.serviceList.isEmpty
-                      ? Text("No services available.")
-                      : SizedBox(
-                          height: 300.h,
-                          child: ListView.builder(
-                            itemCount: getController.serviceList.length,
-                            itemBuilder: (context, index) {
-                              final service = getController.serviceList[index];
-                              return Card(
-                                child: ListTile(
-                                  title: Text(service.name ?? ''),
-                                  subtitle: Text(
-                                      '₹${service.price} • ${service.duration} mins ${service.status == 1 ? 'Active' : 'Deactive'}'),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                }),
-              ],
-            ),
-          ),
+                      );
+                    },
+                  );
+          }),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showAddCategorySheet(context);
+          },
+          child: Icon(Icons.add),
         ),
       ),
     );
@@ -97,8 +54,7 @@ class AddNewService extends StatelessWidget {
       return GestureDetector(
         onTap: () => pickImage(isMultiple: false),
         child: Container(
-          height: 120.h,
-          width: 120.w,
+          height: 51.h,
           decoration: BoxDecoration(
             border: Border.all(color: primaryColor),
             shape: BoxShape.rectangle,
@@ -161,5 +117,88 @@ class AddNewService extends StatelessWidget {
         getController.onServicePress();
       },
     );
+  }
+
+  void showAddCategorySheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 10,
+                children: [
+                  Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: Imagepicker(),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: CustomTextFormField(
+                          controller: getController.nameController,
+                          labelText: 'Name',
+                          keyboardType: TextInputType.text,
+                          validator: (value) => Validation.validatename(value),
+                        ),
+                      )
+                    ],
+                  ),
+                  Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: CustomTextFormField(
+                          controller: getController.serviceDuration,
+                          labelText: 'Service Duration',
+                          keyboardType: TextInputType.number,
+                          validator: (value) =>
+                              Validation.validateisBlanck(value),
+                        ),
+                      ),
+                      Expanded(
+                        child: CustomTextFormField(
+                          controller: getController.regularPrice,
+                          labelText: 'Regular Price',
+                          keyboardType: TextInputType.number,
+                          validator: (value) =>
+                              Validation.validateisBlanck(value),
+                        ),
+                      ),
+                    ],
+                  ),
+                  branchDropdown(),
+                  InputTxtfield_discription(),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            text: 'Status',
+                            textStyle:
+                                CustomTextStyles.textFontRegular(size: 14.sp),
+                          ),
+                          Switch(
+                            value: getController.isActive.value,
+                            onChanged: (value) {
+                              getController.isActive.value = value;
+                            },
+                            activeColor: primaryColor,
+                          ),
+                        ],
+                      )),
+                  Btn_serviceAdd(),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

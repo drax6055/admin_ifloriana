@@ -39,11 +39,22 @@ class CouponsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () async {
-                    await getController.deleteCoupon(coupon.id);
-                  },
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        Get.toNamed(Routes.addCoupon, arguments: coupon);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        await getController.deleteCoupon(coupon.id);
+                      },
+                    ),
+                  ],
                 ),
               ),
             );
