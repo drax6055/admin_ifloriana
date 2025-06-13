@@ -10,6 +10,7 @@ import 'package:flutter_template/ui/drawer/manager/addManager/managerScreen.dart
 import 'package:flutter_template/ui/drawer/manager/getManager/getmanagerScreen.dart';
 import 'package:flutter_template/ui/drawer/services/addServices/addservicesScreen.dart';
 import 'package:flutter_template/ui/drawer/services/subCategory/subCategotySCreen.dart';
+import 'package:flutter_template/ui/drawer/staff/addNewStaffController.dart';
 import 'package:flutter_template/ui/drawer/staff/addNewStaffScreen.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart' show Staffdetailsscreen;
 import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
@@ -114,6 +115,7 @@ GetPage(
         name: Routes.getManager,
         page: () => Getmanagerscreen(),
         transition: Transition.rightToLeft
-      )
+      ),
+     
   ];
 }

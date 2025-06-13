@@ -30,6 +30,20 @@ class Branch {
   }
 }
 
+class Commition {
+  final String? id;
+  final String? name;
+
+  Commition({this.id, this.name});
+
+  factory Commition.fromJson(Map<String, dynamic> json) {
+    return Commition(
+      id: json['_id'],
+      name: json['commission_name'],
+    );
+  }
+}
+
 class Addnewstaffcontroller extends GetxController {
   var fullnameController = TextEditingController();
   var emailController = TextEditingController();
@@ -50,7 +64,9 @@ class Addnewstaffcontroller extends GetxController {
   Rx<Service?> selectedService = Rx<Service?>(null);
   RxList<Service> selectedServices = <Service>[].obs;
   var branchList = <Branch>[].obs;
+  var commitionList = <Commition>[].obs;
   var selectedBranch = Rx<Branch?>(null);
+  var selectedCommition = Rx<Commition?>(null);
 
   void toggleShowPass() {
     showPass.value = !showPass.value;
@@ -66,6 +82,7 @@ class Addnewstaffcontroller extends GetxController {
   void onInit() {
     super.onInit();
     getBranches();
+    getCommition();
     getServices();
   }
 
@@ -130,6 +147,21 @@ class Addnewstaffcontroller extends GetxController {
     }
   }
 
+  Future<void> getCommition() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getcommisionForStaff}${loginUser!.salonId}',
+        (json) => json,
+      );
+
+      final data = response['data'] as List;
+      commitionList.value = data.map((e) => Commition.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
+  }
+
   Future onAddStaffPress() async {
     Map<String, dynamic> staffData = {
       'full_name': fullnameController.text,
@@ -141,6 +173,7 @@ class Addnewstaffcontroller extends GetxController {
       'branch_id': selectedBranch.value?.id,
       'service_id': selectedServices.map((s) => s.id).toList(),
       'status': 1,
+      'assigned_commission_id':selectedCommition.value?.id,
       'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
       'salary': int.tryParse(salaryController.text) ?? 0,

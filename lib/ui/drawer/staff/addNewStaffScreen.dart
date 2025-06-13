@@ -127,6 +127,7 @@ class Addnewstaffscreen extends StatelessWidget {
         InputTxtfield_Email(),
         InputTxtfield_Pass(),
         InputTxtfield_confirmPass(),
+         CommitionDropdown(),
       ],
     );
   }
@@ -137,6 +138,7 @@ class Addnewstaffscreen extends StatelessWidget {
       children: [
         serviceDropdown(),
         branchDropdown(),
+
         InputTxtfield_Phone(),
         Row(
           children: [
@@ -434,6 +436,30 @@ class Addnewstaffscreen extends StatelessWidget {
 
             CustomSnackbar.showSuccess(
               'Branch Selected',
+              'ID: ${newValue.id}',
+            );
+          }
+        },
+      );
+    });
+  }
+
+  Widget CommitionDropdown() {
+    return Obx(() {
+      return DropdownButton<Commition>(
+        value: getController.selectedCommition.value,
+        hint: Text("Select Commition"),
+        items: getController.commitionList.map((Commition commition) {
+          return DropdownMenuItem<Commition>(
+            value: commition,
+            child: Text(commition.name ?? ''),
+          );
+        }).toList(),
+        onChanged: (Commition? newValue) {
+          if (newValue != null) {
+            getController.selectedCommition.value = newValue;
+            CustomSnackbar.showSuccess(
+              'Commition Selected',
               'ID: ${newValue.id}',
             );
           }

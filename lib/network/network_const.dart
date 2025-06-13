@@ -24,21 +24,18 @@ class Endpoints {
   static const String resetPass = '/auth/reset-password-with-old';
   static const String postServiceCategory = '/categories';
   static const String postServiceCategoryGet = '/categories?salon_id=';
-
   static const String getServiceCategotyName = "/categories/names?salon_id=";
   static const String getAllServices = "/services?salon_id=";
   static const String postTex = "/taxes";
   static const String getTex = "/taxes?salon_id=";
   static const String getCoupons = "/coupons?salon_id=";
   static const String coupons = "/coupons";
-
   static const String addSubCategory = "/subcategories";
-
   static const String getSubCategory = "/subcategories?salon_id=";
   static const String postBranchs = "/branches";
-
   static const String getBranches = "/branches?salon_id=";
-
   static const String addManager = "/managers";
   static const String getManager = "/managers?salon_id=";
+
+  static const String getcommisionForStaff = "/revenue-commissions/names?salon_id=";
 }
