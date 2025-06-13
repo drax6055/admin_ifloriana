@@ -19,49 +19,95 @@ class AddNewService extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Services'),
+          backgroundColor: primaryColor,
+        ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Obx(() {
-            return getController.serviceList.isEmpty
-                ? Text("No services available.")
-                : ListView.builder(
-                    itemCount: getController.serviceList.length,
-                    itemBuilder: (context, index) {
-                      final service = getController.serviceList[index];
-                      return Card(
-                        child: ListTile(
-                          title: Text(service.name ?? ''),
-                          subtitle: Text(
-                              '₹${service.price} • ${service.duration} mins ${service.status == 1 ? 'Active' : 'Deactive'}'),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.edit, color: primaryColor),
-                                onPressed: () {
-                                  getController.startEditing(service);
-                                  showAddCategorySheet(context);
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  getController.deleteService(service.id!);
-                                },
-                              ),
-                            ],
-                          ),
+            print(
+                'Building ListView with ${getController.serviceList.length} services');
+            if (getController.serviceList.isEmpty) {
+              return Center(
+                child: Text(
+                  "No services available.",
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+              );
+            }
+            return RefreshIndicator(
+              onRefresh: () => getController.getAllServices(),
+              child: ListView.builder(
+                itemCount: getController.serviceList.length,
+                itemBuilder: (context, index) {
+                  final service = getController.serviceList[index];
+                  print('Building item $index: ${service.name}');
+                  return Card(
+                    elevation: 2,
+                    margin: EdgeInsets.symmetric(vertical: 4.h),
+                    child: ListTile(
+                      title: Text(
+                        service.name ?? '',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                    },
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 4.h),
+                          Text(
+                            '₹${service.price} • ${service.duration} mins',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Text(
+                            service.status == 1 ? 'Active' : 'Inactive',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: service.status == 1
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: primaryColor),
+                            onPressed: () {
+                              getController.startEditing(service);
+                              showAddCategorySheet(context);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              getController.deleteService(service.id!);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   );
+                },
+              ),
+            );
           }),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
+            getController.resetForm();
             showAddCategorySheet(context);
           },
           child: Icon(Icons.add),
+          backgroundColor: primaryColor,
         ),
       ),
     );
@@ -97,7 +143,7 @@ class AddNewService extends StatelessWidget {
     return CustomTextFormField(
       controller: getController.descriptionController,
       labelText: 'Description',
-      maxLines: 2,
+      maxLines: 3,
       keyboardType: TextInputType.text,
       validator: (value) => Validation.validatedisscription(value),
     );
@@ -105,25 +151,29 @@ class AddNewService extends StatelessWidget {
 
   Widget branchDropdown() {
     return Obx(() {
-      return DropdownButton<Category>(
-        isExpanded: true,
-        value: getController.selectedBranch.value,
-        hint: const Text("Select Category"),
-        items: getController.branchList.map((Category branch) {
-          return DropdownMenuItem<Category>(
-            value: branch,
-            child: Text(branch.name ?? ''),
-          );
-        }).toList(),
-        onChanged: (Category? newValue) {
-          if (newValue != null) {
-            getController.selectedBranch.value = newValue;
-            CustomSnackbar.showSuccess(
-              'Category Selected',
-              'ID: ${newValue.id}',
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        decoration: BoxDecoration(
+          border: Border.all(color: primaryColor),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: DropdownButton<Category>(
+          isExpanded: true,
+          value: getController.selectedBranch.value,
+          hint: const Text("Select Category"),
+          underline: SizedBox(),
+          items: getController.branchList.map((Category branch) {
+            return DropdownMenuItem<Category>(
+              value: branch,
+              child: Text(branch.name ?? ''),
             );
-          }
-        },
+          }).toList(),
+          onChanged: (Category? newValue) {
+            if (newValue != null) {
+              getController.selectedBranch.value = newValue;
+            }
+          },
+        ),
       );
     });
   }
@@ -193,8 +243,11 @@ class AddNewService extends StatelessWidget {
                       ),
                     ],
                   ),
+                  SizedBox(height: 10.h),
                   branchDropdown(),
+                  SizedBox(height: 10.h),
                   InputTxtfield_discription(),
+                  SizedBox(height: 10.h),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -212,6 +265,7 @@ class AddNewService extends StatelessWidget {
                           ),
                         ],
                       )),
+                  SizedBox(height: 10.h),
                   Btn_serviceAdd(),
                   const SizedBox(height: 10),
                 ],

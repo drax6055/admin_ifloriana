@@ -8,28 +8,39 @@ import 'package:get/get.dart';
 class Service {
   String? id;
   String? name;
-  String? image;
   int? duration;
   int? price;
   int? status;
+  String? description;
+  String? categoryId;
 
   Service({
     this.id,
     this.name,
-    this.image,
     this.duration,
     this.price,
     this.status,
+    this.description,
+    this.categoryId,
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {
+    print('Parsing service JSON: $json');
     return Service(
-        id: json['_id'],
-        name: json['name'],
-        image: json['image'],
-        duration: json['service_duration'],
-        price: json['regular_price'],
-        status: json['status']);
+      id: json['_id']?.toString(),
+      name: json['name']?.toString(),
+      duration: json['service_duration'] is int
+          ? json['service_duration']
+          : int.tryParse(json['service_duration']?.toString() ?? '0'),
+      price: json['regular_price'] is int
+          ? json['regular_price']
+          : int.tryParse(json['regular_price']?.toString() ?? '0'),
+      status: json['status'] is int
+          ? json['status']
+          : int.tryParse(json['status']?.toString() ?? '0'),
+      description: json['description']?.toString(),
+      categoryId: json['category_id']?.toString(),
+    );
   }
 }
 
@@ -62,6 +73,7 @@ class Addservicescontroller extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print('Controller initialized');
     getCategorys();
     getAllServices();
   }
@@ -72,14 +84,20 @@ class Addservicescontroller extends GetxController {
     nameController.text = service.name ?? '';
     serviceDuration.text = service.duration?.toString() ?? '';
     regularPrice.text = service.price?.toString() ?? '';
+    descriptionController.text = service.description ?? '';
     isActive.value = service.status == 1;
+    selectedBranch.value = branchList.firstWhereOrNull(
+      (category) => category.id == service.categoryId,
+    );
   }
 
   void resetForm() {
     nameController.clear();
     serviceDuration.clear();
     regularPrice.clear();
+    descriptionController.clear();
     isActive.value = true;
+    selectedBranch.value = null;
     isEditing.value = false;
     editingService.value = null;
   }
@@ -87,12 +105,15 @@ class Addservicescontroller extends GetxController {
   Future<void> getCategorys() async {
     final loginUser = await prefs.getUser();
     try {
-      var response = await dioClient.getData(
+      final response = await dioClient.getData<Map<String, dynamic>>(
         '${Apis.baseUrl}${Endpoints.getServiceCategotyName}${loginUser!.salonId}',
-        (json) => json,
+        (json) => json as Map<String, dynamic>,
       );
-      final data = response['data'] as List;
-      branchList.value = data.map((e) => Category.fromJson(e)).toList();
+
+      if (response['status'] == true && response['data'] != null) {
+        final data = response['data'] as List;
+        branchList.value = data.map((e) => Category.fromJson(e)).toList();
+      }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
@@ -113,6 +134,8 @@ class Addservicescontroller extends GetxController {
       "name": nameController.text,
       "service_duration": int.parse(serviceDuration.text),
       "regular_price": int.parse(regularPrice.text),
+      "category_id": selectedBranch.value?.id,
+      "description": descriptionController.text,
       "status": isActive.value ? 1 : 0,
       "salon_id": loginUser!.salonId
     };
@@ -137,6 +160,8 @@ class Addservicescontroller extends GetxController {
       "name": nameController.text,
       "service_duration": int.parse(serviceDuration.text),
       "regular_price": int.parse(regularPrice.text),
+      "category_id": selectedBranch.value?.id,
+      "description": descriptionController.text,
       "status": isActive.value ? 1 : 0,
       "salon_id": loginUser!.salonId
     };
@@ -158,17 +183,35 @@ class Addservicescontroller extends GetxController {
   Future<void> getAllServices() async {
     final loginUser = await prefs.getUser();
     try {
-      final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getAllServices}${loginUser!.salonId}',
-        (json) => json,
+      print('Fetching services for salon: ${loginUser!.salonId}');
+      final response = await dioClient.getData<Map<String, dynamic>>(
+        '${Apis.baseUrl}${Endpoints.getAllServices}${loginUser.salonId}',
+        (json) => json as Map<String, dynamic>,
       );
+
+      print('Response received: $response');
 
       if (response['data'] != null) {
         List<dynamic> servicesJson = response['data'];
-        serviceList.value =
-            servicesJson.map((e) => Service.fromJson(e)).toList();
+        print('Services JSON: $servicesJson');
+
+        final services = servicesJson.map((e) {
+          print('Processing service: $e');
+          return Service.fromJson(e);
+        }).toList();
+
+        print('Parsed services: ${services.length}');
+        serviceList.value = services;
+        print('Updated serviceList: ${serviceList.length}');
+      } else {
+        print('No services found or error in response');
+        serviceList.clear();
+        CustomSnackbar.showError(
+            'Error', response['message'] ?? 'Failed to fetch services');
       }
     } catch (e) {
+      print('Error in getAllServices: $e');
+      serviceList.clear();
       CustomSnackbar.showError('Error', 'Failed to fetch services: $e');
     }
   }
