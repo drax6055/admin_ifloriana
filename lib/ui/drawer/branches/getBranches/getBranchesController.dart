@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../../../../main.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
-import '../../../../models/branch_model.dart';
+import '../../../../network/model/branch_model.dart';
 
 class Getbranchescontroller extends GetxController {
   final RxList<BranchModel> branches = <BranchModel>[].obs;
@@ -31,6 +31,27 @@ class Getbranchescontroller extends GetxController {
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch branches: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> deleteBranch(String branchId) async {
+    try {
+       final loginUser = await prefs.getUser();
+      isLoading.value = true;
+      final response = await dioClient.deleteData(
+           '${Apis.baseUrl}${Endpoints.postBranchs}/$branchId?salon_id=${loginUser!.salonId}',
+        (json) => json,
+      );
+
+      if (response != null) {
+        // Remove the branch from the local list
+        branches.removeWhere((branch) => branch.id == branchId);
+        CustomSnackbar.showSuccess('Success', 'Branch deleted successfully');
+      }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to delete branch: $e');
     } finally {
       isLoading.value = false;
     }

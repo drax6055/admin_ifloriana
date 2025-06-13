@@ -8,6 +8,49 @@ import 'getBranchesController.dart';
 class GetBranchesScreen extends StatelessWidget {
   const GetBranchesScreen({super.key});
 
+  void _showDeleteConfirmation(BuildContext context, Getbranchescontroller controller, String branchId, String branchName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Delete Branch',
+            style: TextStyle(fontSize: 18.sp),
+          ),
+          content: Text(
+            'Are you sure you want to delete "$branchName"?',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                controller.deleteBranch(branchId);
+              },
+              child: Text(
+                'Delete',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Getbranchescontroller getController = Get.put(Getbranchescontroller());
@@ -52,34 +95,37 @@ class GetBranchesScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ClipRRect(
-                    //   borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-                    //   child: CachedNetworkImage(
-                    //     imageUrl: branch.image,
-                    //     height: 150.h,
-                    //     width: double.infinity,
-                    //     fit: BoxFit.cover,
-                    //     placeholder: (context, url) => Container(
-                    //       color: Colors.grey[300],
-                    //       child: const Center(child: CircularProgressIndicator()),
-                    //     ),
-                    //     errorWidget: (context, url, error) => Container(
-                    //       color: Colors.grey[300],
-                    //       child: const Icon(Icons.error),
-                    //     ),
-                    //   ),
-                    // ),
                     Padding(
                       padding: EdgeInsets.all(16.r),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            branch.name,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  branch.name,
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.red,
+                                  size: 24.sp,
+                                ),
+                                onPressed: () => _showDeleteConfirmation(
+                                  context,
+                                  getController,
+                                  branch.id,
+                                  branch.name,
+                                ),
+                              ),
+                            ],
                           ),
                           SizedBox(height: 8.h),
                           Row(
