@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/splash/splash_controller.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
+import 'edit_branch_screen.dart';
 import 'getBranchesController.dart';
 
 class GetBranchesScreen extends StatelessWidget {
@@ -112,18 +113,32 @@ class GetBranchesScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.delete_outline,
-                                  color: Colors.red,
-                                  size: 24.sp,
-                                ),
-                                onPressed: () => _showDeleteConfirmation(
-                                  context,
-                                  getController,
-                                  branch.id,
-                                  branch.name,
-                                ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.edit_outlined,
+                                      color: Colors.blue,
+                                      size: 24.sp,
+                                    ),
+                                    onPressed: () {
+                                      Get.to(() => EditBranchScreen(branch: branch));
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete_outline,
+                                      color: Colors.red,
+                                      size: 24.sp,
+                                    ),
+                                    onPressed: () => _showDeleteConfirmation(
+                                      context,
+                                      getController,
+                                      branch.id,
+                                      branch.name,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
