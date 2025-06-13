@@ -56,12 +56,32 @@ class Addservicescontroller extends GetxController {
   var selectedBranch = Rx<Category?>(null);
   var branchList = <Category>[].obs;
   var serviceList = <Service>[].obs;
+  var isEditing = false.obs;
+  var editingService = Rxn<Service>();
 
   @override
   void onInit() {
     super.onInit();
     getCategorys();
     getAllServices();
+  }
+
+  void startEditing(Service service) {
+    isEditing.value = true;
+    editingService.value = service;
+    nameController.text = service.name ?? '';
+    serviceDuration.text = service.duration?.toString() ?? '';
+    regularPrice.text = service.price?.toString() ?? '';
+    isActive.value = service.status == 1;
+  }
+
+  void resetForm() {
+    nameController.clear();
+    serviceDuration.clear();
+    regularPrice.clear();
+    isActive.value = true;
+    isEditing.value = false;
+    editingService.value = null;
   }
 
   Future<void> getCategorys() async {
@@ -78,30 +98,60 @@ class Addservicescontroller extends GetxController {
     }
   }
 
-  Future onServicePress() async {
+  Future<void> onServicePress() async {
+    if (isEditing.value && editingService.value != null) {
+      await updateService(editingService.value!.id!);
+    } else {
+      await addService();
+    }
+  }
+
+  Future<void> addService() async {
     final loginUser = await prefs.getUser();
-    Map<String, dynamic> loginData = {
+    Map<String, dynamic> serviceData = {
       "image": null,
       "name": nameController.text,
       "service_duration": int.parse(serviceDuration.text),
       "regular_price": int.parse(regularPrice.text),
-      "category_id": selectedBranch.value?.id,
-      "description": descriptionController.text,
-      'status': isActive.value ? 1 : 0,
+      "status": isActive.value ? 1 : 0,
       "salon_id": loginUser!.salonId
     };
     try {
       await dioClient.postData<AddService>(
         '${Apis.baseUrl}${Endpoints.getServices}',
-        loginData,
+        serviceData,
         (json) => AddService.fromJson(json),
       );
       getAllServices();
       Get.back();
-      CustomSnackbar.showSuccess('success', 'Login Successfully');
+      resetForm();
+      CustomSnackbar.showSuccess('Success', 'Service Added Successfully');
     } catch (e) {
-      print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
+  Future<void> updateService(String id) async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> serviceData = {
+      "name": nameController.text,
+      "service_duration": int.parse(serviceDuration.text),
+      "regular_price": int.parse(regularPrice.text),
+      "status": isActive.value ? 1 : 0,
+      "salon_id": loginUser!.salonId
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.getServices}/$id?salon_id=${loginUser.salonId}',
+        serviceData,
+        (json) => json,
+      );
+      await getAllServices();
+      Get.back();
+      resetForm();
+      CustomSnackbar.showSuccess('Success', 'Service Updated Successfully');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to update service: $e');
     }
   }
 
@@ -124,20 +174,15 @@ class Addservicescontroller extends GetxController {
   }
 
   Future<void> deleteService(String id) async {
-      final loginUser = await prefs.getUser();
+    final loginUser = await prefs.getUser();
     try {
-      final response = await dioClient.deleteData(
+      await dioClient.deleteData(
         '${Apis.baseUrl}${Endpoints.getServices}/$id?salon_id=${loginUser!.salonId}',
         (json) => json,
       );
       await getAllServices();
-      // if (response['status'] == true) {
-      //   await getAllServices();
-        CustomSnackbar.showSuccess('Success', 'Service deleted successfully');
-      // } else {
-        // CustomSnackbar.showError(
-            // 'Error', response['message'] ?? 'Failed to delete service');
-      // }
+
+      CustomSnackbar.showSuccess('Success', 'Service deleted successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to delete service: $e');
     }

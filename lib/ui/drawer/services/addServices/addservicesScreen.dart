@@ -33,11 +33,23 @@ class AddNewService extends StatelessWidget {
                           title: Text(service.name ?? ''),
                           subtitle: Text(
                               '₹${service.price} • ${service.duration} mins ${service.status == 1 ? 'Active' : 'Deactive'}'),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              getController.deleteService(service.id!);
-                            },
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.edit, color: primaryColor),
+                                onPressed: () {
+                                  getController.startEditing(service);
+                                  showAddCategorySheet(context);
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  getController.deleteService(service.id!);
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       );
@@ -117,12 +129,13 @@ class AddNewService extends StatelessWidget {
   }
 
   Widget Btn_serviceAdd() {
-    return ElevatedButtonExample(
-      text: "Add Service",
-      onPressed: () {
-        getController.onServicePress();
-      },
-    );
+    return Obx(() => ElevatedButtonExample(
+          text:
+              getController.isEditing.value ? "Update Service" : "Add Service",
+          onPressed: () {
+            getController.onServicePress();
+          },
+        ));
   }
 
   void showAddCategorySheet(BuildContext context) {
