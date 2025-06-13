@@ -28,11 +28,22 @@ class Subcategotyscreen extends StatelessWidget {
               final subCategory = getController.subCategoryList[index];
               return ListTile(
                 title: Text(subCategory.name),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    getController.deleteSubCategory(subCategory.id);
-                  },
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        showAddCategorySheet(context, subCategory: subCategory);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        getController.deleteSubCategory(subCategory.id);
+                      },
+                    ),
+                  ],
                 ),
               );
             },
@@ -46,7 +57,17 @@ class Subcategotyscreen extends StatelessWidget {
     ));
   }
 
-  void showAddCategorySheet(BuildContext context) {
+  void showAddCategorySheet(BuildContext context, {SubCategory? subCategory}) {
+    if (subCategory != null) {
+      getController.nameController.text = subCategory.name;
+      getController.selectedBranch.value = getController.branchList
+          .firstWhereOrNull((c) => c.id == subCategory.categoryId);
+      getController.isActive.value = subCategory.status == 1;
+    } else {
+      getController.nameController.clear();
+      getController.selectedBranch.value = null;
+      getController.isActive.value = true;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -103,7 +124,7 @@ class Subcategotyscreen extends StatelessWidget {
                         ),
                       ],
                     )),
-                Btn_Subcategory(),
+                Btn_Subcategory(subCategory: subCategory),
                 SizedBox(
                   height: 20.h,
                 )
@@ -167,11 +188,15 @@ class Subcategotyscreen extends StatelessWidget {
     });
   }
 
-  Widget Btn_Subcategory() {
+  Widget Btn_Subcategory({SubCategory? subCategory}) {
     return ElevatedButtonExample(
-      text: "SubCategory",
+      text: subCategory == null ? "Add SubCategory" : "Update SubCategory",
       onPressed: () {
-        getController.onaddNewSubcategory();
+        if (subCategory == null) {
+          getController.onaddNewSubcategory();
+        } else {
+          getController.onEditSubcategory(subCategory);
+        }
       },
     );
   }

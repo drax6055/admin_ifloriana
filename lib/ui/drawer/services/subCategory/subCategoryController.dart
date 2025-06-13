@@ -21,13 +21,25 @@ class Category {
 class SubCategory {
   final String id;
   final String name;
+  final String? categoryId;
+  final int? status;
 
-  SubCategory({required this.id, required this.name});
+  SubCategory(
+      {required this.id, required this.name, this.categoryId, this.status});
 
   factory SubCategory.fromJson(Map<String, dynamic> json) {
+    String? categoryId;
+    if (json['category_id'] is String) {
+      categoryId = json['category_id'];
+    } else if (json['category_id'] is Map<String, dynamic>) {
+      categoryId = json['category_id']['_id'];
+    }
+
     return SubCategory(
       id: json['_id'],
       name: json['name'],
+      categoryId: categoryId,
+      status: json['status'],
     );
   }
 }
@@ -56,6 +68,7 @@ class Subcategorycontroller extends GetxController {
       final data = response['data'] as List;
       branchList.value = data.map((e) => Category.fromJson(e)).toList();
     } catch (e) {
+      print("==> ${e.toString()}");
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
   }
@@ -70,6 +83,7 @@ class Subcategorycontroller extends GetxController {
       final data = response['data'] as List;
       subCategoryList.value = data.map((e) => SubCategory.fromJson(e)).toList();
     } catch (e) {
+      print("==> ${e.toString()}");
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
   }
@@ -109,6 +123,27 @@ class Subcategorycontroller extends GetxController {
       );
       getSubCategory();
       CustomSnackbar.showSuccess('Success', 'Staff added successfully');
+    } catch (e) {
+      CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
+  Future<void> onEditSubcategory(SubCategory subCategory) async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> data = {
+      "name": nameController.text,
+      "image": null,
+      "category_id": selectedBranch.value?.id,
+      'status': isActive.value ? 1 : 0,
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.addSubCategory}/${subCategory.id}/?salon_id=${loginUser!.salonId}',
+        data,
+        (json) => json,
+      );
+      getSubCategory();
+      CustomSnackbar.showSuccess('Success', 'Subcategory updated successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', e.toString());
     }
