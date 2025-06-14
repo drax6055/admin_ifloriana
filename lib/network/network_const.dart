@@ -16,6 +16,7 @@ class Endpoints {
   static const String getStaffDetails = '/staffs?salon_id=';
   static const String postStaffDetails = '/staffs';
   static const String getCustomersDetails = '/customers';
+  static const String customers = '/customers';
   static const String getBranchAllDetails = '/branches';
   static const String getBranchName = '/branches/names?salon_id=';
   static const String getServices = '/services';
@@ -37,5 +38,10 @@ class Endpoints {
   static const String addManager = "/managers";
   static const String getManager = "/managers?salon_id=";
 
-  static const String getcommisionForStaff = "/revenue-commissions/names?salon_id=";
+  static const String getcommisionForStaff =
+      "/revenue-commissions/names?salon_id=";
+
+  static const String getBranchMembershipNames =
+      "/branch-memberships/names?salon_id=";
+  static const String getBranchpackagesNames = "/branchPackages/names?salon_id=";
 }

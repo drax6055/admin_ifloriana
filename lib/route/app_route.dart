@@ -26,5 +26,8 @@ abstract class Routes {
   static const managerScreen = "/Managerscreen";
 
   static const getManager = "/Getmanagerscreen";
+
+  static const customersScreen = "/CustomersScreen";
   
+
 }
