@@ -9,6 +9,7 @@ import 'package:flutter_template/wiget/appbar/commen_appbar.dart';
 import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 import 'customerController.dart';
 
 class CustomersScreen extends StatelessWidget {
@@ -87,35 +88,47 @@ class CustomersScreen extends StatelessWidget {
               Obx(() => customerController.showPackageFields.value
                   ? Column(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
+                        MultiDropdown<BranchPackage>(
+                          items: customerController.branchPackageList
+                              .map((package) => DropdownItem(
+                                    label: package.packageName ?? '',
+                                    value: package,
+                                  ))
+                              .toList(),
+                          controller: customerController.packageController,
+                          enabled: true,
+                          searchEnabled: true,
+                          chipDecoration: const ChipDecoration(
+                            backgroundColor: secondaryColor,
+                            wrap: true,
+                            runSpacing: 2,
+                            spacing: 10,
                           ),
-                          child: Obx(() => DropdownButton<String>(
-                                value: customerController
-                                        .selectedBranchPackage.value.isEmpty
-                                    ? null
-                                    : customerController
-                                        .selectedBranchPackage.value,
-                                isExpanded: true,
-                                hint: const Text('Select Branch Package'),
-                                underline: const SizedBox(),
-                                items: customerController.branchPackageList
-                                    .map((package) {
-                                  return DropdownMenuItem<String>(
-                                    value: package.id,
-                                    child: Text(package.packageName ?? ''),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  if (newValue != null) {
-                                    customerController
-                                        .selectedBranchPackage.value = newValue;
-                                  }
-                                },
-                              )),
+                          fieldDecoration: FieldDecoration(
+                            hintText: 'Select Branch Packages',
+                            hintStyle: const TextStyle(color: Colors.grey),
+                            showClearIcon: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(color: Colors.grey),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: secondaryColor,
+                              ),
+                            ),
+                          ),
+                          dropdownItemDecoration: DropdownItemDecoration(
+                            selectedIcon: const Icon(Icons.check_box,
+                                color: primaryColor),
+                            disabledIcon:
+                                Icon(Icons.lock, color: Colors.grey.shade300),
+                          ),
+                          onSelectionChange: (selectedItems) {
+                            customerController.selectedPackages.value =
+                                selectedItems;
+                          },
                         ),
                         const SizedBox(height: 16),
                         Container(
@@ -186,5 +199,4 @@ class CustomersScreen extends StatelessWidget {
       },
     );
   }
-
 }

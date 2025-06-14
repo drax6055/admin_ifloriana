@@ -3,8 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
-
-
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class Salon {
   final String? id;
@@ -91,7 +90,6 @@ class BranchMembership {
 }
 
 class CustomerController extends GetxController {
-
   var isLoading = false.obs;
   var isActive = true.obs;
   var showPackageFields = false.obs;
@@ -101,11 +99,12 @@ class CustomerController extends GetxController {
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
   var passwordController = TextEditingController();
+  final packageController = MultiSelectController<BranchPackage>();
 
   // Dropdown values
   var selectedGender = ''.obs;
-  var selectedBranchPackage = ''.obs;
   var selectedBranchMembership = ''.obs;
+  var selectedPackages = <BranchPackage>[].obs;
 
   // Lists for dropdowns
   var branchPackageList = <BranchPackage>[].obs;
@@ -116,7 +115,6 @@ class CustomerController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     getBranchPackages();
     getBranchMemberships();
   }
@@ -127,10 +125,9 @@ class CustomerController extends GetxController {
     emailController.dispose();
     phoneController.dispose();
     passwordController.dispose();
+    packageController.dispose();
     super.onClose();
   }
-
-
 
   Future<void> getBranchPackages() async {
     try {
@@ -178,7 +175,8 @@ class CustomerController extends GetxController {
       };
 
       if (showPackageFields.value) {
-        customerData['branch_package'] = selectedBranchPackage.value;
+        customerData['branch_package'] =
+            selectedPackages.map((p) => p.id).toList();
         customerData['branch_membership'] = selectedBranchMembership.value;
       }
 
@@ -194,8 +192,9 @@ class CustomerController extends GetxController {
       phoneController.clear();
       passwordController.clear();
       selectedGender.value = '';
-      selectedBranchPackage.value = '';
       selectedBranchMembership.value = '';
+      selectedPackages.clear();
+      packageController.clearAll();
       isActive.value = true;
       showPackageFields.value = false;
 
@@ -204,6 +203,4 @@ class CustomerController extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to add customer: $e');
     }
   }
-
-  
 }
