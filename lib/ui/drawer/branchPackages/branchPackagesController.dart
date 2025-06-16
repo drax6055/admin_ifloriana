@@ -19,6 +19,20 @@ class Service {
   }
 }
 
+class Branch {
+  final String? id;
+  final String? name;
+
+  Branch({this.id, this.name});
+
+  factory Branch.fromJson(Map<String, dynamic> json) {
+    return Branch(
+      id: json['_id'],
+      name: json['name'],
+    );
+  }
+}
+
 class ContainerData {
   Rxn<Service> selectedService = Rxn<Service>();
   TextEditingController discountedPriceController = TextEditingController();
@@ -29,11 +43,20 @@ class ContainerData {
 class DynamicInputController extends GetxController {
   var containerList = <ContainerData>[].obs;
   RxList<Service> serviceList = <Service>[].obs;
-
+  RxInt grandTotal = 0.obs;
+  var branchList = <Branch>[].obs;
+  var selectedBranch = Rx<Branch?>(null);
+  var StarttimeController = TextEditingController();
+  var EndtimeController = TextEditingController();
+  var isActive = true.obs;
+  var discriptionController = TextEditingController();
+  var nameController =  TextEditingController();
+  
   @override
   void onInit() {
     super.onInit();
     getServices();
+    getBranches();
   }
 
   void addContainer() {
@@ -46,6 +69,7 @@ class DynamicInputController extends GetxController {
 
   void removeContainer(int index) {
     containerList.removeAt(index);
+    calculateGrandTotal();
   }
 
   void onServiceSelected(ContainerData container, Service? service) {
@@ -66,6 +90,12 @@ class DynamicInputController extends GetxController {
     final quantity = int.tryParse(quantityText) ?? 0;
 
     container.total.value = price * quantity;
+    calculateGrandTotal();
+  }
+
+  void calculateGrandTotal() {
+    grandTotal.value =
+        containerList.fold(0, (sum, container) => sum + container.total.value);
   }
 
   Future<void> getServices() async {
@@ -79,6 +109,21 @@ class DynamicInputController extends GetxController {
       serviceList.value = data.map((e) => Service.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get services: $e');
+    }
+  }
+
+  Future<void> getBranches() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getBranchName}${loginUser!.salonId}',
+        (json) => json,
+      );
+
+      final data = response['data'] as List;
+      branchList.value = data.map((e) => Branch.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
   }
 }

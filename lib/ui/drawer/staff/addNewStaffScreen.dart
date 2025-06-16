@@ -419,11 +419,38 @@ class Addnewstaffscreen extends StatelessWidget {
     });
   }
 
-  Widget branchDropdown() {
+  // Widget branchDropdown() {
+  //   return Obx(() {
+  //     return DropdownButton<Branch>(
+  //       value: getController.selectedBranch.value,
+  //       hint: Text("Select Branch"),
+  //       items: getController.branchList.map((Branch branch) {
+  //         return DropdownMenuItem<Branch>(
+  //           value: branch,
+  //           child: Text(branch.name ?? ''),
+  //         );
+  //       }).toList(),
+  //       onChanged: (Branch? newValue) {
+  //         if (newValue != null) {
+  //           getController.selectedBranch.value = newValue;
+
+  //           CustomSnackbar.showSuccess(
+  //             'Branch Selected',
+  //             'ID: ${newValue.id}',
+  //           );
+  //         }
+  //       },
+  //     );
+  //   });
+  // }
+Widget branchDropdown() {
     return Obx(() {
-      return DropdownButton<Branch>(
+      return DropdownButtonFormField<Branch>(
         value: getController.selectedBranch.value,
-        hint: Text("Select Branch"),
+        decoration: InputDecoration(
+          labelText: "Select Branch",
+          border: OutlineInputBorder(),
+        ),
         items: getController.branchList.map((Branch branch) {
           return DropdownMenuItem<Branch>(
             value: branch,

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/commen_items/commen_class.dart';
+import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:get/get.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/ui/drawer/branchPackages/branchPackagesController.dart';
+import '../../../utils/validation.dart';
 import '../../../wiget/Custome_textfield.dart';
+import '../../../wiget/custome_snackbar.dart';
+import '../../../wiget/custome_text.dart';
 
 class DynamicInputScreen extends StatelessWidget {
   final DynamicInputController controller = Get.put(DynamicInputController());
@@ -94,8 +100,139 @@ class DynamicInputScreen extends StatelessWidget {
                     },
                   )),
             ),
+            branchDropdown(),
+               CustomTextFormField(
+              controller: controller.nameController,
+              labelText: 'Name',
+              keyboardType: TextInputType.text,
+              validator: (value) => Validation.validatename(value),
+            ),
+             CustomTextFormField(
+              controller: controller.discriptionController,
+              labelText: 'Discription',
+              maxLines: 2,
+              keyboardType: TextInputType.text,
+              validator: (value) => Validation.validatedisscription(value),
+            ),
+            Row(
+              children: [
+                Expanded(child: startTime(context)),
+                SizedBox(
+                  width: 5,
+                ),
+                Expanded(child: endTime(context)),
+              ],
+            ),
+              Obx(() => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomTextWidget(
+                      text: 'Status',
+                      textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
+                    ),
+                    Switch(
+                      value: controller.isActive.value,
+                      onChanged: (value) {
+                        controller.isActive.value = value;
+                      },
+                      activeColor: primaryColor,
+                    ),
+                  ],
+                )),
+            Obx(() => Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Grand Total:",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "₹${controller.grandTotal.value}",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+            SizedBox(height: 20),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget branchDropdown() {
+    return Obx(() {
+      return DropdownButtonFormField<Branch>(
+        value: controller.selectedBranch.value,
+        decoration: InputDecoration(
+          labelText: "Select Branch",
+          border: OutlineInputBorder(),
+        ),
+        items: controller.branchList.map((Branch branch) {
+          return DropdownMenuItem<Branch>(
+            value: branch,
+            child: Text(branch.name ?? ''),
+          );
+        }).toList(),
+        onChanged: (Branch? newValue) {
+          if (newValue != null) {
+            controller.selectedBranch.value = newValue;
+
+            CustomSnackbar.showSuccess(
+              'Branch Selected',
+              'ID: ${newValue.id}',
+            );
+          }
+        },
+      );
+    });
+  }
+
+  Widget startTime(BuildContext context) {
+    return CustomTextFormField(
+      controller: controller.StarttimeController,
+      labelText: 'Start Time',
+      keyboardType: TextInputType.none,
+      validator: (value) => Validation.validateTime(value),
+      suffixIcon: IconButton(
+        onPressed: () async {
+          await pickAndSetDate(
+            context: context,
+            controller: controller.StarttimeController,
+          );
+        },
+        icon: Icon(Icons.calendar_today),
+      ),
+    );
+  }
+
+  Widget endTime(BuildContext context) {
+    return CustomTextFormField(
+      controller: controller.EndtimeController,
+      labelText: 'End Time',
+      keyboardType: TextInputType.none,
+      validator: (value) => Validation.validateTime(value),
+      suffixIcon: IconButton(
+        onPressed: () async {
+          await pickAndSetDate(
+            context: context,
+            controller: controller.EndtimeController,
+          );
+        },
+        icon: Icon(Icons.calendar_today),
       ),
     );
   }
