@@ -61,6 +61,30 @@ class Salon {
   }
 }
 
+class Customer {
+  final String id;
+  final String fullName;
+  final String phoneNumber;
+  final String email;
+
+  Customer({
+    required this.id,
+    required this.fullName,
+    required this.phoneNumber,
+    required this.email,
+  });
+
+  factory Customer.fromJson(Map<String, dynamic> json) {
+    return Customer(
+      id: json['_id'],
+      fullName: json['full_name'],
+      phoneNumber: json['phone_number'],
+      email: json['email'],
+    );
+  }
+}
+
+
 class BranchPackage {
   final String? id;
   final String? packageName;
@@ -105,6 +129,7 @@ class CustomerController extends GetxController {
   var selectedGender = ''.obs;
   var selectedBranchMembership = ''.obs;
   var selectedPackages = <BranchPackage>[].obs;
+  RxList<Customer> customerList = <Customer>[].obs;
 
   // Lists for dropdowns
   var branchPackageList = <BranchPackage>[].obs;
@@ -117,6 +142,7 @@ class CustomerController extends GetxController {
     super.onInit();
     getBranchPackages();
     getBranchMemberships();
+    fetchCustomers();
   }
 
   @override
@@ -201,6 +227,23 @@ class CustomerController extends GetxController {
       CustomSnackbar.showSuccess('Success', 'Customer added successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to add customer: $e');
+    }
+  }
+
+  Future<void> fetchCustomers() async {
+    try {
+      final loginUser = await prefs.getUser();
+
+    final Map<String, dynamic> response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getCustomersDetails}?salon_id=${loginUser!.salonId}',
+        (json) => json as Map<String, dynamic>,
+      );
+
+      final List<dynamic> data = response['data'];
+      customerList.value = data.map((e) => Customer.fromJson(e)).toList();
+
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to fetch customers: $e');
     }
   }
 }

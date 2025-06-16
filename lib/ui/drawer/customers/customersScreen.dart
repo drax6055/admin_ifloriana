@@ -167,6 +167,26 @@ class CustomersScreen extends StatelessWidget {
                   : const SizedBox()),
               Btn_addCustomer(),
               SizedBox(height: 20.h),
+              Obx(() => ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: customerController.customerList.length,
+                    itemBuilder: (context, index) {
+                      final customer = customerController
+                          .customerList[index]; // ✅ Customer object
+
+                      return ListTile(
+                        // leading: CircleAvatar(
+                        //   backgroundImage: NetworkImage(
+                        //       customer.image ?? ''), // check if image exists
+                        // ),
+                        title: Text(customer.fullName),
+                        subtitle: Text(customer.phoneNumber),
+                        trailing: Text(customer.email),
+                      );
+                    },
+                  )),
+
               // customerList(),
             ],
           ),
