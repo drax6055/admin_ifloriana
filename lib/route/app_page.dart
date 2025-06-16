@@ -5,12 +5,14 @@ import 'package:flutter_template/ui/auth/register/register_screen.dart';
 import 'package:flutter_template/ui/drawer/branches/post_branches_screena.dart/postBranchesScreen.dart';
 import 'package:flutter_template/ui/drawer/coupons/addNewCoupon/addCouponScreen.dart';
 import 'package:flutter_template/ui/drawer/coupons/couponsScreen.dart';
+import 'package:flutter_template/ui/drawer/customers/addCustomer/addCustomerScreen.dart';
+import 'package:flutter_template/ui/drawer/customers/customersScreen.dart';
 import 'package:flutter_template/ui/drawer/drawer_screen.dart';
 import 'package:flutter_template/ui/drawer/manager/addManager/managerScreen.dart';
 import 'package:flutter_template/ui/drawer/manager/getManager/getmanagerScreen.dart';
 import 'package:flutter_template/ui/drawer/services/addServices/addservicesScreen.dart';
 import 'package:flutter_template/ui/drawer/services/subCategory/subCategotySCreen.dart';
-import 'package:flutter_template/ui/drawer/staff/addNewStaffController.dart';
+
 import 'package:flutter_template/ui/drawer/staff/addNewStaffScreen.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart'
     show Staffdetailsscreen;
@@ -22,7 +24,6 @@ import '../ui/drawer/dashboard/dashboard_screen.dart';
 import '../ui/splash/splash_screen.dart';
 import 'app_route.dart';
 import '../ui/drawer/branches/getBranches/getBranchesScreen.Dart';
-import '../ui/drawer/customers/customersScreen.dart';
 
 class AppPages {
   static const initial = Routes.splashScreen;
@@ -110,6 +111,11 @@ class AppPages {
     GetPage(
         name: Routes.customersScreen,
         page: () => CustomersScreen(),
+        transition: Transition.rightToLeft),
+
+        GetPage(
+        name: Routes.addCustomer,
+        page: () => Addcustomerscreen(),
         transition: Transition.rightToLeft),
   ];
 }
