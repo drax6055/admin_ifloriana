@@ -84,7 +84,6 @@ class Customer {
   }
 }
 
-
 class BranchPackage {
   final String? id;
   final String? packageName;
@@ -234,16 +233,36 @@ class CustomerController extends GetxController {
     try {
       final loginUser = await prefs.getUser();
 
-    final Map<String, dynamic> response = await dioClient.getData(
+      final Map<String, dynamic> response = await dioClient.getData(
         '${Apis.baseUrl}${Endpoints.getCustomersDetails}?salon_id=${loginUser!.salonId}',
         (json) => json as Map<String, dynamic>,
       );
 
       final List<dynamic> data = response['data'];
       customerList.value = data.map((e) => Customer.fromJson(e)).toList();
-
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch customers: $e');
+    }
+  }
+
+  Future<void> deleteCustomer(String customerId) async {
+    try {
+      final loginUser = await prefs.getUser();
+      isLoading.value = true;
+      final response = await dioClient.deleteData(
+        '${Apis.baseUrl}${Endpoints.customers}/$customerId?salon_id=${loginUser!.salonId}',
+        (json) => json,
+      );
+
+      if (response != null) {
+        // Remove the customer from the local list
+        customerList.removeWhere((customer) => customer.id == customerId);
+        CustomSnackbar.showSuccess('Success', 'Customer deleted successfully');
+      }
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to delete customer: $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 }

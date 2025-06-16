@@ -167,25 +167,44 @@ class CustomersScreen extends StatelessWidget {
                   : const SizedBox()),
               Btn_addCustomer(),
               SizedBox(height: 20.h),
-              Obx(() => ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: customerController.customerList.length,
-                    itemBuilder: (context, index) {
-                      final customer = customerController
-                          .customerList[index]; // ✅ Customer object
-
-                      return ListTile(
-                        // leading: CircleAvatar(
-                        //   backgroundImage: NetworkImage(
-                        //       customer.image ?? ''), // check if image exists
-                        // ),
-                        title: Text(customer.fullName),
-                        subtitle: Text(customer.phoneNumber),
-                        trailing: Text(customer.email),
-                      );
-                    },
-                  )),
+              Obx(() => customerController.customerList.isEmpty
+                  ? Center(
+                      child: Text(
+                        "No customers available.",
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: customerController.customerList.length,
+                      itemBuilder: (context, index) {
+                        final customer = customerController.customerList[index];
+                        return Card(
+                          margin: EdgeInsets.symmetric(
+                              vertical: 4.h, horizontal: 8.w),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              child: Icon(Icons.person),
+                            ),
+                            title: Text(customer.fullName),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(customer.email),
+                                Text(customer.phoneNumber),
+                              ],
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                customerController.deleteCustomer(customer.id);
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    )),
 
               // customerList(),
             ],
