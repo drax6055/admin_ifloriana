@@ -11,7 +11,6 @@ import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:get/get.dart';
 import 'package:step_progress/step_progress.dart';
 
-
 class UpdatesalonScreen extends StatelessWidget {
   final bool showAppBar;
   UpdatesalonScreen({super.key, this.showAppBar = true});
@@ -157,7 +156,8 @@ class UpdatesalonScreen extends StatelessWidget {
         category(),
       ],
     );
-  } 
+  }
+
   Widget Imagepicker() {
     return Obx(() {
       return GestureDetector(

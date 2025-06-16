@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/ui/drawer/branchPackages/branchPackagesScreen.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
@@ -21,7 +22,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.offNamed(Routes.addBranchMembership);
+          Get.to(DynamicInputScreen());
         }
       });
     } catch (e) {
