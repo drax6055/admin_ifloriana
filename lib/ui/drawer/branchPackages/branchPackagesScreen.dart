@@ -101,13 +101,13 @@ class DynamicInputScreen extends StatelessWidget {
                   )),
             ),
             branchDropdown(),
-               CustomTextFormField(
+            CustomTextFormField(
               controller: controller.nameController,
               labelText: 'Name',
               keyboardType: TextInputType.text,
               validator: (value) => Validation.validatename(value),
             ),
-             CustomTextFormField(
+            CustomTextFormField(
               controller: controller.discriptionController,
               labelText: 'Discription',
               maxLines: 2,
@@ -123,7 +123,7 @@ class DynamicInputScreen extends StatelessWidget {
                 Expanded(child: endTime(context)),
               ],
             ),
-              Obx(() => Row(
+            Obx(() => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomTextWidget(
@@ -166,6 +166,22 @@ class DynamicInputScreen extends StatelessWidget {
                     ],
                   ),
                 )),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: controller.submitPackage,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                minimumSize: Size(double.infinity, 50),
+              ),
+              child: Text(
+                'Create Package',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(height: 20),
           ],
         ),

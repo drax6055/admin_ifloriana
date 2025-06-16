@@ -47,4 +47,5 @@ class Endpoints {
       "/branch-memberships/names?salon_id=";
   static const String getBranchpackagesNames =
       "/branchPackages/names?salon_id=";
+  static const String branchPackages = "/branchPackages";
 }

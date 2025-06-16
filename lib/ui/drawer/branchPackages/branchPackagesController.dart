@@ -50,8 +50,8 @@ class DynamicInputController extends GetxController {
   var EndtimeController = TextEditingController();
   var isActive = true.obs;
   var discriptionController = TextEditingController();
-  var nameController =  TextEditingController();
-  
+  var nameController = TextEditingController();
+
   @override
   void onInit() {
     super.onInit();
@@ -124,6 +124,69 @@ class DynamicInputController extends GetxController {
       branchList.value = data.map((e) => Branch.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
+  }
+
+  Future<void> submitPackage() async {
+    if (selectedBranch.value == null) {
+      CustomSnackbar.showError('Error', 'Please select a branch');
+      return;
+    }
+
+    if (nameController.text.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please enter package name');
+      return;
+    }
+
+    if (discriptionController.text.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please enter description');
+      return;
+    }
+
+    if (StarttimeController.text.isEmpty || EndtimeController.text.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please select start and end dates');
+      return;
+    }
+
+    if (containerList.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please add at least one service');
+      return;
+    }
+
+    try {
+      final packageDetails = containerList.map((container) {
+        if (container.selectedService.value == null) {
+          throw Exception('Please select a service for all containers');
+        }
+        return {
+          'service_id': container.selectedService.value!.id,
+          'discounted_price':
+              int.parse(container.discountedPriceController.text),
+          'quantity': int.parse(container.quantityController.text),
+        };
+      }).toList();
+      final loginUser = await prefs.getUser();
+      final requestBody = {
+        'branch_id': [selectedBranch.value!.id],
+        'package_name': nameController.text,
+        'description': discriptionController.text,
+        'start_date': StarttimeController.text,
+        'end_date': EndtimeController.text,
+        'status': isActive.value ? 1 : 0,
+        'package_details': packageDetails,
+        'salon_id': loginUser!.salonId,
+      };
+
+      final response = await dioClient.postData(
+        '${Apis.baseUrl}${Endpoints.branchPackages}',
+        requestBody,
+        (json) => json,
+      );
+
+      CustomSnackbar.showSuccess('Success', 'Package created successfully');
+      Get.back(); // Navigate back after successful creation
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to create package: $e');
     }
   }
 }
