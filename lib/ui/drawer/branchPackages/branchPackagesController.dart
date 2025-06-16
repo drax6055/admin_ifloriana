@@ -128,30 +128,7 @@ class DynamicInputController extends GetxController {
   }
 
   Future<void> submitPackage() async {
-    if (selectedBranch.value == null) {
-      CustomSnackbar.showError('Error', 'Please select a branch');
-      return;
-    }
-
-    if (nameController.text.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please enter package name');
-      return;
-    }
-
-    if (discriptionController.text.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please enter description');
-      return;
-    }
-
-    if (StarttimeController.text.isEmpty || EndtimeController.text.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please select start and end dates');
-      return;
-    }
-
-    if (containerList.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please add at least one service');
-      return;
-    }
+   
 
     try {
       final packageDetails = containerList.map((container) {
@@ -184,7 +161,7 @@ class DynamicInputController extends GetxController {
       );
 
       CustomSnackbar.showSuccess('Success', 'Package created successfully');
-      Get.back(); // Navigate back after successful creation
+      Get.back(); 
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to create package: $e');
     }
