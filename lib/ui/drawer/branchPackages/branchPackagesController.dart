@@ -19,7 +19,6 @@ class Service {
   }
 }
 
-
 class ContainerData {
   Rxn<Service> selectedService = Rxn<Service>();
   TextEditingController discountedPriceController = TextEditingController();
@@ -49,7 +48,17 @@ class DynamicInputController extends GetxController {
     containerList.removeAt(index);
   }
 
-void updateTotal(ContainerData container) {
+  void onServiceSelected(ContainerData container, Service? service) {
+    if (service != null) {
+      container.selectedService.value = service;
+      container.discountedPriceController.text =
+          service.regularPrice?.toString() ?? '0';
+      container.quantityController.text = '1';
+      updateTotal(container);
+    }
+  }
+
+  void updateTotal(ContainerData container) {
     final priceText = container.discountedPriceController.text;
     final quantityText = container.quantityController.text;
 
@@ -58,7 +67,6 @@ void updateTotal(ContainerData container) {
 
     container.total.value = price * quantity;
   }
-
 
   Future<void> getServices() async {
     final loginUser = await prefs.getUser();

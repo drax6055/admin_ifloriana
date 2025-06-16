@@ -50,7 +50,7 @@ class DynamicInputScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                             DropdownButtonFormField<Service>(
+                                DropdownButtonFormField<Service>(
                                   value: data.selectedService.value,
                                   items: controller.serviceList
                                       .map((service) => DropdownMenuItem(
@@ -60,16 +60,8 @@ class DynamicInputScreen extends StatelessWidget {
                                       .toList(),
                                   onChanged: (newService) {
                                     if (newService != null) {
-                                      data.selectedService.value = newService;
-
-                                 
-                                      final regularPrice =
-                                          newService.regularPrice ?? 0;
-                                      data.discountedPriceController.text =
-                                          regularPrice.toString();
-
-                                      // Trigger total update
-                                      controller.updateTotal(data);
+                                      controller.onServiceSelected(
+                                          data, newService);
                                     }
                                   },
                                   decoration: InputDecoration(
@@ -77,7 +69,6 @@ class DynamicInputScreen extends StatelessWidget {
                                     border: OutlineInputBorder(),
                                   ),
                                 ),
-
                                 SizedBox(height: 10),
                                 CustomTextFormField(
                                   controller: data.discountedPriceController,
