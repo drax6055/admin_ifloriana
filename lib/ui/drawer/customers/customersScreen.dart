@@ -53,7 +53,7 @@ class CustomersScreen extends StatelessWidget {
             )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed(Routes.addCustomer);
+          Get.toNamed(Routes.addCustomer);  
         },
         child: Icon(Icons.add),
         backgroundColor: primaryColor,

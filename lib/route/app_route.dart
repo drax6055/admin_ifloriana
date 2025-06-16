@@ -30,4 +30,7 @@ abstract class Routes {
   static const customersScreen = "/CustomersScreen";
 
   static const addCustomer = "/Addcustomerscreen";
+
+  static const addBranchMembership = "/BranchMembershipListScreen";
+  
 }

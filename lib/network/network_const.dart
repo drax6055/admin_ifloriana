@@ -41,7 +41,10 @@ class Endpoints {
   static const String getcommisionForStaff =
       "/revenue-commissions/names?salon_id=";
 
+  static const String postBranchMembership = "/branch-memberships";
+
   static const String getBranchMembershipNames =
       "/branch-memberships/names?salon_id=";
-  static const String getBranchpackagesNames = "/branchPackages/names?salon_id=";
+  static const String getBranchpackagesNames =
+      "/branchPackages/names?salon_id=";
 }

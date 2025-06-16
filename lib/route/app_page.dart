@@ -2,6 +2,8 @@ import 'package:flutter_template/ui/auth/login/login_screen.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/auth/register_packages/register_packages_screen.dart';
 import 'package:flutter_template/ui/auth/register/register_screen.dart';
+import 'package:flutter_template/ui/drawer/Branchmembership/add/branchMembershipAddScreen.dart';
+import 'package:flutter_template/ui/drawer/Branchmembership/get/branchMembershipListScreen.dart';
 import 'package:flutter_template/ui/drawer/branches/post_branches_screena.dart/postBranchesScreen.dart';
 import 'package:flutter_template/ui/drawer/coupons/addNewCoupon/addCouponScreen.dart';
 import 'package:flutter_template/ui/drawer/coupons/couponsScreen.dart';
@@ -116,6 +118,10 @@ class AppPages {
         GetPage(
         name: Routes.addCustomer,
         page: () => Addcustomerscreen(),
+        transition: Transition.rightToLeft),
+          GetPage(
+        name: Routes.addBranchMembership,
+        page: () => BranchMembershipListScreen(),
         transition: Transition.rightToLeft),
   ];
 }
