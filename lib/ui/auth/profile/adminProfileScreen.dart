@@ -11,6 +11,8 @@ import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../../wiget/loading.dart';
+
 class Adminprofilescreen extends StatelessWidget {
   Adminprofilescreen({super.key});
   final Adminprofilecontroller getController =
@@ -190,7 +192,7 @@ class Adminprofilescreen extends StatelessWidget {
                       SizedBox(height: 20),
                       Obx(() {
                         if (getController.isLoading.value) {
-                          return CircularProgressIndicator();
+                          return CustomLoadingAvatar();
                         } else if (getController.error.isNotEmpty) {
                           return Text(getController.error.value,
                               style: TextStyle(color: Colors.red));

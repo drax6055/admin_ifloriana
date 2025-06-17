@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
+import 'package:flutter_template/ui/drawer/branches/getBranches/getBranchesScreen.Dart';
 import 'package:flutter_template/ui/drawer/calender_booking/calender_screen.dart';
 import 'package:flutter_template/ui/drawer/drawer_controller.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart';
@@ -43,16 +44,17 @@ class DrawerScreen extends StatelessWidget {
       },
       {
         'title': 'Branches',
-        'widget': UpdatesalonScreen(showAppBar: false),
+        'widget': GetBranchesScreen(),
       },
       {
-        'title': 'Profile Update',
+        'title': 'Profile Update',  
         'widget': Adminprofilescreen(),
       },
       {
         'title': 'Staff',
         'widget': Staffdetailsscreen(),
       }
+      
     ];
 
     return SafeArea(

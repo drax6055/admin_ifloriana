@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/custom_text_styles.dart';
+import '../../../wiget/loading.dart';
 import 'getBranchPackagesController.dart';
 
 class GetBranchPackagesScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class GetBranchPackagesScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingAvatar());
         }
 
         if (controller.packages.isEmpty) {

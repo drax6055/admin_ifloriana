@@ -4,6 +4,8 @@ import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 import 'package:flutter_template/utils/app_images.dart';
 import 'package:get/get.dart';
 
+import '../../../wiget/loading.dart';
+
 class Staffdetailsscreen extends StatelessWidget {
   final Staffdetailscontroller controller = Get.put(Staffdetailscontroller());
 
@@ -14,7 +16,7 @@ class Staffdetailsscreen extends StatelessWidget {
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CustomLoadingAvatar());
         }
 
         if (controller.staffList.isEmpty) {

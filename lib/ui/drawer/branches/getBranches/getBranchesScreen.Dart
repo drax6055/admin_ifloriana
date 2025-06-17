@@ -5,6 +5,7 @@ import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'edit_branch_screen.dart';
 import 'getBranchesController.dart';
+import 'package:flutter_template/wiget/loading.dart';
 
 class GetBranchesScreen extends StatelessWidget {
   const GetBranchesScreen({super.key});
@@ -17,6 +18,7 @@ class GetBranchesScreen extends StatelessWidget {
           title: Text(
             'Delete Branch',
             style: TextStyle(fontSize: 18.sp),
+
           ),
           content: Text(
             'Are you sure you want to delete "$branchName"?',
@@ -58,19 +60,9 @@ class GetBranchesScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Branches",
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          centerTitle: true,
-        ),
         body: Obx(() {
           if (getController.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CustomLoadingAvatar());
           }
 
           if (getController.branches.isEmpty) {
@@ -88,8 +80,8 @@ class GetBranchesScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final branch = getController.branches[index];
               return Card(
+                 color: white,
                 margin: EdgeInsets.only(bottom: 16.r),
-                elevation: 2,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r),
                 ),
@@ -118,7 +110,7 @@ class GetBranchesScreen extends StatelessWidget {
                                   IconButton(
                                     icon: Icon(
                                       Icons.edit_outlined,
-                                      color: Colors.blue,
+                                      color: primaryColor,
                                       size: 24.sp,
                                     ),
                                     onPressed: () {
@@ -128,7 +120,7 @@ class GetBranchesScreen extends StatelessWidget {
                                   IconButton(
                                     icon: Icon(
                                       Icons.delete_outline,
-                                      color: Colors.red,
+                                      color: primaryColor,
                                       size: 24.sp,
                                     ),
                                     onPressed: () => _showDeleteConfirmation(
@@ -142,23 +134,6 @@ class GetBranchesScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8.h),
-                          Row(
-                            children: [
-                              Icon(Icons.location_on, size: 16.sp, color: Colors.grey),
-                              SizedBox(width: 4.w),
-                              Expanded(
-                                child: Text(
-                                  "${branch.address}, ${branch.city}",
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 8.h),
                           Row(
                             children: [
                               Icon(Icons.phone, size: 16.sp, color: Colors.grey),
@@ -172,7 +147,6 @@ class GetBranchesScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8.h),
                           Row(
                             children: [
                               Icon(Icons.star, size: 16.sp, color: Colors.amber),
@@ -182,6 +156,21 @@ class GetBranchesScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                            Row(
+                            children: [
+                              Icon(Icons.location_on, size: 16.sp, color: Colors.grey),
+                              SizedBox(width: 4.w),
+                              Expanded(
+                                child: Text(
+                                  "${branch.address}, ${branch.city}",
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.grey[600],
+                                  ),
                                 ),
                               ),
                             ],

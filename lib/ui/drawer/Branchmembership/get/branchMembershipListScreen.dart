@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../wiget/loading.dart';
 import 'branchMembershipListController.dart';
 
 class BranchMembershipListScreen extends StatelessWidget {
@@ -19,7 +20,7 @@ class BranchMembershipListScreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CustomLoadingAvatar());
         }
 
         if (controller.memberships.isEmpty) {

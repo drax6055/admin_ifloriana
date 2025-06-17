@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:flutter_template/main.dart';
-import 'package:flutter_template/ui/drawer/branchPackages/branchPackagesScreen.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
-import '../drawer/branchPackages/getBranchPackagesScreen.dart';
+
 
 class SplashController extends GetxController {
   @override
@@ -13,7 +12,7 @@ class SplashController extends GetxController {
     navigateToNextScreen();
   }
 
-  navigateToNextScreen() async { 
+  navigateToNextScreen() async {
     try {
       var duration = const Duration(seconds: 2);
 
@@ -23,7 +22,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(GetBranchPackagesScreen());
+          Get.offNamed(Routes.drawerScreen);
         }
       });
     } catch (e) {
