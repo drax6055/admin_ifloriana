@@ -100,13 +100,6 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Edit Branch',
-          style: TextStyle(fontSize: 18.sp),
-        ),
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.r),
         child: Form(

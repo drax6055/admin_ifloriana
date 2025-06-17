@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'edit_branch_screen.dart';
 import 'getBranchesController.dart';
 import 'package:flutter_template/wiget/loading.dart';
+import 'package:flutter_template/route/app_route.dart';
 
 class GetBranchesScreen extends StatelessWidget {
   const GetBranchesScreen({super.key});
@@ -170,6 +171,7 @@ class GetBranchesScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.grey[600],
+                                     overflow: TextOverflow.ellipsis, 
                                   ),
                                 ),
                               ),
@@ -184,6 +186,13 @@ class GetBranchesScreen extends StatelessWidget {
             },
           );
         }),
+          floatingActionButton: FloatingActionButton(
+        onPressed: () {
+            Get.toNamed(Routes.postBranchs);
+        },
+        child: Icon(Icons.add ,color: white),
+        backgroundColor: primaryColor,
+      ),
       ),
     );
   }
