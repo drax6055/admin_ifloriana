@@ -153,7 +153,7 @@ class DynamicInputController extends GetxController {
         'package_details': packageDetails,
         'salon_id': loginUser!.salonId,
       };
-
+ 
       final response = await dioClient.postData(
         '${Apis.baseUrl}${Endpoints.branchPackages}',
         requestBody,

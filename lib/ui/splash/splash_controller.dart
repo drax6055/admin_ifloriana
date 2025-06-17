@@ -4,6 +4,7 @@ import 'package:flutter_template/ui/drawer/branchPackages/branchPackagesScreen.d
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
+import '../drawer/branchPackages/getBranchPackagesScreen.dart';
 
 class SplashController extends GetxController {
   @override
@@ -22,7 +23,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(DynamicInputScreen());
+          Get.to(GetBranchPackagesScreen());
         }
       });
     } catch (e) {
