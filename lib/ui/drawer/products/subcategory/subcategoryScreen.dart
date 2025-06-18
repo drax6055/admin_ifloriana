@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/ui/drawer/products/brand/getBrandsController.dart';
+import 'package:flutter_template/ui/drawer/products/subcategory/subcategoryController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
@@ -12,21 +12,25 @@ import '../../../../../wiget/Custome_button.dart';
 import '../../../../../wiget/Custome_textfield.dart';
 import '../../../../../wiget/custome_text.dart';
 
-class Getbrandsscreen extends StatelessWidget {
-  Getbrandsscreen({super.key});
-  final Getbrandscontroller getController = Get.put(Getbrandscontroller());
+class Subcategoryscreen extends StatelessWidget {
+  Subcategoryscreen({super.key});
+  final Subcategorycontroller getController = Get.put(Subcategorycontroller());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Product SubCategories'),
+        backgroundColor: primaryColor,
+      ),
       body: Container(
           child: Obx(
         () => getController.isLoading.value
             ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
-                itemCount: getController.brands.length,
+                itemCount: getController.subCategories.length,
                 itemBuilder: (context, index) {
-                  final brand = getController.brands[index];
+                  final subCategory = getController.subCategories[index];
                   return Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -36,11 +40,11 @@ class Getbrandsscreen extends StatelessWidget {
                     margin:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: ListTile(
-                      leading: brand.image.isNotEmpty
+                      leading: subCategory.image.isNotEmpty
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                brand.image,
+                                subCategory.image,
                                 width: 50,
                                 height: 50,
                                 fit: BoxFit.cover,
@@ -62,17 +66,39 @@ class Getbrandsscreen extends StatelessWidget {
                               child: const Icon(Icons.image_not_supported),
                             ),
                       title: Text(
-                        brand.name,
+                        subCategory.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
                       ),
-                      subtitle: Text(
-                        'Branches: ${brand.branchId.length}',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Category: ${subCategory.productCategoryId.name}',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            'Branches: ${subCategory.branchId.length} • Brands: ${subCategory.brandId.length}',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            subCategory.status == 1 ? 'Active' : 'Inactive',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: subCategory.status == 1
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                        ],
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -80,8 +106,8 @@ class Getbrandsscreen extends StatelessWidget {
                           IconButton(
                               icon: const Icon(Icons.delete_outline),
                               color: Colors.red,
-                              onPressed: () =>
-                                  getController.deleteBrand(brand.id)),
+                              onPressed: () => getController
+                                  .deleteSubCategory(subCategory.id)),
                         ],
                       ),
                     ),
@@ -149,7 +175,7 @@ class Getbrandsscreen extends StatelessWidget {
                           ),
                         ],
                       )),
-                  Btn_BranchesAdd(),
+                  Btn_SubCategoryAdd(),
                   const SizedBox(height: 10),
                 ],
               ),
@@ -228,11 +254,11 @@ class Getbrandsscreen extends StatelessWidget {
     });
   }
 
-  Widget Btn_BranchesAdd() {
+  Widget Btn_SubCategoryAdd() {
     return ElevatedButtonExample(
-      text: "Add Brand",
+      text: "Add SubCategory",
       onPressed: () {
-        getController.onAddBranch();
+        getController.onAddSubCategory();
       },
     );
   }

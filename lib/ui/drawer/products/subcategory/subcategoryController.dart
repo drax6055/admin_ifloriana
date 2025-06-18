@@ -1,13 +1,13 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_template/network/model/brand.dart';
+import 'package:flutter_template/network/model/productSubCategory.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
-import '../../../../../main.dart';
+import '../../../../main.dart';
 
-import '../../../../../network/model/addBrand.dart';
-import '../../../../../network/network_const.dart';
-import '../../../../../wiget/custome_snackbar.dart';
+import '../../../../network/model/addBrand.dart';
+import '../../../../network/network_const.dart';
+import '../../../../wiget/custome_snackbar.dart';
 
 class Branch1 {
   final String? id;
@@ -23,8 +23,8 @@ class Branch1 {
   }
 }
 
-class Getbrandscontroller extends GetxController {
-  final brands = <Brand>[].obs;
+class Subcategorycontroller extends GetxController {
+  final subCategories = <ProductSubCategory>[].obs;
   final isLoading = false.obs;
   var isActive = true.obs;
   var branchList = <Branch1>[].obs;
@@ -35,7 +35,7 @@ class Getbrandscontroller extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getBrands();
+    getSubCategories();
     getBranches();
   }
 
@@ -46,18 +46,19 @@ class Getbrandscontroller extends GetxController {
     super.onClose();
   }
 
-  Future<void> getBrands() async {
+  Future<void> getSubCategories() async {
     final loginUser = await prefs.getUser();
     try {
       isLoading.value = true;
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBrands}${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.getProductSubCategories}${loginUser!.salonId}',
         (json) => json,
       );
 
       if (response != null && response['data'] != null) {
         final List<dynamic> data = response['data'];
-        brands.value = data.map((json) => Brand.fromJson(json)).toList();
+        subCategories.value =
+            data.map((json) => ProductSubCategory.fromJson(json)).toList();
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
@@ -66,24 +67,26 @@ class Getbrandscontroller extends GetxController {
     }
   }
 
-  Future<void> deleteBrand(String brandId) async {
+  Future<void> deleteSubCategory(String subCategoryId) async {
     try {
       isLoading.value = true;
       final loginUser = await prefs.getUser();
 
       final response = await dioClient.deleteData(
-        '${Apis.baseUrl}${Endpoints.postBrands}/$brandId?salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.productSubcategory}/$subCategoryId?salon_id=${loginUser!.salonId}',
         (json) => json,
       );
 
       if (response != null) {
-        // Remove the deleted brand from the list
-        brands.removeWhere((brand) => brand.id == brandId);
-        getBrands();
-        CustomSnackbar.showSuccess('Success', 'Brand deleted successfully');
+        // Remove the deleted subcategory from the list
+        subCategories
+            .removeWhere((subCategory) => subCategory.id == subCategoryId);
+        getSubCategories();
+        CustomSnackbar.showSuccess(
+            'Success', 'SubCategory deleted successfully');
       }
     } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to delete brand: $e');
+      CustomSnackbar.showError('Error', 'Failed to delete subcategory: $e');
     } finally {
       isLoading.value = false;
     }
@@ -104,9 +107,9 @@ class Getbrandscontroller extends GetxController {
     }
   }
 
-  Future onAddBranch() async {
+  Future onAddSubCategory() async {
     if (nameController.text.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please enter brand name');
+      CustomSnackbar.showError('Error', 'Please enter subcategory name');
       return;
     }
 
@@ -117,8 +120,8 @@ class Getbrandscontroller extends GetxController {
 
     final loginUser = await prefs.getUser();
 
-    // Create brand data with multiple branch IDs
-    Map<String, dynamic> brandData = {
+    // Create subcategory data with multiple branch IDs
+    Map<String, dynamic> subCategoryData = {
       "image": null,
       "name": nameController.text,
       'branch_id': selectedBranches.map((branch) => branch.id).toList(),
@@ -127,13 +130,13 @@ class Getbrandscontroller extends GetxController {
     };
 
     try {
-      await dioClient.postData(
-        '${Apis.baseUrl}${Endpoints.postBrands}',
-        brandData,
-        (json) => AddBrand.fromJson(json),
-      );
-      getBrands();
-      CustomSnackbar.showSuccess('Success', 'Brand Added Successfully');
+      // await dioClient.postData(
+      //   '${Apis.baseUrl}${Endpoints.postProductSubCategory}',
+      //   subCategoryData,
+      //   (json) => json,
+      // );
+      getSubCategories();
+      CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
       Get.back(); // Close the bottom sheet
       resetForm(); // Reset the form
     } catch (e) {
