@@ -2,10 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_template/network/model/productSubCategory.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-
 import '../../../../main.dart';
-
-import '../../../../network/model/addBrand.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
 
@@ -23,20 +20,56 @@ class Branch1 {
   }
 }
 
+class Subcategorys {
+  final String? id;
+  final String? name;
+
+  Subcategorys({this.id, this.name});
+
+  factory Subcategorys.fromJson(Map<String, dynamic> json) {
+    return Subcategorys(
+      id: json['_id'],
+      name: json['name'],
+    );
+  }
+}
+
+class Category {
+  final String? id;
+  final String? name;
+
+  Category({this.id, this.name});
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      id: json['_id'],
+      name: json['name'],
+    );
+  }
+}
+
 class Subcategorycontroller extends GetxController {
   final subCategories = <ProductSubCategory>[].obs;
   final isLoading = false.obs;
   var isActive = true.obs;
   var branchList = <Branch1>[].obs;
+  var categoryList = <Category>[].obs;
+
+  var brandList = <Subcategorys>[].obs;
+  var selectedCategory = Rx<Category?>(null);
   var selectedBranches = <Branch1>[].obs;
+  var selectedBrand = <Subcategorys>[].obs;
   var nameController = TextEditingController();
   final branchController = MultiSelectController<Branch1>();
+  final brandController = MultiSelectController<Subcategorys>();
 
   @override
   void onInit() {
     super.onInit();
     getSubCategories();
     getBranches();
+    getBrand();
+    getCatedory();
   }
 
   @override
@@ -78,7 +111,6 @@ class Subcategorycontroller extends GetxController {
       );
 
       if (response != null) {
-        // Remove the deleted subcategory from the list
         subCategories
             .removeWhere((subCategory) => subCategory.id == subCategoryId);
         getSubCategories();
@@ -107,43 +139,83 @@ class Subcategorycontroller extends GetxController {
     }
   }
 
-  // Future onAddSubCategory() async {
-  //   if (nameController.text.isEmpty) {
-  //     CustomSnackbar.showError('Error', 'Please enter subcategory name');
-  //     return;
-  //   }
+  Future<void> getBrand() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getBrandName}${loginUser!.salonId}',
+        (json) => json,
+      );
 
-  //   if (selectedBranches.isEmpty) {
-  //     CustomSnackbar.showError('Error', 'Please select at least one branch');
-  //     return;
-  //   }
+      final data = response['data'] as List;
+      brandList.value = data.map((e) => Subcategorys.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
+  }
 
-  //   final loginUser = await prefs.getUser();
+  Future<void> getCatedory() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getproductName}${loginUser!.salonId}',
+        (json) => json,
+      );
 
-  //   // Create subcategory data with multiple branch IDs
-  //   Map<String, dynamic> subCategoryData = {
-  //     "image": null,
-  //     "name": nameController.text,
-  //     'branch_id': selectedBranches.map((branch) => branch.id).toList(),
-  //     'status': isActive.value ? 1 : 0,
-  //     'salon_id': loginUser!.salonId
-  //   };
+      final data = response['data'] as List;
+      categoryList.value = data.map((e) => Category.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
+  }
 
-  //   try {
-  //     await dioClient.postData(
-  //       '${Apis.baseUrl}${Endpoints.postProductSubCategory}',
-  //       subCategoryData,
-  //       (json) => json,
-  //     );
-  //     getSubCategories();
-  //     CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
-  //     Get.back(); // Close the bottom sheet
-  //     resetForm(); // Reset the form
-  //   } catch (e) {
-  //     print('==> here Error: $e');
-  //     CustomSnackbar.showError('Error', e.toString());
-  //   }
-  // }
+  Future onAddSubCategory() async {
+    if (nameController.text.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please enter subcategory name');
+      return;
+    }
+
+    if (selectedBranches.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please select at least one branch');
+      return;
+    }
+
+    if (selectedCategory.value == null) {
+      CustomSnackbar.showError('Error', 'Please select a category');
+      return;
+    }
+
+    if (selectedBrand.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please select at least one brand');
+      return;
+    }
+
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> subCategoryData = {
+      "image": null,
+      "name": nameController.text,
+      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'status': isActive.value ? 1 : 0,
+      'salon_id': loginUser!.salonId,
+      'product_category_id': selectedCategory.value!.id,
+      'brand_id': selectedBrand.map((brand) => brand.id).toList(),
+    };
+
+    try {
+      await dioClient.postData(
+        '${Apis.baseUrl}${Endpoints.productSubcategory}',
+        subCategoryData,
+        (json) => json,
+      );
+      getSubCategories(); 
+      CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
+      Get.back(); // Close the bottom sheet
+      resetForm(); // Reset the form
+    } catch (e) {
+      print('==> here Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
+    }
+  }
 
   void resetForm() {
     nameController.clear();

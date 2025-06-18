@@ -11,6 +11,7 @@ import '../../../../../utils/validation.dart';
 import '../../../../../wiget/Custome_button.dart';
 import '../../../../../wiget/Custome_textfield.dart';
 import '../../../../../wiget/custome_text.dart';
+import '../../../../wiget/custome_snackbar.dart';
 
 class Subcategoryscreen extends StatelessWidget {
   Subcategoryscreen({super.key});
@@ -158,6 +159,8 @@ class Subcategoryscreen extends StatelessWidget {
                     ],
                   ),
                   branchDropdown(),
+                  brandDropdown(),
+                  caregoryDropdown(),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -254,11 +257,85 @@ class Subcategoryscreen extends StatelessWidget {
     });
   }
 
+  Widget brandDropdown() {
+    return Obx(() {
+      return MultiDropdown<Subcategorys>(
+        items: getController.brandList
+            .map((brand) => DropdownItem(
+                  label: brand.name ?? '',
+                  value: brand,
+                ))
+            .toList(),
+        controller: getController.brandController,
+        enabled: true,
+        searchEnabled: true,
+        chipDecoration: const ChipDecoration(
+          backgroundColor: secondaryColor,
+          wrap: true,
+          runSpacing: 2,
+          spacing: 10,
+        ),
+        fieldDecoration: FieldDecoration(
+          hintText: 'Select Brand',
+          hintStyle: const TextStyle(color: Colors.grey),
+          showClearIcon: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: secondaryColor,
+            ),
+          ),
+        ),
+        dropdownItemDecoration: DropdownItemDecoration(
+          selectedIcon: const Icon(Icons.check_box, color: primaryColor),
+          disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+        ),
+        onSelectionChange: (selectedBrand) {
+          getController.selectedBrand.value = selectedBrand;
+        },
+      );
+    });
+  }
+
+  Widget caregoryDropdown() {
+    return Obx(() {
+      return DropdownButtonFormField<Category>(
+        value: getController.selectedCategory.value,
+        decoration: InputDecoration(
+          labelText: "Select Category",
+          border: OutlineInputBorder(),
+        ),
+        items: getController.categoryList.map((Category category) {
+          return DropdownMenuItem<Category>(
+            value: category,
+            child: Text(category.name ?? ''),
+          );
+        }).toList(),
+        onChanged: (Category? newValue) {
+          print('Category dropdown onChanged called with: ${newValue?.name}');
+          if (newValue != null) {
+            getController.selectedCategory.value = newValue;
+            print(
+                'Selected Category set to: ${getController.selectedCategory.value?.name}');
+            CustomSnackbar.showSuccess(
+              'Category Selected',
+              'ID: ${newValue.id}',
+            );
+          }
+        },
+      );
+    });
+  }
+
   Widget Btn_SubCategoryAdd() {
     return ElevatedButtonExample(
       text: "Add SubCategory",
       onPressed: () {
-        // getController.onAddSubCategory();
+        getController.onAddSubCategory();
       },
     );
   }

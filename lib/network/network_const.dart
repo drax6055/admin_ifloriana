@@ -56,4 +56,12 @@ class Endpoints {
       "/productSubCategories?salon_id=";
 
   static const String productSubcategory = "/productSubCategories";
+
+  static const String getBrandName = "/brands/names?salon_id=";
+  static const String getproductName = "/productCategories/names?salon_id=";
+  static const String postSubCategory =  "/productCategories";
+
+
+
+  
 }
