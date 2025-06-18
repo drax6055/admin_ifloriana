@@ -48,4 +48,8 @@ class Endpoints {
   static const String getBranchpackagesNames =
       "/branchPackages/names?salon_id=";
   static const String branchPackages = "/branchPackages";
+
+  static const String getBrands = "/brands?salon_id=";
+
+  static const String postBrands = "/brands";
 }

@@ -24,6 +24,7 @@ class Postbranchescontroller extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+  
     getServices();
     final locationDetails = await getUserLocationDetails();
     landmarkController.text = locationDetails['landmark'] ?? '';
