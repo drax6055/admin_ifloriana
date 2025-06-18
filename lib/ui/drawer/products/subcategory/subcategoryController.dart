@@ -107,43 +107,43 @@ class Subcategorycontroller extends GetxController {
     }
   }
 
-  Future onAddSubCategory() async {
-    if (nameController.text.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please enter subcategory name');
-      return;
-    }
+  // Future onAddSubCategory() async {
+  //   if (nameController.text.isEmpty) {
+  //     CustomSnackbar.showError('Error', 'Please enter subcategory name');
+  //     return;
+  //   }
 
-    if (selectedBranches.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please select at least one branch');
-      return;
-    }
+  //   if (selectedBranches.isEmpty) {
+  //     CustomSnackbar.showError('Error', 'Please select at least one branch');
+  //     return;
+  //   }
 
-    final loginUser = await prefs.getUser();
+  //   final loginUser = await prefs.getUser();
 
-    // Create subcategory data with multiple branch IDs
-    Map<String, dynamic> subCategoryData = {
-      "image": null,
-      "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
-      'status': isActive.value ? 1 : 0,
-      'salon_id': loginUser!.salonId
-    };
+  //   // Create subcategory data with multiple branch IDs
+  //   Map<String, dynamic> subCategoryData = {
+  //     "image": null,
+  //     "name": nameController.text,
+  //     'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+  //     'status': isActive.value ? 1 : 0,
+  //     'salon_id': loginUser!.salonId
+  //   };
 
-    try {
-      // await dioClient.postData(
-      //   '${Apis.baseUrl}${Endpoints.postProductSubCategory}',
-      //   subCategoryData,
-      //   (json) => json,
-      // );
-      getSubCategories();
-      CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
-      Get.back(); // Close the bottom sheet
-      resetForm(); // Reset the form
-    } catch (e) {
-      print('==> here Error: $e');
-      CustomSnackbar.showError('Error', e.toString());
-    }
-  }
+  //   try {
+  //     await dioClient.postData(
+  //       '${Apis.baseUrl}${Endpoints.postProductSubCategory}',
+  //       subCategoryData,
+  //       (json) => json,
+  //     );
+  //     getSubCategories();
+  //     CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
+  //     Get.back(); // Close the bottom sheet
+  //     resetForm(); // Reset the form
+  //   } catch (e) {
+  //     print('==> here Error: $e');
+  //     CustomSnackbar.showError('Error', e.toString());
+  //   }
+  // }
 
   void resetForm() {
     nameController.clear();

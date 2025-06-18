@@ -258,7 +258,7 @@ class Subcategoryscreen extends StatelessWidget {
     return ElevatedButtonExample(
       text: "Add SubCategory",
       onPressed: () {
-        getController.onAddSubCategory();
+        // getController.onAddSubCategory();
       },
     );
   }

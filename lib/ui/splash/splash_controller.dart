@@ -28,6 +28,6 @@ class SplashController extends GetxController {
       });
     } catch (e) {
       CustomSnackbar.showError('Error', '$e');
-    }
+    } 
   }
 }
