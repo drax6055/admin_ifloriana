@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/products/category/CategoryController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
+
+import '../../../../commen_items/commen_class.dart';
+import '../../../../utils/custom_text_styles.dart';
+import '../../../../utils/validation.dart';
+import '../../../../wiget/Custome_button.dart';
+import '../../../../wiget/Custome_textfield.dart';
+import '../../../../wiget/custome_text.dart';
 
 class Categoryscreen extends StatelessWidget {
   Categoryscreen({super.key});
@@ -121,6 +130,24 @@ class Categoryscreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: primaryColor),
+                      onPressed: () {
+                        // TODO: Navigate to edit screen
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        getController.showDeleteConfirmation(
+                            category.id, category.name);
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -128,11 +155,194 @@ class Categoryscreen extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate to add category screen
+          showAddCategorySheet(context);
         },
         child: Icon(Icons.add, color: white),
         backgroundColor: primaryColor,
       ),
     );
+  }
+
+  void showAddCategorySheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 10,
+                children: [
+                  Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: Imagepicker(),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: CustomTextFormField(
+                          controller: getController.nameController,
+                          labelText: 'Name',
+                          keyboardType: TextInputType.text,
+                          validator: (value) => Validation.validatename(value),
+                        ),
+                      )
+                    ],
+                  ),
+                  branchDropdown(),
+                  brandDropdown(),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            text: 'Status',
+                            textStyle:
+                                CustomTextStyles.textFontRegular(size: 14.sp),
+                          ),
+                          Switch(
+                            value: getController.isActive.value,
+                            onChanged: (value) {
+                              getController.isActive.value = value;
+                            },
+                            activeColor: primaryColor,
+                          ),
+                        ],
+                      )),
+                  Btn_SubCategoryAdd(),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget Imagepicker() {
+    return Obx(() {
+      return GestureDetector(
+        onTap: () => pickImage(isMultiple: false),
+        child: Container(
+          height: 51.h,
+          decoration: BoxDecoration(
+            border: Border.all(color: primaryColor),
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
+            color: secondaryColor.withOpacity(0.2),
+          ),
+          child: singleImage.value != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(10.r),
+                  child: Image.file(
+                    singleImage.value!,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : Icon(Icons.image_rounded, color: primaryColor, size: 30.sp),
+        ),
+      );
+    });
+  }
+
+  Widget branchDropdown() {
+    return Obx(() {
+      return MultiDropdown<Branch1>(
+        items: getController.branchList
+            .map((branch) => DropdownItem(
+                  label: branch.name ?? '',
+                  value: branch,
+                ))
+            .toList(),
+        controller: getController.branchController,
+        enabled: true,
+        searchEnabled: true,
+        chipDecoration: const ChipDecoration(
+          backgroundColor: secondaryColor,
+          wrap: true,
+          runSpacing: 2,
+          spacing: 10,
+        ),
+        fieldDecoration: FieldDecoration(
+          hintText: 'Select Branches',
+          hintStyle: const TextStyle(color: Colors.grey),
+          showClearIcon: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: secondaryColor,
+            ),
+          ),
+        ),
+        dropdownItemDecoration: DropdownItemDecoration(
+          selectedIcon: const Icon(Icons.check_box, color: primaryColor),
+          disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+        ),
+        onSelectionChange: (selectedItems) {
+          getController.selectedBranches.value = selectedItems;
+        },
+      );
+    });
+  }
+
+  Widget Btn_SubCategoryAdd() {
+    return ElevatedButtonExample(
+      text: "Add Category",
+      onPressed: () {
+        getController.onAddSubCategory();
+      },
+    );
+  }
+
+  Widget brandDropdown() {
+    return Obx(() {
+      return MultiDropdown<Brand>(
+        items: getController.brandList
+            .map((brand) => DropdownItem(
+                  label: brand.name ?? '',
+                  value: brand,
+                ))
+            .toList(),
+        controller: getController.brandController,
+        enabled: true,
+        searchEnabled: true,
+        chipDecoration: const ChipDecoration(
+          backgroundColor: secondaryColor,
+          wrap: true,
+          runSpacing: 2,
+          spacing: 10,
+        ),
+        fieldDecoration: FieldDecoration(
+          hintText: 'Select Brand',
+          hintStyle: const TextStyle(color: Colors.grey),
+          showClearIcon: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(
+              color: secondaryColor,
+            ),
+          ),
+        ),
+        dropdownItemDecoration: DropdownItemDecoration(
+          selectedIcon: const Icon(Icons.check_box, color: primaryColor),
+          disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
+        ),
+        onSelectionChange: (selectedBrand) {
+          getController.selectedBrand.value = selectedBrand;
+        },
+      );
+    });
   }
 }
