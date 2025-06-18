@@ -3,7 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
-import '../drawer/products/brand/get/getBrandsScreen.dart';
+import '../drawer/products/brand/getBrandsScreen.dart';
 
 
 class SplashController extends GetxController {

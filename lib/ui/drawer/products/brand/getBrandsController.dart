@@ -1,13 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_template/network/model/brand.dart';
 import 'package:get/get.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
 
-import '../../../../../main.dart';
+import '../../../../main.dart';
 
-import '../../../../../network/model/addBrand.dart';
-import '../../../../../network/network_const.dart';
-import '../../../../../wiget/custome_snackbar.dart';
+import '../../../../network/model/addBrand.dart';
+import '../../../../network/network_const.dart';
+import '../../../../wiget/custome_snackbar.dart';
 
 class Branch1 {
   final String? id;
@@ -28,22 +27,13 @@ class Getbrandscontroller extends GetxController {
   final isLoading = false.obs;
   var isActive = true.obs;
   var branchList = <Branch1>[].obs;
-  var selectedBranches = <Branch1>[].obs;
+  var selectedBranch = Rx<Branch1?>(null);
   var nameController = TextEditingController();
-  final branchController = MultiSelectController<Branch1>();
-
   @override
   void onInit() {
     super.onInit();
     getBrands();
     getBranches();
-  }
-
-  @override
-  void onClose() {
-    nameController.dispose();
-    branchController.dispose();
-    super.onClose();
   }
 
   Future<void> getBrands() async {
@@ -75,7 +65,6 @@ class Getbrandscontroller extends GetxController {
         '${Apis.baseUrl}${Endpoints.postBrands}/$brandId?salon_id=${loginUser!.salonId}',
         (json) => json,
       );
-
       if (response != null) {
         // Remove the deleted brand from the list
         brands.removeWhere((brand) => brand.id == brandId);
@@ -105,23 +94,11 @@ class Getbrandscontroller extends GetxController {
   }
 
   Future onAddBranch() async {
-    if (nameController.text.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please enter brand name');
-      return;
-    }
-
-    if (selectedBranches.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please select at least one branch');
-      return;
-    }
-
     final loginUser = await prefs.getUser();
-
-    // Create brand data with multiple branch IDs
     Map<String, dynamic> brandData = {
       "image": null,
       "name": nameController.text,
-      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'branch_id': selectedBranch.value?.id,
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.salonId
     };
@@ -133,18 +110,11 @@ class Getbrandscontroller extends GetxController {
         (json) => AddBrand.fromJson(json),
       );
       getBrands();
-      CustomSnackbar.showSuccess('Success', 'Brand Added Successfully');
-      Get.back(); // Close the bottom sheet
-      resetForm(); // Reset the form
+      Get.back();
+      CustomSnackbar.showSuccess('Succcess', 'done Added');
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
     }
-  }
-
-  void resetForm() {
-    nameController.clear();
-    isActive.value = true;
-    selectedBranches.clear();
   }
 }
