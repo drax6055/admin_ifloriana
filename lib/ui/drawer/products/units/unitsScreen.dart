@@ -9,7 +9,6 @@ import '../../../../utils/custom_text_styles.dart';
 import '../../../../utils/validation.dart';
 import '../../../../wiget/Custome_button.dart';
 import '../../../../wiget/Custome_textfield.dart';
-import '../../../../wiget/custome_snackbar.dart';
 import '../../../../wiget/custome_text.dart';
 
 class Unitsscreen extends StatelessWidget {
@@ -18,11 +17,23 @@ class Unitsscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: [],
-        ),
-      ),
+      body: Obx(() {
+        if (getController.unitsList.isEmpty) {
+          return Center(child: Text('No units found.'));
+        }
+        return ListView.builder(
+          itemCount: getController.unitsList.length,
+          itemBuilder: (context, index) {
+            final unit = getController.unitsList[index];
+            final branchNames = unit.branches.map((b) => b.name).join(', ');
+            return ListTile(
+              title: Text(unit.name ?? ''),
+              subtitle: Text('Branches: ' + branchNames),
+              trailing: Text(unit.status == 1 ? 'Active' : 'Inactive'),
+            );
+          },
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);
@@ -97,8 +108,6 @@ class Unitsscreen extends StatelessWidget {
     );
   }
 
-
-  
   Widget branchDropdown() {
     return Obx(() {
       return MultiDropdown<Branch1>(

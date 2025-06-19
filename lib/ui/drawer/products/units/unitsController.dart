@@ -7,6 +7,33 @@ import '../../../../network/model/postUnits.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
 
+class UnitModel {
+  final String? id;
+  final List<Branch1> branches;
+  final String? name;
+  final int? status;
+  final String? salonId;
+
+  UnitModel({
+    this.id,
+    required this.branches,
+    this.name,
+    this.status,
+    this.salonId,
+  });
+
+  factory UnitModel.fromJson(Map<String, dynamic> json) {
+    return UnitModel(
+      id: json['_id'],
+      branches:
+          (json['branch_id'] as List).map((e) => Branch1.fromJson(e)).toList(),
+      name: json['name'],
+      status: json['status'],
+      salonId: json['salon_id'],
+    );
+  }
+}
+
 class Branch1 {
   final String? id;
   final String? name;
@@ -26,6 +53,7 @@ class Unitscontroller extends GetxController {
   void onInit() {
     super.onInit();
     getBranches();
+    getUnits();
   }
 
   var nameController = TextEditingController();
@@ -33,6 +61,7 @@ class Unitscontroller extends GetxController {
   var selectedBranches = <Branch1>[].obs;
   final branchController = MultiSelectController<Branch1>();
   var branchList = <Branch1>[].obs;
+  var unitsList = <UnitModel>[].obs;
 
   Future onUniteAdd() async {
     final loginUser = await prefs.getUser();
@@ -50,6 +79,7 @@ class Unitscontroller extends GetxController {
         (json) => PostUnits.fromJson(json),
       );
       CustomSnackbar.showSuccess('Succcess', 'Units Added');
+      await getUnits();
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
@@ -75,12 +105,11 @@ class Unitscontroller extends GetxController {
     final loginUser = await prefs.getUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.postUnits}/salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.getUnits}${loginUser!.salonId}',
         (json) => json,
       );
-
       final data = response['data'] as List;
-      branchList.value = data.map((e) => Branch1.fromJson(e)).toList();
+      unitsList.value = data.map((e) => UnitModel.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }

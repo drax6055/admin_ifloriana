@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/products/category/CategoryController.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:get/get.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
 import '../../../../commen_items/commen_class.dart';
