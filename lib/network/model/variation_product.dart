@@ -1,3 +1,15 @@
+class Branch {
+  String? id;
+  String? name;
+
+  Branch({this.id, this.name});
+
+  Branch.fromJson(Map<String, dynamic> json) {
+    id = json['_id'];
+    name = json['name'];
+  }
+}
+
 class ProductVariation {
   String? message;
   Data? data;
@@ -20,7 +32,7 @@ class ProductVariation {
 }
 
 class Data {
-  List<String>? branchId;
+  List<Branch>? branchId;
   String? name;
   List<String>? value;
   String? type;
@@ -44,9 +56,12 @@ class Data {
       this.iV});
 
   Data.fromJson(Map<String, dynamic> json) {
-    branchId = json['branch_id'].cast<String>();
+    if (json['branch_id'] != null && json['branch_id'] is List) {
+      branchId =
+          (json['branch_id'] as List).map((e) => Branch.fromJson(e)).toList();
+    }
     name = json['name'];
-    value = json['value'].cast<String>();
+    value = json['value'] != null ? List<String>.from(json['value']) : null;
     type = json['type'];
     status = json['status'];
     salonId = json['salon_id'];
@@ -58,7 +73,7 @@ class Data {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['branch_id'] = this.branchId;
+    data['branch_id'] = this.branchId?.map((b) => b.id).toList();
     data['name'] = this.name;
     data['value'] = this.value;
     data['type'] = this.type;

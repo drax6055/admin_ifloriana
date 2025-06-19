@@ -17,10 +17,35 @@ class VariationGetscreen extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
-        child: Column(
-          spacing: 10,
-          children: [],
-        ),
+        child: Obx(() {
+          if (getController.variations.isEmpty) {
+            return Center(child: Text('No variations found'));
+          }
+          return ListView.builder(
+            itemCount: getController.variations.length,
+            itemBuilder: (context, index) {
+              final variation = getController.variations[index];
+              final branchNames =
+                  variation.branchId?.map((b) => b.name).join(', ') ?? '';
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 8),
+                child: ListTile(
+                  title: Text(variation.name ?? ''),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Type: ${variation.type ?? ''}'),
+                      Text('Values: ${variation.value?.join(", ") ?? ''}'),
+                      Text('Branches: $branchNames'),
+                      Text(
+                          'Status: ${variation.status == 1 ? 'Active' : 'Inactive'}'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        }),
       ),
     );
   }

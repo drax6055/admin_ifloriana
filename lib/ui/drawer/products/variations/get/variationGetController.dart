@@ -2,11 +2,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 
+import '../../../../../network/model/variation_product.dart';
 import '../../../../../network/network_const.dart';
 import '../../../../../wiget/custome_snackbar.dart';
 
 class VariationGetcontroller extends GetxController {
-  var valueControllers = <TextEditingController>[].obs;
+  var variations = <Data>[].obs;
 
   @override
   void onInit() {
@@ -17,12 +18,16 @@ class VariationGetcontroller extends GetxController {
   Future<void> getVariation() async {
     final loginUser = await prefs.getUser();
     try {
-      await dioClient.getData(
+      final response = await dioClient.getData(
         '${Apis.baseUrl}${Endpoints.postVariation}?salon_id=${loginUser!.salonId}',
         (json) => json,
       );
+      if (response != null && response['data'] != null) {
+        final List<dynamic> data = response['data'];
+        variations.value = data.map((e) => Data.fromJson(e)).toList();
+      }
     } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to fetch packages: $e');
+      CustomSnackbar.showError('Error', 'Failed to fetch variations: $e');
     }
   }
 }
