@@ -30,4 +30,18 @@ class VariationGetcontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to fetch variations: $e');
     }
   }
+
+  Future<void> deleteVariation(String id) async {
+    final loginUser = await prefs.getUser();
+    try {
+      await dioClient.deleteData(
+        '${Apis.baseUrl}${Endpoints.postVariation}/$id?salon_id=${loginUser!.salonId}',
+        (json) => json,
+      );
+      variations.removeWhere((v) => v.sId == id);
+      CustomSnackbar.showSuccess('Success', 'Variation deleted successfully');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to delete variation: $e');
+    }
+  }
 }

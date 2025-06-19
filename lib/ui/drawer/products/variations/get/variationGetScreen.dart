@@ -41,6 +41,12 @@ class VariationGetscreen extends StatelessWidget {
                           'Status: ${variation.status == 1 ? 'Active' : 'Inactive'}'),
                     ],
                   ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      getController.deleteVariation(variation.sId ?? '');
+                    },
+                  ),
                 ),
               );
             },
