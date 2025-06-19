@@ -14,6 +14,7 @@ class RegisterController extends GetxController {
     currentStep.value = step;
   }
 
+
   void nextStep() {
     if (currentStep.value < 1) {
       currentStep.value++;

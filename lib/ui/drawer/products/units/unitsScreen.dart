@@ -90,19 +90,11 @@ class Unitsscreen extends StatelessWidget {
               child: Column(
                 spacing: 10,
                 children: [
-                  Row(
-                    spacing: 10,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: CustomTextFormField(
-                          controller: getController.nameController,
-                          labelText: 'Name',
-                          keyboardType: TextInputType.text,
-                          validator: (value) => Validation.validatename(value),
-                        ),
-                      )
-                    ],
+                  CustomTextFormField(
+                    controller: getController.nameController,
+                    labelText: 'Name',
+                    keyboardType: TextInputType.text,
+                    validator: (value) => Validation.validatename(value),
                   ),
                   Obx(() => Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
