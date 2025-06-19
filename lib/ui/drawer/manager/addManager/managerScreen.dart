@@ -164,38 +164,11 @@ class Managerscreen extends StatelessWidget {
         ));
   }
 
-  // Widget branchDropdown() {
-  //   return Obx(() {
-  //     return DropdownButton<Branch>(
-  //       value: getController.selectedBranch.value,
-  //       hint: Text("Select Branch"),
-  //       items: getController.branchList.map((Branch branch) {
-  //         return DropdownMenuItem<Branch>(
-  //           value: branch,
-  //           child: Text(branch.name ?? ''),
-  //         );
-  //       }).toList(),
-  //       onChanged: (Branch? newValue) {
-  //         if (newValue != null) {
-  //           getController.selectedBranch.value = newValue;
-
-  //           CustomSnackbar.showSuccess(
-  //             'Branch Selected',
-  //             'ID: ${newValue.id}',
-  //           );
-  //         }
-  //       },
-  //     );
-  //   });
-  // }
-Widget branchDropdown() {
+  Widget branchDropdown() {
     return Obx(() {
-      return DropdownButtonFormField<Branch>(
+      return DropdownButton<Branch>(
         value: getController.selectedBranch.value,
-        decoration: InputDecoration(
-          labelText: "Select Branch",
-          border: OutlineInputBorder(),
-        ),
+        hint: Text("Select Branch"),
         items: getController.branchList.map((Branch branch) {
           return DropdownMenuItem<Branch>(
             value: branch,
@@ -215,6 +188,33 @@ Widget branchDropdown() {
       );
     });
   }
+// Widget branchDropdown() {
+//     return Obx(() {
+//       return DropdownButtonFormField<Branch>(
+//         value: getController.selectedBranch.value,
+//         decoration: InputDecoration(
+//           labelText: "Select Branch",
+//           border: OutlineInputBorder(),
+//         ),
+//         items: getController.branchList.map((Branch branch) {
+//           return DropdownMenuItem<Branch>(
+//             value: branch,
+//             child: Text(branch.name ?? ''),
+//           );
+//         }).toList(),
+//         onChanged: (Branch? newValue) {
+//           if (newValue != null) {
+//             getController.selectedBranch.value = newValue;
+
+//             CustomSnackbar.showSuccess(
+//               'Branch Selected',
+//               'ID: ${newValue.id}',
+//             );
+//           }
+//         },
+//       );
+//     });
+//   }
 
   Widget Btn_saveManager(BuildContext context) {
     return ElevatedButtonExample(
