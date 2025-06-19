@@ -29,7 +29,39 @@ class Unitsscreen extends StatelessWidget {
             return ListTile(
               title: Text(unit.name ?? ''),
               subtitle: Text('Branches: ' + branchNames),
-              trailing: Text(unit.status == 1 ? 'Active' : 'Inactive'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(unit.status == 1 ? 'Active' : 'Inactive'),
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Delete Unit'),
+                          content: Text(
+                              'Are you sure you want to delete this unit?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text('Delete',
+                                  style: TextStyle(color: Colors.red)),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) {
+                        getController.deleteUnit(unit.id!);
+                      }
+                    },
+                  ),
+                ],
+              ),
             );
           },
         );
