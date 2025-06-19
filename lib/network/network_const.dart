@@ -66,4 +66,5 @@ class Endpoints {
   static const String postUnits = "/units";
 
   static const String postTags = "/tags";
+  static const String getTags = "/tags/?salon_id=";
 }

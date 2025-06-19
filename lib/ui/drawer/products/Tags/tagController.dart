@@ -19,6 +19,32 @@ class Branch1 {
   }
 }
 
+class TagModel {
+  final String? id;
+  final List<Branch1> branches;
+  final String? name;
+  final int? status;
+  final String? salonId;
+
+  TagModel({
+    this.id,
+    required this.branches,
+    this.name,
+    this.status,
+    this.salonId,
+  });
+
+  factory TagModel.fromJson(Map<String, dynamic> json) {
+    return TagModel(
+      id: json['_id'],
+      branches:
+          (json['branch_id'] as List).map((e) => Branch1.fromJson(e)).toList(),
+      name: json['name'],
+      status: json['status'],
+      salonId: json['salon_id'],
+    );
+  }
+}
 
 class Tagcontroller extends GetxController {
   var isActive = true.obs;
@@ -26,10 +52,12 @@ class Tagcontroller extends GetxController {
   var selectedBranches = <Branch1>[].obs;
   var nameController = TextEditingController();
   final branchController = MultiSelectController<Branch1>();
+  var tagsList = <TagModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
+    getTags();
     getBranches();
   }
 
@@ -55,14 +83,9 @@ class Tagcontroller extends GetxController {
     }
   }
 
-
-
-
   Future onAddSubCategory() async {
-
     final loginUser = await prefs.getUser();
     Map<String, dynamic> subCategoryData = {
-    
       "name": nameController.text,
       'branch_id': selectedBranches.map((branch) => branch.id).toList(),
       'status': isActive.value ? 1 : 0,
@@ -85,9 +108,37 @@ class Tagcontroller extends GetxController {
     }
   }
 
+  Future<void> getTags() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.getTags}${loginUser!.salonId}',
+        (json) => json,
+      );
+      final data = response['data'] as List;
+      tagsList.value = data.map((e) => TagModel.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
+  }
+
   void resetForm() {
     nameController.clear();
     isActive.value = true;
     selectedBranches.clear();
+  }
+
+  Future<void> deleteTag(String tagId) async {
+    final loginUser = await prefs.getUser();
+    try {
+      await dioClient.deleteData(
+        '${Apis.baseUrl}${Endpoints.postTags}/$tagId?salon_id=${loginUser!.salonId}',
+        (json) => json,
+      );
+      CustomSnackbar.showSuccess('Success', 'Tag deleted successfully');
+      await getTags();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to delete tag: $e');
+    }
   }
 }

@@ -10,8 +10,6 @@ import '../../../../../wiget/Custome_button.dart';
 import '../../../../../wiget/Custome_textfield.dart';
 import '../../../../../wiget/custome_text.dart';
 
-
-
 class Tagsscreen extends StatelessWidget {
   Tagsscreen({super.key});
   final Tagcontroller getController = Get.put(Tagcontroller());
@@ -23,9 +21,55 @@ class Tagsscreen extends StatelessWidget {
         title: Text('Product SubCategories'),
         backgroundColor: primaryColor,
       ),
-      body: Container(
-        child: Text("data"),
-      ),
+      body: Obx(() {
+        if (getController.tagsList.isEmpty) {
+          return Center(child: Text('No tags found.'));
+        }
+        return ListView.builder(
+          itemCount: getController.tagsList.length,
+          itemBuilder: (context, index) {
+            final tag = getController.tagsList[index];
+            final branchNames = tag.branches.map((b) => b.name).join(', ');
+            return ListTile(
+              title: Text(tag.name ?? ''),
+              subtitle: Text('Branches: $branchNames'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(tag.status == 1 ? 'Active' : 'Inactive'),
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Delete Tag'),
+                          content:
+                              Text('Are you sure you want to delete this tag?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text('Delete',
+                                  style: TextStyle(color: Colors.red)),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) {
+                        getController.deleteTag(tag.id!);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);
@@ -51,7 +95,7 @@ class Tagsscreen extends StatelessWidget {
               child: Column(
                 spacing: 10,
                 children: [
-               CustomTextFormField(
+                  CustomTextFormField(
                     controller: getController.nameController,
                     labelText: 'Name',
                     keyboardType: TextInputType.text,
@@ -84,8 +128,7 @@ class Tagsscreen extends StatelessWidget {
         });
   }
 
-  
-Widget branchDropdown() {
+  Widget branchDropdown() {
     return Obx(() {
       return MultiDropdown<Branch1>(
         items: getController.branchList
