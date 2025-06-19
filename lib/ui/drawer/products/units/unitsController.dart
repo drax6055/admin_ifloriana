@@ -44,7 +44,7 @@ class Unitscontroller extends GetxController {
     };
 
     try {
-      await dioClient.postData<PostUnits>(
+      await dioClient.postData(
         '${Apis.baseUrl}${Endpoints.postUnits}',
         unitsData,
         (json) => PostUnits.fromJson(json),
@@ -61,6 +61,21 @@ class Unitscontroller extends GetxController {
     try {
       final response = await dioClient.getData(
         '${Apis.baseUrl}${Endpoints.getBranchName}${loginUser!.salonId}',
+        (json) => json,
+      );
+
+      final data = response['data'] as List;
+      branchList.value = data.map((e) => Branch1.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+    }
+  }
+
+  Future<void> getUnits() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}${Endpoints.postUnits}/salon_id=${loginUser!.salonId}',
         (json) => json,
       );
 
