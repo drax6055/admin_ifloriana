@@ -69,7 +69,7 @@ class VariationGetscreen extends StatelessWidget {
       ),
         floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed(Routes.addCoupon);
+          Get.toNamed(Routes.addVariationscreen);
         },
         child: Icon(Icons.add),
       ),

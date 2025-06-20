@@ -3,8 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
-import '../drawer/products/Tags/tagsScreen.dart';
-import '../drawer/products/units/unitsScreen.dart';
+import '../drawer/products/category/CategoryScreen.dart';
 
 
 
@@ -25,11 +24,11 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(Unitsscreen());
+          Get.to(Categoryscreen());
         }
       });
     } catch (e) {
       CustomSnackbar.showError('Error', '$e');
     } 
-  }
+  } 
 }
