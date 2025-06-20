@@ -19,7 +19,9 @@ class VariationGetscreen extends StatelessWidget {
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
-        child: Obx(() {
+        child: RefreshIndicator(onRefresh: () async {
+          getController.getVariation();
+        }, child: Obx(() {
           if (getController.variations.isEmpty) {
             return Center(child: Text('No variations found'));
           }
@@ -65,9 +67,9 @@ class VariationGetscreen extends StatelessWidget {
               );
             },
           );
-        }),
+        })),
       ),
-        floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.toNamed(Routes.addVariationscreen);
         },

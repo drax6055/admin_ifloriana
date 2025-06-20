@@ -170,30 +170,11 @@ class Subcategorycontroller extends GetxController {
   }
 
   Future onAddSubCategory() async {
-    if (nameController.text.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please enter subcategory name');
-      return;
-    }
-
-    if (selectedBranches.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please select at least one branch');
-      return;
-    }
-
-    if (selectedCategory.value == null) {
-      CustomSnackbar.showError('Error', 'Please select a category');
-      return;
-    }
-
-    if (selectedBrand.isEmpty) {
-      CustomSnackbar.showError('Error', 'Please select at least one brand');
-      return;
-    }
-
+  
     final loginUser = await prefs.getUser();
     Map<String, dynamic> subCategoryData = {
       "image": null,
-      "name": nameController.text,   
+      "name": nameController.text,
       'branch_id': selectedBranches.map((branch) => branch.id).toList(),
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.salonId,
@@ -207,10 +188,38 @@ class Subcategorycontroller extends GetxController {
         subCategoryData,
         (json) => json,
       );
-      getSubCategories(); 
-      CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
-      Get.back(); // Close the bottom sheet
-      resetForm(); // Reset the form
+      Get.back(); 
+      getSubCategories();
+      resetForm(); 
+       CustomSnackbar.showSuccess(
+          'Success', 'SubCategory Added Successfully'); 
+    } catch (e) {
+      print('==> here Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
+  Future<void> updateSubCategory(String subCategoryId) async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> subCategoryData = {
+      "image": null,
+      "name": nameController.text,
+      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'status': isActive.value ? 1 : 0,
+      'salon_id': loginUser!.salonId,
+      'product_category_id': selectedCategory.value!.id,
+      'brand_id': selectedBrand.map((brand) => brand.id).toList(),
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.productSubcategory}/$subCategoryId',
+        subCategoryData,
+        (json) => json,
+      );
+      await getSubCategories();
+      Get.back();
+      resetForm();
+      CustomSnackbar.showSuccess('Success', 'SubCategory updated successfully');
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());

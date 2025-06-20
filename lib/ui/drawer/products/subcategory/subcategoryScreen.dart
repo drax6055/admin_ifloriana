@@ -13,6 +13,7 @@ import '../../../../../wiget/Custome_textfield.dart';
 import '../../../../../wiget/custome_text.dart';
 import '../../../../wiget/custome_snackbar.dart';
 import '../../../../wiget/loading.dart';
+import '../../../../network/model/productSubCategory.dart';
 
 class Subcategoryscreen extends StatelessWidget {
   Subcategoryscreen({super.key});
@@ -106,6 +107,11 @@ class Subcategoryscreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.blue),
+                              onPressed: () {
+                                showEditSubCategorySheet(context, subCategory);
+                              }),
+                          IconButton(
                               icon: const Icon(Icons.delete_outline),
                               color: Colors.red,
                               onPressed: () => getController
@@ -128,6 +134,13 @@ class Subcategoryscreen extends StatelessWidget {
   }
 
   void showAddCategorySheet(BuildContext context) {
+    getController.nameController.clear();
+    getController.isActive.value = true;
+    getController.selectedBranches.clear();
+    getController.selectedBrand.clear();
+    getController.selectedCategory.value = null;
+    getController.branchController.clearAll();
+    getController.brandController.clearAll();
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -188,6 +201,95 @@ class Subcategoryscreen extends StatelessWidget {
         });
   }
 
+  void showEditSubCategorySheet(
+      BuildContext context, ProductSubCategory subCategory) async {
+    getController.nameController.text = subCategory.name;
+    getController.isActive.value = subCategory.status == 1;
+    final selectedBranches = getController.branchList
+        .where((b) => subCategory.branchId.any((cb) => cb.id == b.id))
+        .toList();
+    final selectedBrands = getController.brandList
+        .where((b) => subCategory.brandId.any((cb) => cb.id == b.id))
+        .toList();
+    final selectedCategory = getController.categoryList
+        .firstWhereOrNull((c) => c.id == subCategory.productCategoryId.id);
+    getController.selectedBranches.value = selectedBranches;
+    getController.selectedBrand.value = selectedBrands;
+    getController.selectedCategory.value = selectedCategory;
+    getController.branchController.clearAll();
+    getController.brandController.clearAll();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getController.branchController
+          .selectWhere((item) => selectedBranches.contains(item.value));
+      getController.brandController
+          .selectWhere((item) => selectedBrands.contains(item.value));
+    });
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 10,
+                children: [
+                  Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: Imagepicker(),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: CustomTextFormField(
+                          controller: getController.nameController,
+                          labelText: 'Name',
+                          keyboardType: TextInputType.text,
+                          validator: (value) => Validation.validatename(value),
+                        ),
+                      )
+                    ],
+                  ),
+                  branchDropdown(),
+                  brandDropdown(),
+                  caregoryDropdown(),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            text: 'Status',
+                            textStyle:
+                                CustomTextStyles.textFontRegular(size: 14.sp),
+                          ),
+                          Switch(
+                            value: getController.isActive.value,
+                            onChanged: (value) {
+                              getController.isActive.value = value;
+                            },
+                            activeColor: primaryColor,
+                          ),
+                        ],
+                      )),
+                  ElevatedButtonExample(
+                    text: "Update SubCategory",
+                    onPressed: () {
+                      getController.updateSubCategory(subCategory.id);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   Widget Imagepicker() {
     return Obx(() {
       return GestureDetector(
@@ -225,8 +327,8 @@ class Subcategoryscreen extends StatelessWidget {
             .toList(),
         controller: getController.branchController,
         enabled: true,
-        searchEnabled: true,
-        chipDecoration: const ChipDecoration(
+          searchEnabled: true,
+          chipDecoration: const ChipDecoration(
           backgroundColor: secondaryColor,
           wrap: true,
           runSpacing: 2,

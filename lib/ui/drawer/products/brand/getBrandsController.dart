@@ -133,9 +133,34 @@ class Getbrandscontroller extends GetxController {
         (json) => AddBrand.fromJson(json),
       );
       getBrands();
-      CustomSnackbar.showSuccess('Success', 'Brand Added Successfully');
       Get.back(); // Close the bottom sheet
-      resetForm(); // Reset the form
+      resetForm();
+      CustomSnackbar.showSuccess(
+          'Success', 'Brand Added Successfully'); // Reset the form
+    } catch (e) {
+      print('==> here Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
+  Future<void> updateBrand(String brandId) async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> brandData = {
+      "image": null,
+      "name": nameController.text,
+      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'status': isActive.value ? 1 : 0,
+      'salon_id': loginUser!.salonId
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.postBrands}/$brandId',
+        brandData,
+        (json) => AddBrand.fromJson(json),
+      );
+      await getBrands();
+      resetForm();
+      CustomSnackbar.showSuccess('Success', 'Brand updated successfully');
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());

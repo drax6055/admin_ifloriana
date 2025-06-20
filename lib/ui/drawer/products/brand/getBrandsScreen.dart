@@ -12,6 +12,7 @@ import '../../../../../wiget/Custome_button.dart';
 import '../../../../../wiget/Custome_textfield.dart';
 import '../../../../../wiget/custome_text.dart';
 import '../../../../wiget/loading.dart';
+import '../../../../network/model/brand.dart';
 
 class Getbrandsscreen extends StatelessWidget {
   Getbrandsscreen({super.key});
@@ -21,75 +22,87 @@ class Getbrandsscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          child: Obx(
-        () => getController.isLoading.value
-            ? const Center(child: CustomLoadingAvatar())
-            : ListView.builder(
-                itemCount: getController.brands.length,
-                itemBuilder: (context, index) {
-                  final brand = getController.brands[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border(
-                            right:
-                                BorderSide(color: secondaryColor, width: 3))),
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: ListTile(
-                      leading: brand.image.isNotEmpty
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                brand.image,
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    width: 50,
-                                    height: 50,
-                                    color: Colors.grey[300],
-                                    child:
-                                        const Icon(Icons.image_not_supported),
-                                  );
-                                },
+          child: RefreshIndicator(
+              onRefresh: () async {
+                getController.getBrands();
+              },
+              child: Obx(
+                () => getController.isLoading.value
+                    ? const Center(child: CustomLoadingAvatar())
+                    : ListView.builder(
+                        itemCount: getController.brands.length,
+                        itemBuilder: (context, index) {
+                          final brand = getController.brands[index];
+                          return Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border(
+                                    right: BorderSide(
+                                        color: secondaryColor, width: 3))),
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: ListTile(
+                              leading: brand.image.isNotEmpty
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.network(
+                                        brand.image,
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Container(
+                                            width: 50,
+                                            height: 50,
+                                            color: Colors.grey[300],
+                                            child: const Icon(
+                                                Icons.image_not_supported),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 50,
+                                      height: 50,
+                                      color: Colors.grey[300],
+                                      child:
+                                          const Icon(Icons.image_not_supported),
+                                    ),
+                              title: Text(
+                                brand.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
-                            )
-                          : Container(
-                              width: 50,
-                              height: 50,
-                              color: Colors.grey[300],
-                              child: const Icon(Icons.image_not_supported),
+                              subtitle: Text(
+                                'Branches: ${brand.branchId.length}',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                      icon: const Icon(Icons.edit,
+                                          color: Colors.blue),
+                                      onPressed: () {
+                                        showEditBrandSheet(context, brand);
+                                      }),
+                                  IconButton(
+                                      icon: const Icon(Icons.delete_outline),
+                                      color: Colors.red,
+                                      onPressed: () =>
+                                          getController.deleteBrand(brand.id)),
+                                ],
+                              ),
                             ),
-                      title: Text(
-                        brand.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                          );
+                        },
                       ),
-                      subtitle: Text(
-                        'Branches: ${brand.branchId.length}',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                              icon: const Icon(Icons.delete_outline),
-                              color: Colors.red,
-                              onPressed: () =>
-                                  getController.deleteBrand(brand.id)),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-      )),
+              ))),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);
@@ -101,6 +114,10 @@ class Getbrandsscreen extends StatelessWidget {
   }
 
   void showAddCategorySheet(BuildContext context) {
+    getController.nameController.clear();
+    getController.isActive.value = true;
+    getController.selectedBranches.clear();
+    getController.branchController.clearAll();
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -151,6 +168,82 @@ class Getbrandsscreen extends StatelessWidget {
                         ],
                       )),
                   Btn_BranchesAdd(),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void showEditBrandSheet(BuildContext context, Brand brand) async {
+    getController.nameController.text = brand.name;
+    getController.isActive.value = brand.status == 1;
+    final selectedBranches = getController.branchList
+        .where((b) => brand.branchId.any((cb) => cb.id == b.id))
+        .toList();
+    getController.selectedBranches.value = selectedBranches;
+    getController.branchController.clearAll();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getController.branchController
+          .selectWhere((item) => selectedBranches.contains(item.value));
+    });
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 10,
+                children: [
+                  Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: Imagepicker(),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: CustomTextFormField(
+                          controller: getController.nameController,
+                          labelText: 'Name',
+                          keyboardType: TextInputType.text,
+                          validator: (value) => Validation.validatename(value),
+                        ),
+                      )
+                    ],
+                  ),
+                  branchDropdown(),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            text: 'Status',
+                            textStyle:
+                                CustomTextStyles.textFontRegular(size: 14.sp),
+                          ),
+                          Switch(
+                            value: getController.isActive.value,
+                            onChanged: (value) {
+                              getController.isActive.value = value;
+                            },
+                            activeColor: primaryColor,
+                          ),
+                        ],
+                      )),
+                  ElevatedButtonExample(
+                    text: "Update Brand",
+                    onPressed: () {
+                      getController.updateBrand(brand.id);
+                      Navigator.of(context).pop();
+                    },
+                  ),
                   const SizedBox(height: 10),
                 ],
               ),

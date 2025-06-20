@@ -26,7 +26,9 @@ class Categoryscreen extends StatelessWidget {
         backgroundColor: primaryColor,
         foregroundColor: white,
       ),
-      body: Obx(() {
+      body: RefreshIndicator(onRefresh: () async {
+        getController.getCategories();
+      }, child: Obx(() {
         if (getController.isLoading.value) {
           return Center(child: CustomLoadingAvatar());
         }
@@ -149,7 +151,7 @@ class Categoryscreen extends StatelessWidget {
             );
           },
         );
-      }),
+      })),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);
