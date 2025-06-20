@@ -21,61 +21,68 @@ class Tagsscreen extends StatelessWidget {
         title: Text('Product SubCategories'),
         backgroundColor: primaryColor,
       ),
-      body: Obx(() {
-        if (getController.tagsList.isEmpty) {
-          return Center(child: Text('No tags found.'));
-        }
-        return ListView.builder(
-          itemCount: getController.tagsList.length,
-          itemBuilder: (context, index) {
-            final tag = getController.tagsList[index];
-            final branchNames = tag.branches.map((b) => b.name).join(', ');
-            return ListTile(
-              title: Text(tag.name ?? ''),
-              subtitle: Text('Branches: $branchNames'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(tag.status == 1 ? 'Active' : 'Inactive'),
-                  IconButton(
-                    icon: Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () {
-                      showEditTagSheet(context, tag);
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Delete Tag'),
-                          content:
-                              Text('Are you sure you want to delete this tag?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: Text('Delete',
-                                  style: TextStyle(color: Colors.red)),
-                            ),
-                          ],
-                        ),
-                      );
-                      if (confirm == true) {
-                        getController.deleteTag(tag.id!);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      }),
+      body: RefreshIndicator(
+        onRefresh: () async{
+          getController.getTags();
+        },
+        child: Obx(() {
+          if (getController.tagsList.isEmpty) {
+            return Center(child: Text('No tags found.'));
+          }
+          return ListView.builder(
+            itemCount: getController.tagsList.length,
+            itemBuilder: (context, index) {
+              final tag = getController.tagsList[index];
+              final branchNames = tag.branches.map((b) => b.name).join(', ');
+              return ListTile(
+                title: Text(tag.name ?? ''),
+                subtitle: Text('Branches: $branchNames'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(tag.status == 1 ? 'Active' : 'Inactive'),
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        showEditTagSheet(context, tag);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Delete Tag'),
+                            content: Text(
+                                'Are you sure you want to delete this tag?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: Text('Delete',
+                                    style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirm == true) {
+                          getController.deleteTag(tag.id!);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddCategorySheet(context);
