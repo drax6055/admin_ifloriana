@@ -95,7 +95,7 @@ class BranchMembershipListScreen extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed(Routes.addBranchMembership);
+          Get.toNamed(Routes.branchmembershipaddscreen);
         },
         child: Icon(Icons.add),
       ),
