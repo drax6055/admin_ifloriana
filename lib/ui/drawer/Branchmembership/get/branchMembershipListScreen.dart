@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../route/app_route.dart';
 import '../../../../wiget/loading.dart';
 import 'branchMembershipListController.dart';
 import '../add/branchMembershipAddController.dart';
@@ -15,14 +16,8 @@ class BranchMembershipListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Branch Memberships'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () => controller.fetchMemberships(),
-          ),
-        ],
       ),
-      body: Obx(() {
+      body: RefreshIndicator(child: Obx(() {
         if (controller.isLoading.value) {
           return Center(child: CustomLoadingAvatar());
         }
@@ -95,7 +90,15 @@ class BranchMembershipListScreen extends StatelessWidget {
             );
           },
         );
+      }), onRefresh: () async {
+        controller.fetchMemberships();
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.toNamed(Routes.addBranchMembership);
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
@@ -207,13 +210,13 @@ class BranchMembershipListScreen extends StatelessWidget {
   String mapPlanValueToDisplay(String value) {
     switch (value.toLowerCase()) {
       case '1-month':
-        return '1-month';
+        return '1-Month';
       case '3-months':
-        return '3-months';
+        return '3-Months';
       case '6-months':
-        return '6-months';
+        return '6-Months';
       case '12-months':
-        return '12-months';
+        return '12-Months';
       case 'lifetime':
         return 'Lifetime';
       default:
