@@ -63,7 +63,8 @@ class BranchMembershipListController extends GetxController {
     Map<String, dynamic> membershipData = {
       'membership_name': addController.memberShipNameController.text,
       'description': addController.descriptionController.text,
-      'subscription_plan': addController.selected_Subscription_plan.value.toLowerCase(),
+      'subscription_plan':
+          addController.selected_Subscription_plan.value.toLowerCase(),
       'status': addController.isActive.value ? 1 : 0,
       'discount': addController.discountAmountController.text,
       'discount_type': addController.selected_discountType.value.toLowerCase(),

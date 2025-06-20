@@ -24,24 +24,31 @@ class BranchMemberShip {
   });
 
   factory BranchMemberShip.fromJson(Map<String, dynamic> json) {
+    String salonIdValue = '';
+    SalonInfo? salonInfoValue;
+    if (json['salon_id'] is Map) {
+      salonIdValue = json['salon_id']['_id']?.toString() ?? '';
+      salonInfoValue = SalonInfo.fromJson(json['salon_id']);
+    } else {
+      salonIdValue = json['salon_id']?.toString() ?? '';
+      salonInfoValue = null;
+    }
     return BranchMemberShip(
-      id: json['_id'] ?? '',
-      salonId:
-          json['salon_id'] is Map ? json['salon_id']['_id'] : json['salon_id'],
-      membershipName: json['membership_name'] ?? '',
-      description: json['description'] ?? '',
-      subscriptionPlan: json['subscription_plan'] ?? '',
+      id: json['_id']?.toString() ?? '',
+      salonId: salonIdValue,
+      membershipName: json['membership_name']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      subscriptionPlan: json['subscription_plan']?.toString() ?? '',
       status: json['status'] ?? 0,
       discount: json['discount'] ?? 0,
-      discountType: json['discount_type'] ?? '',
+      discountType: json['discount_type']?.toString() ?? '',
       membershipAmount: json['membership_amount'] ?? 0,
-      salonInfo:
-          json['salon_id'] is Map ? SalonInfo.fromJson(json['salon_id']) : null,
+      salonInfo: salonInfoValue,
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['_id'] = this.id;
     data['salon_id'] = this.salonId;
     data['membership_name'] = this.membershipName;
@@ -52,7 +59,7 @@ class BranchMemberShip {
     data['discount_type'] = this.discountType;
     data['membership_amount'] = this.membershipAmount;
     if (this.salonInfo != null) {
-      data['salon_id'] = this.salonInfo!.toJson();
+      data['salon_info'] = this.salonInfo!.toJson();
     }
     return data;
   }
@@ -87,22 +94,22 @@ class SalonInfo {
 
   factory SalonInfo.fromJson(Map<String, dynamic> json) {
     return SalonInfo(
-      id: json['_id'] ?? '',
-      salonName: json['salon_name'] ?? '',
-      description: json['description'] ?? '',
-      address: json['address'] ?? '',
-      contactNumber: json['contact_number'] ?? '',
-      contactEmail: json['contact_email'] ?? '',
-      openingTime: json['opening_time'] ?? '',
-      closingTime: json['closing_time'] ?? '',
-      category: json['category'] ?? '',
+      id: json['_id']?.toString() ?? '',
+      salonName: json['salon_name']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      address: json['address']?.toString() ?? '',
+      contactNumber: json['contact_number']?.toString() ?? '',
+      contactEmail: json['contact_email']?.toString() ?? '',
+      openingTime: json['opening_time']?.toString() ?? '',
+      closingTime: json['closing_time']?.toString() ?? '',
+      category: json['category']?.toString() ?? '',
       status: json['status'] ?? 0,
-      image: json['image'] ?? '',
+      image: json['image']?.toString() ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['_id'] = this.id;
     data['salon_name'] = this.salonName;
     data['description'] = this.description;
