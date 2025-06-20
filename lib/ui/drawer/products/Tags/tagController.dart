@@ -122,11 +122,13 @@ class Tagcontroller extends GetxController {
     }
   }
 
-  void resetForm() {
+ void resetForm() {
     nameController.clear();
     isActive.value = true;
     selectedBranches.clear();
+    branchController.clearAll(); 
   }
+
 
   Future<void> deleteTag(String tagId) async {
     final loginUser = await prefs.getUser();

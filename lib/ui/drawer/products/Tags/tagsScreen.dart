@@ -87,54 +87,60 @@ class Tagsscreen extends StatelessWidget {
   }
 
   void showAddCategorySheet(BuildContext context) {
+    getController.resetForm();
+    getController.branchController.clearAll();
+
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-        ),
-        builder: (context) {
-          return Padding(
-            padding: EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              child: Column(
-                spacing: 10,
-                children: [
-                  CustomTextFormField(
-                    controller: getController.nameController,
-                    labelText: 'Name',
-                    keyboardType: TextInputType.text,
-                    validator: (value) => Validation.validatename(value),
-                  ),
-                  branchDropdown(),
-                  Obx(() => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomTextWidget(
-                            text: 'Status',
-                            textStyle:
-                                CustomTextStyles.textFontRegular(size: 14.sp),
-                          ),
-                          Switch(
-                            value: getController.isActive.value,
-                            onChanged: (value) {
-                              getController.isActive.value = value;
-                            },
-                            activeColor: primaryColor,
-                          ),
-                        ],
-                      )),
-                  Btn_SubCategoryAdd(),
-                  const SizedBox(height: 10),
-                ],
-              ),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 10,
+              children: [
+                CustomTextFormField(
+                  controller: getController.nameController,
+                  labelText: 'Name',
+                  keyboardType: TextInputType.text,
+                  validator: (value) => Validation.validatename(value),
+                ),
+                branchDropdown(),
+                Obx(() => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          text: 'Status',
+                          textStyle:
+                              CustomTextStyles.textFontRegular(size: 14.sp),
+                        ),
+                        Switch(
+                          value: getController.isActive.value,
+                          onChanged: (value) {
+                            getController.isActive.value = value;
+                          },
+                          activeColor: primaryColor,
+                        ),
+                      ],
+                    )),
+                Btn_SubCategoryAdd(),
+                const SizedBox(height: 10),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   void showEditTagSheet(BuildContext context, TagModel tag) async {
+    getController.resetForm();
+    getController.branchController.clearAll();
     if (getController.branchList.isEmpty) {
       await getController.getBranches();
     }
