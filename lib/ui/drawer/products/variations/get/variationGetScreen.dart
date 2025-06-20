@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/ui/drawer/products/variations/get/variationGetController.dart';
 import 'package:get/get.dart';
+import '../../../../../route/app_route.dart';
 import '../../../../../utils/colors.dart';
+import '../update_variation_screen.dart';
 
 class VariationGetscreen extends StatelessWidget {
   VariationGetscreen({super.key});
@@ -41,17 +43,35 @@ class VariationGetscreen extends StatelessWidget {
                           'Status: ${variation.status == 1 ? 'Active' : 'Inactive'}'),
                     ],
                   ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      getController.deleteVariation(variation.sId ?? '');
-                    },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () {
+                          Get.to(() => UpdateVariationscreen(
+                              variationToEdit: variation));
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          getController.deleteVariation(variation.sId ?? '');
+                        },
+                      ),
+                    ],
                   ),
                 ),
               );
             },
           );
         }),
+      ),
+        floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.toNamed(Routes.addCoupon);
+        },
+        child: Icon(Icons.add),
       ),
     );
   }

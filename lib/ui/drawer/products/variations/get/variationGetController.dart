@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 

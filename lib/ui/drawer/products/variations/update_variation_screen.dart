@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/ui/drawer/products/variations/variationController.dart';
+import 'package:flutter_template/network/model/variation_product.dart';
+import 'package:flutter_template/ui/drawer/products/variations/update_variation_controller.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-
 import '../../../../utils/colors.dart';
 import '../../../../utils/custom_text_styles.dart';
 import '../../../../utils/validation.dart';
@@ -12,15 +12,18 @@ import '../../../../wiget/Custome_textfield.dart';
 import '../../../../wiget/custome_dropdown.dart';
 import '../../../../wiget/custome_text.dart';
 
-class Variationscreen extends StatelessWidget {
-  Variationscreen({super.key});
-  final Variationcontroller getController = Get.put(Variationcontroller());
+class UpdateVariationscreen extends StatelessWidget {
+  final Data variationToEdit;
+  UpdateVariationscreen({super.key, required this.variationToEdit});
 
   @override
   Widget build(BuildContext context) {
+    final UpdateVariationcontroller getController =
+        Get.put(UpdateVariationcontroller(variationToEdit: variationToEdit));
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Variations'),
+        title: Text('Update Variation'),
         backgroundColor: primaryColor,
       ),
       body: Padding(
@@ -31,7 +34,7 @@ class Variationscreen extends StatelessWidget {
             children: [
               CustomTextFormField(
                 controller: getController.nameController,
-                labelText: "Owner's Name",
+                labelText: "Variation Name",
                 keyboardType: TextInputType.text,
                 validator: (value) => Validation.validatename(value),
               ),
@@ -40,10 +43,10 @@ class Variationscreen extends StatelessWidget {
                 if (getController.isLoading.value) {
                   return Center(child: CircularProgressIndicator());
                 }
-                return branchDropdown();
+                return branchDropdown(getController);
               }),
               SizedBox(height: 10),
-              Type(),
+              Type(getController),
               SizedBox(height: 10),
               Obx(() => Column(
                     children: [
@@ -111,7 +114,7 @@ class Variationscreen extends StatelessWidget {
                     ],
                   )),
               SizedBox(height: 20),
-              Btn_variation(),
+              Btn_variation(getController),
             ],
           ),
         ),
@@ -119,19 +122,21 @@ class Variationscreen extends StatelessWidget {
     );
   }
 
-  Widget branchDropdown() {
+  Widget branchDropdown(UpdateVariationcontroller getController) {
     return Obx(() {
       final branches = getController.branchList;
       return MultiDropdown<Branch1>(
         items: branches.map((branch) {
           final label = branch.name ?? 'Unnamed Branch';
-          print('Creating item: $label');
           return DropdownItem<Branch1>(
             label: label,
             value: branch,
           );
         }).toList(),
         controller: getController.branchController,
+        onSelectionChange: (selectedItems) {
+          getController.selectedBranches.value = selectedItems;
+        },
         enabled: true,
         searchEnabled: true,
         chipDecoration: const ChipDecoration(
@@ -159,16 +164,15 @@ class Variationscreen extends StatelessWidget {
           selectedIcon: const Icon(Icons.check_box, color: primaryColor),
           disabledIcon: Icon(Icons.lock, color: Colors.grey.shade300),
         ),
-        onSelectionChange: (selectedItems) {
-          print(
-              'Selection changed to: ${selectedItems.map((b) => b.name).toList()}');
-          getController.selectedBranches.value = selectedItems;
-        },
+        // Pre-selecting values is not directly supported in a clean way.
+        // The controller handles this logic. `selectedBranches` is updated in controller.
+        // The UI will reflect the selection once the user interacts or if we can drive it via controller.
+        // The `MultiSelectController` should handle displaying the selected items as chips.
       );
     });
   }
 
-  Widget Type() {
+  Widget Type(UpdateVariationcontroller getController) {
     return Obx(() => CustomDropdown<String>(
           value: getController.selectedType.value.isEmpty
               ? null
@@ -184,11 +188,11 @@ class Variationscreen extends StatelessWidget {
         ));
   }
 
-  Widget Btn_variation() {
+  Widget Btn_variation(UpdateVariationcontroller getController) {
     return ElevatedButtonExample(
-      text: "Add Variation",
+      text: "Update Variation",
       onPressed: () {
-        getController.onBranchAdd();
+        getController.onBranchUpdate();
       },
     );
   }

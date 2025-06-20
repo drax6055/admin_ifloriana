@@ -23,6 +23,7 @@ import 'package:flutter_template/ui/tax/addNewTaxScreen.dart';
 import 'package:get/get.dart';
 import '../ui/auth/forgot/forgot_screen.dart';
 import '../ui/drawer/dashboard/dashboard_screen.dart';
+import '../ui/drawer/products/variations/variationScreen.dart';
 import '../ui/splash/splash_screen.dart';
 import 'app_route.dart';
 import '../ui/drawer/branches/getBranches/getBranchesScreen.Dart';
@@ -122,6 +123,10 @@ class AppPages {
           GetPage(
         name: Routes.addBranchMembership,
         page: () => BranchMembershipListScreen(),
+        transition: Transition.rightToLeft),
+GetPage(
+        name: Routes.addVariationscreen,
+        page: () => Variationscreen(),
         transition: Transition.rightToLeft),
   ];
 }
