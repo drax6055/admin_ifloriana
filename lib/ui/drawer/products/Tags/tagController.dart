@@ -99,9 +99,11 @@ class Tagcontroller extends GetxController {
         (json) => json,
       );
 
-      CustomSnackbar.showSuccess('Success', 'SubCategory Added Successfully');
-      Get.back(); // Close the bottom sheet
-      resetForm(); // Reset the form
+      Get.back();
+      resetForm();
+      getTags();
+      CustomSnackbar.showSuccess(
+          'Success', 'SubCategory Added Successfully'); // Reset the form
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
@@ -122,13 +124,12 @@ class Tagcontroller extends GetxController {
     }
   }
 
- void resetForm() {
+  void resetForm() {
     nameController.clear();
     isActive.value = true;
     selectedBranches.clear();
-    branchController.clearAll(); 
+    branchController.clearAll();
   }
-
 
   Future<void> deleteTag(String tagId) async {
     final loginUser = await prefs.getUser();
