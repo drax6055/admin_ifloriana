@@ -78,8 +78,9 @@ class Unitscontroller extends GetxController {
         unitsData,
         (json) => PostUnits.fromJson(json),
       );
-      CustomSnackbar.showSuccess('Succcess', 'Units Added');
+      Get.back();
       await getUnits();
+      CustomSnackbar.showSuccess('Succcess', 'Units Added');
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
@@ -122,8 +123,8 @@ class Unitscontroller extends GetxController {
         '${Apis.baseUrl}${Endpoints.postUnits}/$unitId?salon_id=${loginUser!.salonId}',
         (json) => json,
       );
-      CustomSnackbar.showSuccess('Success', 'Unit deleted successfully');
       await getUnits();
+      CustomSnackbar.showSuccess('Success', 'Unit deleted successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to delete unit: $e');
     }
@@ -144,8 +145,9 @@ class Unitscontroller extends GetxController {
         unitsData,
         (json) => PostUnits.fromJson(json),
       );
-      CustomSnackbar.showSuccess('Success', 'Unit updated');
+
       await getUnits();
+      CustomSnackbar.showSuccess('Success', 'Unit updated');
     } catch (e) {
       print('==> here Error: $e');
       CustomSnackbar.showError('Error', e.toString());
