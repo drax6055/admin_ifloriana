@@ -141,4 +141,26 @@ class Tagcontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to delete tag: $e');
     }
   }
+
+  Future<void> onEditTag(String tagId) async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> tagData = {
+      "name": nameController.text,
+      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'status': isActive.value ? 1 : 0,
+      'salon_id': loginUser!.salonId,
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.postTags}/$tagId',
+        tagData,
+        (json) => json,
+      );
+      CustomSnackbar.showSuccess('Success', 'Tag updated successfully');
+      await getTags();
+      resetForm();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to update tag: $e');
+    }
+  }
 }

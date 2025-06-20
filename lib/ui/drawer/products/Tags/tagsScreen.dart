@@ -38,6 +38,12 @@ class Tagsscreen extends StatelessWidget {
                 children: [
                   Text(tag.status == 1 ? 'Active' : 'Inactive'),
                   IconButton(
+                    icon: Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () {
+                      showEditTagSheet(context, tag);
+                    },
+                  ),
+                  IconButton(
                     icon: Icon(Icons.delete, color: Colors.red),
                     onPressed: () async {
                       final confirm = await showDialog<bool>(
@@ -120,6 +126,74 @@ class Tagsscreen extends StatelessWidget {
                         ],
                       )),
                   Btn_SubCategoryAdd(),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void showEditTagSheet(BuildContext context, TagModel tag) async {
+    if (getController.branchList.isEmpty) {
+      await getController.getBranches();
+    }
+    getController.nameController.text = tag.name ?? '';
+    getController.isActive.value = tag.status == 1;
+    final selected = getController.branchList
+        .where((b) => tag.branches.any((tb) => tb.id == b.id))
+        .toList();
+    getController.selectedBranches.value = selected;
+
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (context) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            getController.branchController
+                .selectWhere((item) => selected.contains(item.value));
+          });
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 10,
+                children: [
+                  CustomTextFormField(
+                    controller: getController.nameController,
+                    labelText: 'Name',
+                    keyboardType: TextInputType.text,
+                    validator: (value) => Validation.validatename(value),
+                  ),
+                  branchDropdown(),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            text: 'Status',
+                            textStyle:
+                                CustomTextStyles.textFontRegular(size: 14.sp),
+                          ),
+                          Switch(
+                            value: getController.isActive.value,
+                            onChanged: (value) {
+                              getController.isActive.value = value;
+                            },
+                            activeColor: primaryColor,
+                          ),
+                        ],
+                      )),
+                  ElevatedButtonExample(
+                    text: "Update Tag",
+                    onPressed: () {
+                      getController.onEditTag(tag.id!);
+                      Navigator.of(context).pop();
+                    },
+                  ),
                   const SizedBox(height: 10),
                 ],
               ),
