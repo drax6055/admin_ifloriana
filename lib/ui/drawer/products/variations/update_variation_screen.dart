@@ -11,6 +11,7 @@ import '../../../../wiget/Custome_button.dart';
 import '../../../../wiget/Custome_textfield.dart';
 import '../../../../wiget/custome_dropdown.dart';
 import '../../../../wiget/custome_text.dart';
+import '../../../../wiget/loading.dart';
 
 class UpdateVariationscreen extends StatelessWidget {
   final Data variationToEdit;
@@ -41,7 +42,7 @@ class UpdateVariationscreen extends StatelessWidget {
               SizedBox(height: 10),
               Obx(() {
                 if (getController.isLoading.value) {
-                  return Center(child: CircularProgressIndicator());
+                  return Center(child: CustomLoadingAvatar());
                 }
                 return branchDropdown(getController);
               }),

@@ -11,6 +11,8 @@ import '../../../../utils/validation.dart';
 import '../../../../wiget/Custome_button.dart';
 import '../../../../wiget/Custome_textfield.dart';
 import '../../../../wiget/custome_text.dart';
+import '../../../../wiget/loading.dart';
+import '../../../../network/model/category_model.dart' as model;
 
 class Categoryscreen extends StatelessWidget {
   Categoryscreen({super.key});
@@ -26,11 +28,7 @@ class Categoryscreen extends StatelessWidget {
       ),
       body: Obx(() {
         if (getController.isLoading.value) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: primaryColor,
-            ),
-          );
+          return Center(child: CustomLoadingAvatar());
         }
 
         if (getController.categories.isEmpty) {
@@ -135,7 +133,7 @@ class Categoryscreen extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.edit, color: primaryColor),
                       onPressed: () {
-                        // TODO: Navigate to edit screen
+                        showEditCategorySheet(context, category);
                       },
                     ),
                     IconButton(
@@ -163,6 +161,12 @@ class Categoryscreen extends StatelessWidget {
   }
 
   void showAddCategorySheet(BuildContext context) {
+    getController.nameController.clear();
+    getController.isActive.value = true;
+    getController.selectedBranches.clear();
+    getController.selectedBrand.clear();
+    getController.branchController.clearAll();
+    getController.brandController.clearAll();
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -222,6 +226,91 @@ class Categoryscreen extends StatelessWidget {
         });
   }
 
+  void showEditCategorySheet(
+      BuildContext context, model.Category category) async {
+    getController.nameController.text = category.name;
+    getController.isActive.value = category.status == 1;
+    final selectedBranches = getController.branchList
+        .where((b) => category.branchId.any((cb) => cb.id == b.id))
+        .toList();
+    final selectedBrands = getController.brandList
+        .where((b) => category.brandId.any((cb) => cb.id == b.id))
+        .toList();
+    getController.selectedBranches.value = selectedBranches;
+    getController.selectedBrand.value = selectedBrands;
+    getController.branchController.clearAll();
+    getController.brandController.clearAll();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getController.branchController
+          .selectWhere((item) => selectedBranches.contains(item.value));
+      getController.brandController
+          .selectWhere((item) => selectedBrands.contains(item.value));
+    });
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 10,
+                children: [
+                  Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: Imagepicker(),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: CustomTextFormField(
+                          controller: getController.nameController,
+                          labelText: 'Name',
+                          keyboardType: TextInputType.text,
+                          validator: (value) => Validation.validatename(value),
+                        ),
+                      )
+                    ],
+                  ),
+                  branchDropdown(),
+                  brandDropdown(),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            text: 'Status',
+                            textStyle:
+                                CustomTextStyles.textFontRegular(size: 14.sp),
+                          ),
+                          Switch(
+                            value: getController.isActive.value,
+                            onChanged: (value) {
+                              getController.isActive.value = value;
+                            },
+                            activeColor: primaryColor,
+                          ),
+                        ],
+                      )),
+                  ElevatedButtonExample(
+                    text: "Update Category",
+                    onPressed: () {
+                      getController.updateCategory(category.id);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   Widget Imagepicker() {
     return Obx(() {
       return GestureDetector(
@@ -250,9 +339,9 @@ class Categoryscreen extends StatelessWidget {
 
   Widget branchDropdown() {
     return Obx(() {
-      return MultiDropdown<Branch1>(
+      return MultiDropdown<model.Branch>(
         items: getController.branchList
-            .map((branch) => DropdownItem(
+            .map((branch) => DropdownItem<model.Branch>(
                   label: branch.name ?? '',
                   value: branch,
                 ))
@@ -303,9 +392,9 @@ class Categoryscreen extends StatelessWidget {
 
   Widget brandDropdown() {
     return Obx(() {
-      return MultiDropdown<Brand>(
+      return MultiDropdown<model.Brand>(
         items: getController.brandList
-            .map((brand) => DropdownItem(
+            .map((brand) => DropdownItem<model.Brand>(
                   label: brand.name ?? '',
                   value: brand,
                 ))

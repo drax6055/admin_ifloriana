@@ -11,6 +11,7 @@ import '../../../../../utils/validation.dart';
 import '../../../../../wiget/Custome_button.dart';
 import '../../../../../wiget/Custome_textfield.dart';
 import '../../../../../wiget/custome_text.dart';
+import '../../../../wiget/loading.dart';
 
 class Getbrandsscreen extends StatelessWidget {
   Getbrandsscreen({super.key});
@@ -22,7 +23,7 @@ class Getbrandsscreen extends StatelessWidget {
       body: Container(
           child: Obx(
         () => getController.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: CustomLoadingAvatar())
             : ListView.builder(
                 itemCount: getController.brands.length,
                 itemBuilder: (context, index) {

@@ -2,40 +2,15 @@ import 'package:get/get.dart';
 import '../../../../main.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
-import '../../../../network/model/category_model.dart';
+import '../../../../network/model/category_model.dart' as model;
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
-class Brand {
-  final String? id;
-  final String? name;
-
-  Brand({this.id, this.name});
-
-  factory Brand.fromJson(Map<String, dynamic> json) {
-    return Brand(
-      id: json['_id'],
-      name: json['name'],
-    );
-  }
-}
-
-class Branch1 {
-  final String? id;
-  final String? name;
-
-  Branch1({this.id, this.name});
-
-  factory Branch1.fromJson(Map<String, dynamic> json) {
-    return Branch1(
-      id: json['_id'],
-      name: json['name'],
-    );
-  }
-}
+typedef Brand = model.Brand;
+typedef Branch1 = model.Branch;
 
 class Categorycontroller extends GetxController {
-  RxList<Category> categories = <Category>[].obs;
+  RxList<model.Category> categories = <model.Category>[].obs;
   RxBool isLoading = false.obs;
   var nameController = TextEditingController();
   var isActive = true.obs;
@@ -62,7 +37,7 @@ class Categorycontroller extends GetxController {
       await dioClient.getData(
         '${Apis.baseUrl}${Endpoints.getAllCategory}${loginUser!.salonId}',
         (json) {
-          final response = CategoryResponse.fromJson(json);
+          final response = model.CategoryResponse.fromJson(json);
           categories.value = response.data;
           return json;
         },
@@ -83,7 +58,7 @@ class Categorycontroller extends GetxController {
       );
 
       final data = response['data'] as List;
-      brandList.value = data.map((e) => Brand.fromJson(e)).toList();
+      brandList.value = data.map((e) => model.Brand.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
@@ -98,7 +73,7 @@ class Categorycontroller extends GetxController {
       );
 
       final data = response['data'] as List;
-      branchList.value = data.map((e) => Branch1.fromJson(e)).toList();
+      branchList.value = data.map((e) => model.Branch.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
@@ -174,27 +149,43 @@ class Categorycontroller extends GetxController {
 
   Future<void> showDeleteConfirmation(
       String categoryId, String categoryName) async {
-    final result = await Get.dialog(
-      AlertDialog(
-        title: Text('Delete Category'),
-        content: Text(
-            'Are you sure you want to delete "$categoryName"? This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(result: false),
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Get.back(result: true),
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: Text('Delete'),
-          ),
-        ],
-      ),
-    );
+    deleteCategory(categoryId);
+  }
 
-    if (result == true) {
-      deleteCategory(categoryId);
+  Future<void> updateCategory(String categoryId) async {
+    if (nameController.text.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please enter category name');
+      return;
+    }
+    if (selectedBranches.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please select at least one branch');
+      return;
+    }
+    if (selectedBrand.isEmpty) {
+      CustomSnackbar.showError('Error', 'Please select at least one brand');
+      return;
+    }
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> categoryData = {
+      "image": null,
+      "name": nameController.text,
+      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'status': isActive.value ? 1 : 0,
+      'salon_id': loginUser!.salonId,
+      'brand_id': selectedBrand.map((brand) => brand.id).toList(),
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.postSubCategory}/$categoryId',
+        categoryData,
+        (json) => json,
+      );
+      await getCategories();
+      resetForm();
+      CustomSnackbar.showSuccess('Success', 'Category updated successfully');
+    } catch (e) {
+      print('==> here Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
     }
   }
 }

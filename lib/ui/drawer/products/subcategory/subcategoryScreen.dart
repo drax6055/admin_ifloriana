@@ -12,6 +12,7 @@ import '../../../../../wiget/Custome_button.dart';
 import '../../../../../wiget/Custome_textfield.dart';
 import '../../../../../wiget/custome_text.dart';
 import '../../../../wiget/custome_snackbar.dart';
+import '../../../../wiget/loading.dart';
 
 class Subcategoryscreen extends StatelessWidget {
   Subcategoryscreen({super.key});
@@ -27,7 +28,7 @@ class Subcategoryscreen extends StatelessWidget {
       body: Container(
           child: Obx(
         () => getController.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: CustomLoadingAvatar())
             : ListView.builder(
                 itemCount: getController.subCategories.length,
                 itemBuilder: (context, index) {

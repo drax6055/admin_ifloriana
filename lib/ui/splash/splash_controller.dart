@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
 import '../drawer/products/category/CategoryScreen.dart';
+import '../drawer/products/subcategory/subcategoryScreen.dart';
 
 
 
@@ -24,7 +25,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(Categoryscreen());
+          Get.to(Subcategoryscreen());
         }
       });
     } catch (e) {

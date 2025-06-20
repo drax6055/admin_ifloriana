@@ -193,7 +193,7 @@ class Subcategorycontroller extends GetxController {
     final loginUser = await prefs.getUser();
     Map<String, dynamic> subCategoryData = {
       "image": null,
-      "name": nameController.text,
+      "name": nameController.text,   
       'branch_id': selectedBranches.map((branch) => branch.id).toList(),
       'status': isActive.value ? 1 : 0,
       'salon_id': loginUser!.salonId,
