@@ -19,6 +19,14 @@ class Branch1 {
       name: json['name'],
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Branch1 && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class UpdateVariationcontroller extends GetxController {
@@ -56,23 +64,6 @@ class UpdateVariationcontroller extends GetxController {
     } else {
       valueControllers.add(TextEditingController());
     }
-
-    // Pre-select branches after they are loaded
-    once(branchList, (_) {
-      if (variationToEdit.branchId != null) {
-        final List<Branch1> branchesToSelect = [];
-        for (var branchToSelect in variationToEdit.branchId!) {
-          final foundBranch =
-              branchList.firstWhereOrNull((b) => b.id == branchToSelect.id);
-          if (foundBranch != null) {
-            branchesToSelect.add(foundBranch);
-          }
-        }
-        selectedBranches.value = branchesToSelect;
-        branchController
-            .selectWhere((element) => branchesToSelect.contains(element.value));
-      }
-    });
   }
 
   @override
@@ -105,11 +96,27 @@ class UpdateVariationcontroller extends GetxController {
         (json) => json,
       );
       final List<dynamic> data = response['data'];
-      branchList.value = data.map((e) => Branch1.fromJson(e)).toList();
-      branchController.setItems(branchList
+      final allBranches = data.map((e) => Branch1.fromJson(e)).toList();
+      branchList.value = allBranches;
+
+      branchController.setItems(allBranches
           .map((branch) =>
               DropdownItem<Branch1>(label: branch.name ?? '', value: branch))
           .toList());
+
+      if (variationToEdit.branchId != null) {
+        final List<Branch1> branchesToSelect = [];
+        for (var branchToSelect in variationToEdit.branchId!) {
+          final foundBranch =
+              allBranches.firstWhereOrNull((b) => b.id == branchToSelect.id);
+          if (foundBranch != null) {
+            branchesToSelect.add(foundBranch);
+          }
+        }
+        selectedBranches.value = branchesToSelect;
+        branchController
+            .selectWhere((element) => branchesToSelect.contains(element.value));
+      }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     } finally {

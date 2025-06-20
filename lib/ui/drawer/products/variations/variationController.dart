@@ -22,6 +22,14 @@ class Branch1 {
 
   @override
   String toString() => 'Branch1(id: $id, name: $name)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Branch1 && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class Variationcontroller extends GetxController {
