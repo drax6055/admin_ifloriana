@@ -3,10 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
-import '../drawer/products/brand/getBrandsScreen.dart';
-import '../drawer/products/category/CategoryScreen.dart';
-import '../drawer/products/subcategory/subcategoryScreen.dart';
-import '../drawer/products/variations/get/variationGetScreen.dart';
+import '../drawer/Branchmembership/get/branchMembershipListScreen.dart';
 
 
 
@@ -27,7 +24,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(VariationGetscreen());
+          Get.to(BranchMembershipListScreen());
         }
       });
     } catch (e) {

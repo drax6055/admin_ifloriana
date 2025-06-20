@@ -128,5 +128,10 @@ GetPage(
         name: Routes.addVariationscreen,
         page: () => Variationscreen(),
         transition: Transition.rightToLeft),
+
+        GetPage(
+        name: Routes.branchmembershipaddscreen,
+        page: () => Branchmembershipaddscreen(),
+        transition: Transition.rightToLeft),
   ];
 }

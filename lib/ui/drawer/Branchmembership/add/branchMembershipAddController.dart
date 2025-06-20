@@ -6,12 +6,12 @@ import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
 
 class Branchmembershipaddcontroller extends GetxController {
-  var selected_Subscription_plan = '6-Months'.obs;
+  var selected_Subscription_plan = '6-months'.obs;
   final List<String> Subscription_plan_option = [
-    '1-Month',
-    '3-Months',
-    '6-Months',
-    '12-Months',
+    '1-month',
+    '3-months',
+    '6-months',
+    '12-months',
     'Lifetime'
   ];
   var descriptionController = TextEditingController();

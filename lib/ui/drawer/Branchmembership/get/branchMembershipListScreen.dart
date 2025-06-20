@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../wiget/loading.dart';
 import 'branchMembershipListController.dart';
+import '../add/branchMembershipAddController.dart';
+import '../../../../network/model/BranchMembership.dart';
+import '../../../../wiget/Custome_textfield.dart';
+import '../../../../wiget/custome_dropdown.dart';
 
 class BranchMembershipListScreen extends StatelessWidget {
   final controller = Get.put(BranchMembershipListController());
@@ -49,32 +53,43 @@ class BranchMembershipListScreen extends StatelessWidget {
                         'Status: ${membership.status == 1 ? 'Active' : 'Inactive'}'),
                   ],
                 ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Delete Membership'),
-                        content: Text(
-                            'Are you sure you want to delete "${membership.membershipName}"?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text('Cancel'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text('Delete Membership'),
+                            content: Text(
+                                'Are you sure you want to delete "${membership.membershipName}"?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  controller.deleteMembership(membership.id);
+                                },
+                                child: Text('Delete',
+                                    style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              controller.deleteMembership(membership.id);
-                            },
-                            child: Text('Delete',
-                                style: TextStyle(color: Colors.red)),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        showEditMembershipSheet(context, membership);
+                      },
+                    ),
+                  ],
                 ),
               ),
             );
@@ -82,5 +97,138 @@ class BranchMembershipListScreen extends StatelessWidget {
         );
       }),
     );
+  }
+
+  void showEditMembershipSheet(
+      BuildContext context, BranchMemberShip membership) async {
+    final addController = Get.put(Branchmembershipaddcontroller());
+    addController.memberShipNameController.text = membership.membershipName;
+    addController.descriptionController.text = membership.description;
+    addController.selected_Subscription_plan.value =
+        mapPlanValueToDisplay(membership.subscriptionPlan);
+    addController.selected_discountType.value =
+        mapDiscountTypeToDisplay(membership.discountType);
+    addController.discountAmountController.text =
+        membership.discount.toString();
+    addController.membershipAmountController.text =
+        membership.membershipAmount.toString();
+    addController.isActive.value = membership.status == 1;
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CustomTextFormField(
+                    controller: addController.descriptionController,
+                    labelText: 'Description',
+                    maxLines: 2,
+                    keyboardType: TextInputType.text,
+                  ),
+                  CustomTextFormField(
+                    controller: addController.memberShipNameController,
+                    labelText: "Name",
+                    keyboardType: TextInputType.text,
+                  ),
+                  Obx(() => CustomDropdown<String>(
+                        value: addController
+                                .selected_Subscription_plan.value.isEmpty
+                            ? null
+                            : addController.selected_Subscription_plan.value,
+                        items: addController.Subscription_plan_option,
+                        hintText: 'Subscription Plan',
+                        labelText: 'Subscription Plan',
+                        onChanged: (newValue) {
+                          if (newValue != null) {
+                            addController.selected_Subscription_plan.value =
+                                newValue;
+                          }
+                        },
+                      )),
+                  Obx(() => CustomDropdown<String>(
+                        value: addController.selected_discountType.value.isEmpty
+                            ? null
+                            : addController.selected_discountType.value,
+                        items: addController.discountType_option,
+                        hintText: 'Discount Type',
+                        labelText: 'Discount Type',
+                        onChanged: (newValue) {
+                          if (newValue != null) {
+                            addController.selected_discountType.value =
+                                newValue;
+                          }
+                        },
+                      )),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Status'),
+                          Switch(
+                            value: addController.isActive.value,
+                            onChanged: (value) {
+                              addController.isActive.value = value;
+                            },
+                            activeColor: Colors.blue,
+                          ),
+                        ],
+                      )),
+                  CustomTextFormField(
+                    controller: addController.membershipAmountController,
+                    labelText: "Membership Amount",
+                    keyboardType: TextInputType.number,
+                  ),
+                  CustomTextFormField(
+                    controller: addController.discountAmountController,
+                    labelText: "Discount Amount",
+                    keyboardType: TextInputType.number,
+                  ),
+                  ElevatedButton(
+                    child: Text('Update Membership'),
+                    onPressed: () {
+                      controller.updateMembership(membership.id);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  String mapPlanValueToDisplay(String value) {
+    switch (value.toLowerCase()) {
+      case '1-month':
+        return '1-month';
+      case '3-months':
+        return '3-months';
+      case '6-months':
+        return '6-months';
+      case '12-months':
+        return '12-months';
+      case 'lifetime':
+        return 'Lifetime';
+      default:
+        return value;
+    }
+  }
+
+  String mapDiscountTypeToDisplay(String value) {
+    switch (value.toLowerCase()) {
+      case 'fixed':
+        return 'Fixed';
+      case 'percentage':
+        return 'Percentage';
+      default:
+        return value;
+    }
   }
 }

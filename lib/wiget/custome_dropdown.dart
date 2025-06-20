@@ -25,7 +25,7 @@ class CustomDropdown<T> extends StatelessWidget {
     this.labelText,
     this.prefixIcon,
     this.validator,
-     this.itemToString, 
+    this.itemToString,
   }) : super(key: key);
 
   @override
