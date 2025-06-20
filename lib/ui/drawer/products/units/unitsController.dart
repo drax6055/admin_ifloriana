@@ -128,4 +128,27 @@ class Unitscontroller extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to delete unit: $e');
     }
   }
+
+  Future<void> updateUnit(String unitId) async {
+    final loginUser = await prefs.getUser();
+    Map<String, dynamic> unitsData = {
+      'name': nameController.text,
+      'status': isActive.value ? 1 : 0,
+      'branch_id': selectedBranches.map((branch) => branch.id).toList(),
+      'salon_id': loginUser!.salonId,
+    };
+
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.postUnits}/$unitId',
+        unitsData,
+        (json) => PostUnits.fromJson(json),
+      );
+      CustomSnackbar.showSuccess('Success', 'Unit updated');
+      await getUnits();
+    } catch (e) {
+      print('==> here Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
+    }
+  }
 }

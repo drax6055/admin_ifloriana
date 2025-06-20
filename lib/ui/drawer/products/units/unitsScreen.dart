@@ -34,6 +34,12 @@ class Unitsscreen extends StatelessWidget {
                 children: [
                   Text(unit.status == 1 ? 'Active' : 'Inactive'),
                   IconButton(
+                    icon: Icon(Icons.edit, color: Colors.blue),
+                    onPressed: () {
+                      showEditUnitSheet(context, unit);
+                    },
+                  ),
+                  IconButton(
                     icon: Icon(Icons.delete, color: Colors.red),
                     onPressed: () async {
                       final confirm = await showDialog<bool>(
@@ -76,6 +82,10 @@ class Unitsscreen extends StatelessWidget {
   }
 
   void showAddCategorySheet(BuildContext context) {
+    getController.nameController.clear();
+    getController.isActive.value = true;
+    getController.selectedBranches.clear();
+    getController.branchController.clearAll();
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -115,6 +125,71 @@ class Unitsscreen extends StatelessWidget {
                       )),
                   branchDropdown(),
                   Btn_SubCategoryAdd(),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void showEditUnitSheet(BuildContext context, UnitModel unit) async {
+    getController.nameController.text = unit.name ?? '';
+    getController.isActive.value = unit.status == 1;
+    final selected = getController.branchList
+        .where((b) => unit.branches.any((ub) => ub.id == b.id))
+        .toList();
+    getController.selectedBranches.value = selected;
+    getController.branchController.clearAll();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getController.branchController
+          .selectWhere((item) => selected.contains(item.value));
+    });
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 10,
+                children: [
+                  CustomTextFormField(
+                    controller: getController.nameController,
+                    labelText: 'Name',
+                    keyboardType: TextInputType.text,
+                    validator: (value) => Validation.validatename(value),
+                  ),
+                  Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomTextWidget(
+                            text: 'Status',
+                            textStyle:
+                                CustomTextStyles.textFontRegular(size: 14.sp),
+                          ),
+                          Switch(
+                            value: getController.isActive.value,
+                            onChanged: (value) {
+                              getController.isActive.value = value;
+                            },
+                            activeColor: primaryColor,
+                          ),
+                        ],
+                      )),
+                  branchDropdown(),
+                  ElevatedButtonExample(
+                    text: "Update Unit",
+                    onPressed: () {
+                      getController.updateUnit(unit.id!);
+                      Navigator.of(context).pop();
+                    },
+                  ),
                   const SizedBox(height: 10),
                 ],
               ),
