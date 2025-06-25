@@ -70,4 +70,5 @@ class Endpoints {
   static const String postVariation = "/variations";
   static const String dailyBookings = "/dailyBookings";
   static const String overallBookings = '/appointments/overall-booking';
+  static const String staffServiceReport = '/staff-services-reports';
 }

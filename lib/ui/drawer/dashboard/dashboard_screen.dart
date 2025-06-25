@@ -106,7 +106,7 @@ class DashboardScreen extends StatelessWidget {
       {"date": "2025-05-05", "revenue": 3579},
       {"date": "2025-05-06", "revenue": 1567},
     ];
-
+ 
     final List<String> dateLabels =
         revenueData.map((e) => e["date"] as String).toList();
 

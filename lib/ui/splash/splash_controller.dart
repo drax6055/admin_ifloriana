@@ -4,9 +4,8 @@ import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
 
-import '../drawer/reports/dailyBooking/dailyBooking_screen.dart';
-import '../drawer/reports/overallBooking/overall_booking_screen.dart';
-import '../drawer/staff/staffDetailsScreen.dart';
+import '../drawer/reports/staffServiceReport/staff_service_report_screen.dart';
+
 
 
 
@@ -27,7 +26,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(OverallBookingScreen());
+          Get.to(StaffServiceReportScreen());
         }
       });
     } catch (e) {
