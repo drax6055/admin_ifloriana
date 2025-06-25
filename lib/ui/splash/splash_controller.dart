@@ -3,7 +3,10 @@ import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
-import '../drawer/Branchmembership/get/branchMembershipListScreen.dart';
+
+import '../drawer/reports/dailyBooking/dailyBooking_screen.dart';
+import '../drawer/reports/overallBooking/overall_booking_screen.dart';
+import '../drawer/staff/staffDetailsScreen.dart';
 
 
 
@@ -24,7 +27,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(BranchMembershipListScreen());
+          Get.to(OverallBookingScreen());
         }
       });
     } catch (e) {
