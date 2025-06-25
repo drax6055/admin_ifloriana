@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
 
+import '../drawer/reports/customerPackageReport/customer_package_report_screen.dart';
 import '../drawer/reports/orderReport/order_report_screen.dart';
 import '../drawer/reports/overallBooking/overall_booking_screen.dart';
 import '../drawer/reports/staffServiceReport/staff_service_report_screen.dart';
@@ -28,7 +29,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(OrderReportScreen());
+          Get.to(CustomerPackageReportScreen());
         }
       });
     } catch (e) {
