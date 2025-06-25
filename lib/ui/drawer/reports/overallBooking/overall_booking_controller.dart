@@ -11,38 +11,77 @@ class OverallBookingController extends GetxController {
   final grandTotal = 0.0.obs;
   final isLoading = true.obs;
 
+  final searchQuery = ''.obs;
+  final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
+  final Rx<DateTimeRange?> selectedDateRange = Rx<DateTimeRange?>(null);
+
   @override
   void onInit() {
     super.onInit();
     getOverallBookings();
   }
 
-  void applyDateFilter({DateTime? singleDate, DateTimeRange? dateRange}) {
-    if (singleDate == null && dateRange == null) {
-      filteredOverallBookings.value = overallBookings;
-    } else if (singleDate != null) {
-      filteredOverallBookings.value = overallBookings.where((booking) {
-        if (booking.appointmentDate == null) return false;
-        final bookingDate = DateTime.tryParse(booking.appointmentDate!);
-        return bookingDate != null &&
-            bookingDate.year == singleDate.year &&
-            bookingDate.month == singleDate.month &&
-            bookingDate.day == singleDate.day;
-      }).toList();
-    } else if (dateRange != null) {
-      filteredOverallBookings.value = overallBookings.where((booking) {
-        if (booking.appointmentDate == null) return false;
-        final bookingDate = DateTime.tryParse(booking.appointmentDate!);
-        return bookingDate != null &&
-            !bookingDate.isBefore(dateRange.start) &&
-            !bookingDate.isAfter(dateRange.end);
-      }).toList();
-    }
-    calculateGrandTotal();
+  void updateSearchQuery(String query) {
+    searchQuery.value = query;
+    _applyFilters();
   }
 
-  void clearFilter() {
-    filteredOverallBookings.value = overallBookings;
+  void selectDate(DateTime date) {
+    selectedDate.value = date;
+    selectedDateRange.value = null;
+    _applyFilters();
+  }
+
+  void selectDateRange(DateTimeRange range) {
+    selectedDateRange.value = range;
+    selectedDate.value = null;
+    _applyFilters();
+  }
+
+  void clearFilters() {
+    searchQuery.value = '';
+    selectedDate.value = null;
+    selectedDateRange.value = null;
+    _applyFilters();
+  }
+
+  void _applyFilters() {
+    List<OverallBookingData> filtered = List.from(overallBookings);
+
+    if (searchQuery.value.isNotEmpty) {
+      filtered = filtered
+          .where((booking) =>
+              booking.staffName
+                  ?.toLowerCase()
+                  .contains(searchQuery.value.toLowerCase()) ??
+              false)
+          .toList();
+    }
+
+    if (selectedDate.value != null) {
+      filtered = filtered.where((booking) {
+        if (booking.appointmentDate == null) return false;
+        final bookingDate = DateTime.tryParse(booking.appointmentDate!);
+        final filterDate = selectedDate.value!;
+        return bookingDate != null &&
+            bookingDate.year == filterDate.year &&
+            bookingDate.month == filterDate.month &&
+            bookingDate.day == filterDate.day;
+      }).toList();
+    }
+
+    if (selectedDateRange.value != null) {
+      filtered = filtered.where((booking) {
+        if (booking.appointmentDate == null) return false;
+        final bookingDate = DateTime.tryParse(booking.appointmentDate!);
+        final filterRange = selectedDateRange.value!;
+        return bookingDate != null &&
+            !bookingDate.isBefore(filterRange.start) &&
+            !bookingDate.isAfter(filterRange.end);
+      }).toList();
+    }
+
+    filteredOverallBookings.value = filtered;
     calculateGrandTotal();
   }
 
