@@ -54,21 +54,18 @@ class Endpoints {
   static const String postBrands = "/brands";
   static const String getProductSubCategories =
       "/productSubCategories?salon_id=";
-
   static const String productSubcategory = "/productSubCategories";
-
   static const String getBrandName = "/brands/names?salon_id=";
   static const String getproductName = "/productCategories/names?salon_id=";
   static const String postSubCategory = "/productCategories";
   static const String getAllCategory = "/productCategories?salon_id=";
-
   static const String getUnits = "/units?salon_id=";
   static const String postUnits = "/units";
-
   static const String postTags = "/tags";
   static const String getTags = "/tags/?salon_id=";
   static const String postVariation = "/variations";
   static const String dailyBookings = "/dailyBookings";
   static const String overallBookings = '/appointments/overall-booking';
   static const String staffServiceReport = '/staff-services-reports';
+  static const String orderReport = '/order'; 
 }
