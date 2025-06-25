@@ -15,75 +15,135 @@ class OverallBookingScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (controller.overallBookings.isEmpty) {
-            return const Center(child: Text('No data available'));
-          }
-          return SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  DataTable(
-                    columns: const [
-                      DataColumn(label: Text('Staff')),
-                      DataColumn(label: Text('Appointment Date')),
-                      DataColumn(label: Text('Service Count')),
-                      DataColumn(label: Text('Service Amount')),
-                      DataColumn(label: Text('Tax')),
-                      DataColumn(label: Text('Tips')),
-                      DataColumn(label: Text('Total Amount')),
-                      DataColumn(label: Text('Invoice ID')),
-                    ],
-                    rows: controller.overallBookings.map((booking) {
-                      return DataRow(cells: [
-                        DataCell(
-                          Row(
-                            children: [
-                              if (booking.staffImage != null)
-                                CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(booking.staffImage!),
-                                ),
-                              const SizedBox(width: 8),
-                              Text(booking.staffName ?? ''),
-                            ],
-                          ),
-                        ),
-                        DataCell(Text(booking.appointmentDate ?? '')),
-                        DataCell(Text(booking.serviceCount?.toString() ?? '0')),
-                        DataCell(Text(
-                            booking.totalServiceAmount?.toString() ?? '0')),
-                        DataCell(Text(booking.taxAmount?.toString() ?? '0')),
-                        DataCell(Text(booking.tipsAmount?.toString() ?? '0')),
-                        DataCell(Text(booking.totalAmount?.toString() ?? '0')),
-                        DataCell(Text(booking.invoiceId ?? '')),
-                      ]);
-                    }).toList(),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (picked != null) {
+                        controller.applyDateFilter(singleDate: picked);
+                      }
+                    },
+                    child: const Text("Select Date"),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Text('Grand Total: ',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16.sp)),
-                        Text('${controller.grandTotal.value}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16.sp)),
-                      ],
-                    ),
-                  )
+                  ElevatedButton(
+                    onPressed: () async {
+                      final DateTimeRange? picked = await showDateRangePicker(
+                        context: context,
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (picked != null) {
+                        controller.applyDateFilter(dateRange: picked);
+                      }
+                    },
+                    child: const Text("Select Range"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      controller.clearFilter();
+                    },
+                    child: const Text("Clear"),
+                  ),
                 ],
               ),
             ),
-          );
-        }),
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.overallBookings.isEmpty) {
+                  return const Center(child: Text('No data available'));
+                }
+                if (controller.filteredOverallBookings.isEmpty) {
+                  return const Center(
+                      child:
+                          Text('No bookings found for the selected date(s).'));
+                }
+                return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DataTable(
+                          columns: const [
+                            DataColumn(label: Text('Staff')),
+                            DataColumn(label: Text('Appointment Date')),
+                            DataColumn(label: Text('Service Count')),
+                            DataColumn(label: Text('Service Amount')),
+                            DataColumn(label: Text('Tax')),
+                            DataColumn(label: Text('Tips')),
+                            DataColumn(label: Text('Total Amount')),
+                            DataColumn(label: Text('Invoice ID')),
+                          ],
+                          rows:
+                              controller.filteredOverallBookings.map((booking) {
+                            return DataRow(cells: [
+                              DataCell(
+                                Row(
+                                  children: [
+                                    if (booking.staffImage != null)
+                                      CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(booking.staffImage!),
+                                      ),
+                                    const SizedBox(width: 8),
+                                    Text(booking.staffName ?? ''),
+                                  ],
+                                ),
+                              ),
+                              DataCell(Text(booking.appointmentDate ?? '')),
+                              DataCell(Text(
+                                  booking.serviceCount?.toString() ?? '0')),
+                              DataCell(Text(
+                                  booking.totalServiceAmount?.toString() ??
+                                      '0')),
+                              DataCell(
+                                  Text(booking.taxAmount?.toString() ?? '0')),
+                              DataCell(
+                                  Text(booking.tipsAmount?.toString() ?? '0')),
+                              DataCell(
+                                  Text(booking.totalAmount?.toString() ?? '0')),
+                              DataCell(Text(booking.invoiceId ?? '')),
+                            ]);
+                          }).toList(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              Text('Grand Total: ',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp)),
+                              Text('${controller.grandTotal.value}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp)),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
