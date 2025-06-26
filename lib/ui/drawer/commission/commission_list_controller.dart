@@ -56,7 +56,7 @@ class CommissionListController extends GetxController {
     final loginUser = await prefs.getUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/revenue-commissions?salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.getcommition}${loginUser!.salonId}',
         (json) => json,
       );
       if (response != null && response['data'] != null) {
@@ -73,9 +73,10 @@ class CommissionListController extends GetxController {
 
   Future<void> deleteCommission(String id) async {
     isLoading.value = true;
+    final loginUser = await prefs.getUser();
     try {
       await dioClient.deleteData(
-        '${Apis.baseUrl}/revenue-commissions/$id',
+        '${Apis.baseUrl}${Endpoints.commition}$id?salon_id=${loginUser!.salonId}',
         (json) => json,
       );
       commissionList.removeWhere((item) => item.id == id);
