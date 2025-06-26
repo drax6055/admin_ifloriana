@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
 import '../drawer/commission/add_commission_screen.dart';
+import '../drawer/commission/commission_list_screen.dart';
 
 
 
@@ -27,7 +28,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(AddCommissionScreen());
+          Get.to(CommissionListScreen());
         }
       });
     } catch (e) {
