@@ -60,6 +60,22 @@ class Unit {
   }
 }
 
+class Variation {
+  final String id;
+  final String name;
+  final List<String> values;
+
+  Variation({required this.id, required this.name, required this.values});
+
+  factory Variation.fromJson(Map<String, dynamic> json) {
+    return Variation(
+      id: json['_id'],
+      name: json['name'],
+      values: List<String>.from(json['value']),
+    );
+  }
+}
+
 class Getallproductscontroller extends GetxController {
   var branchList = <Branch>[].obs;
   var selectedBranch = Rx<Branch?>(null);
@@ -69,6 +85,9 @@ class Getallproductscontroller extends GetxController {
   var selectedTag = Rx<Tag?>(null);
   var unitList = <Unit>[].obs;
   var selectedUnit = Rx<Unit?>(null);
+  var variationList = <Variation>[].obs;
+  var selectedVariation = Rx<Variation?>(null);
+  var selectedVariationValues = <String>[].obs;
 
   @override
   void onInit() {
@@ -77,6 +96,7 @@ class Getallproductscontroller extends GetxController {
     getCatedory();
     getTags();
     getUnits();
+    getVariations();
   }
 
   Future<void> getBranches() async {
@@ -136,6 +156,20 @@ class Getallproductscontroller extends GetxController {
       unitList.value = data.map((e) => Unit.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get units: $e');
+    }
+  }
+
+  Future<void> getVariations() async {
+    final loginUser = await prefs.getUser();
+    try {
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}/variations?salon_id=${loginUser!.salonId}',
+        (json) => json,
+      );
+      final data = response['data'] as List;
+      variationList.value = data.map((e) => Variation.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get variations: $e');
     }
   }
 }
