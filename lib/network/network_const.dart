@@ -1,6 +1,5 @@
 class Apis {
-  static const 
-  baseUrl = 'http://192.168.1.26:5000/api';
+  static const baseUrl = 'http://192.168.1.26:5000/api';
 }
 
 class Endpoints {
@@ -62,16 +61,15 @@ class Endpoints {
   static const String getAllCategory = "/productCategories?salon_id=";
   static const String getUnits = "/units?salon_id=";
   static const String postUnits = "/units";
+  static const String getUnitNames = "/units/names?salon_id=";
   static const String postTags = "/tags";
   static const String getTags = "/tags/?salon_id=";
+  static const String getTagsName = "/tags/names?salon_id=";
   static const String postVariation = "/variations";
   static const String dailyBookings = "/dailyBookings";
   static const String overallBookings = '/appointments/overall-booking';
   static const String staffServiceReport = '/staff-services-reports';
   static const String orderReport = '/order';
-  static const String getcommition = '/revenue-commissions?salon_id='; 
-  static const String commition = '/revenue-commissions'; 
-
-
-
+  static const String getcommition = '/revenue-commissions?salon_id=';
+  static const String commition = '/revenue-commissions';
 }
