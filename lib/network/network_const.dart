@@ -70,7 +70,7 @@ class Endpoints {
   static const String staffServiceReport = '/staff-services-reports';
   static const String orderReport = '/order';
   static const String getcommition = '/revenue-commissions?salon_id='; 
-  static const String commition = '/revenue-commissions/'; 
+  static const String commition = '/revenue-commissions'; 
 
 
 

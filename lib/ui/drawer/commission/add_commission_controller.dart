@@ -105,18 +105,20 @@ class AddCommissionController extends GetxController {
       };
       if (editingId != null) {
         await dioClient.putData(
-          '${Apis.baseUrl}/revenue-commissions/$editingId',
+          '${Apis.baseUrl}${Endpoints.commition}/$editingId',
           data,
           (json) => json,
         );
+        Get.back();
         CustomSnackbar.showSuccess(
             'Success', 'Commission updated successfully');
       } else {
         await dioClient.postData(
-          '${Apis.baseUrl}/revenue-commissions',
+          '${Apis.baseUrl}${Endpoints.commition}',
           data,
           (json) => json,
         );
+        Get.back();
         CustomSnackbar.showSuccess('Success', 'Commission added successfully');
       }
       commissionNameController.clear();
@@ -124,7 +126,6 @@ class AddCommissionController extends GetxController {
       slots.clear();
       selectedBranch.value = null;
       editingId = null;
-      Get.back();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to save commission: $e');
     } finally {

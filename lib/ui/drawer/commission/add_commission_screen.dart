@@ -117,10 +117,7 @@ class AddCommissionScreen extends StatelessWidget {
                                 : 'Add Commission'),
                           ),
                           SizedBox(width: 16),
-                          OutlinedButton(
-                            onPressed: () => Get.back(),
-                            child: Text('Cancel'),
-                          ),
+                          
                         ],
                       ),
                     ],
