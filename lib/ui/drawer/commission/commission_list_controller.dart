@@ -76,7 +76,7 @@ class CommissionListController extends GetxController {
     final loginUser = await prefs.getUser();
     try {
       await dioClient.deleteData(
-        '${Apis.baseUrl}${Endpoints.commition}$id?salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.commition}/$id?salon_id=${loginUser!.salonId}',
         (json) => json,
       );
       commissionList.removeWhere((item) => item.id == id);
