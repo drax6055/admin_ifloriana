@@ -109,7 +109,7 @@ class AddCommissionController extends GetxController {
           data,
           (json) => json,
         );
-        Get.back();
+        Get.back(result: true);
         CustomSnackbar.showSuccess(
             'Success', 'Commission updated successfully');
       } else {
@@ -118,7 +118,7 @@ class AddCommissionController extends GetxController {
           data,
           (json) => json,
         );
-        Get.back();
+        Get.back(result: true);
         CustomSnackbar.showSuccess('Success', 'Commission added successfully');
       }
       commissionNameController.clear();

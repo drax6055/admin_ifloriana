@@ -33,7 +33,12 @@ class CommissionListScreen extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.edit, color: Colors.blue),
                       onPressed: () {
-                        Get.to(() => AddCommissionScreen(), arguments: item);
+                        Get.to(() => AddCommissionScreen(), arguments: item)
+                            ?.then((result) {
+                          if (result == true) {
+                            controller.fetchCommissions();
+                          }
+                        });
                       },
                     ),
                     IconButton(
@@ -63,7 +68,12 @@ class CommissionListScreen extends StatelessWidget {
                   ],
                 ),
                 onTap: () {
-                  Get.to(() => AddCommissionScreen(), arguments: item);
+                  Get.to(() => AddCommissionScreen(), arguments: item)
+                      ?.then((result) {
+                    if (result == true) {
+                      controller.fetchCommissions();
+                    }
+                  });
                 },
               ),
             );
@@ -71,7 +81,13 @@ class CommissionListScreen extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.to(() => AddCommissionScreen()),
+        onPressed: () {
+          Get.to(() => AddCommissionScreen())?.then((result) {
+            if (result == true) {
+              controller.fetchCommissions();
+            }
+          });
+        },
         child: Icon(Icons.add),
       ),
     );
