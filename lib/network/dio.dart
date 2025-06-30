@@ -155,6 +155,7 @@ class DioClient {
       throw _handleDioError(e);
     }
   }
+
   Future<T> deleteData<T>(
     String endpoint,
     T Function(Map<String, dynamic>) fromJson,
@@ -175,5 +176,4 @@ class DioClient {
       throw _handleDioError(e);
     }
   }
-
 }

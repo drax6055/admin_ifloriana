@@ -3,6 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
+import '../buy_product/buy_product_screen.dart';
 import '../drawer/allProducts/getAllproductsScreen.dart';
 
 class SplashController extends GetxController {
@@ -22,7 +23,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(Getallproductsscreen());
+          Get.to(BuyProductScreen());
         }
       });
     } catch (e) {
