@@ -102,13 +102,12 @@ class BuyProductController extends GetxController {
     isLoading.value = true;
     try {
       final endpoint = '${Apis.baseUrl}${Endpoints.postOrders}';
-      final orderItems = cart.map((item) {
+      final productsPayload = cart.map((item) {
         final hasVariations = item['variant'] != null;
         return {
           "product_id": item['product']['_id'],
           if (hasVariations) "variant_id": item['variant']['_id'],
           "quantity": item['quantity'],
-          "price": item['price'],
         };
       }).toList();
       final loginUser = await prefs.getUser();
@@ -116,8 +115,7 @@ class BuyProductController extends GetxController {
         "salon_id": loginUser!.salonId,
         "branch_id": selectedBranch.value['_id'],
         "customer_id": selectedCustomer.value['_id'],
-        "items": orderItems,
-        "total_amount": totalAmount.value,
+        "products": productsPayload,
         "payment_method": paymentMethod.value.toLowerCase(),
       };
       await dioClient.postData<Map<String, dynamic>>(
