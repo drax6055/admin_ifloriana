@@ -163,9 +163,10 @@ class Getallproductscontroller extends GetxController {
     final loginUser = await prefs.getUser();
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/variations/names?salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.getVariation}${loginUser!.salonId}',
         (json) => json,
       );
+      // /variations/names?salon_id=
       final data = response['data'] as List;
       variationList.value = data.map((e) => Variation.fromJson(e)).toList();
     } catch (e) {

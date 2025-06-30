@@ -72,4 +72,8 @@ class Endpoints {
   static const String orderReport = '/order';
   static const String getcommition = '/revenue-commissions?salon_id=';
   static const String commition = '/revenue-commissions';
+  static const String getVariation = '/variations/names?salon_id=';
+  static const String getCustomersName = "/customers/names?salon_id=";
+  static const String getProductsName = "/products?salon_id=";
+  static const String postOrders = "/order";
 }

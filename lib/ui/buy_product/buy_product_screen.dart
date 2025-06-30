@@ -155,8 +155,8 @@ class BuyProductScreen extends StatelessWidget {
     required dynamic value,
     required List items,
     required String Function(dynamic) getLabel,
-    required Function(dynamic) onChanged,
-  }) {
+      required Function(dynamic) onChanged,
+    }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

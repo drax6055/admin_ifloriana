@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../main.dart';
 import '../../network/dio.dart';
+import '../../network/network_const.dart';
 
 class BuyProductController extends GetxController {
   final DioClient dioClient = DioClient();
-  final String salonId = "684011271ee646f27873fddc";
+  // final String salonId = "684011271ee646f27873fddc";
 
   RxList branches = [].obs;
   RxList customers = [].obs;
@@ -30,23 +32,26 @@ class BuyProductController extends GetxController {
   }
 
   void fetchBranches() async {
-    final endpoint =
-        'http://192.168.1.21:5000/api/branches/names?salon_id=$salonId';
-    final data =
-        await dioClient.getData<Map<String, dynamic>>(endpoint, (json) => json);
+    final loginUser = await prefs.getUser();
+    final data = await dioClient.getData<Map<String, dynamic>>(
+        '${Apis.baseUrl}${Endpoints.getBranchName}${loginUser!.salonId}',
+        (json) => json);
     branches.value = data['data'] ?? [];
   }
 
   void fetchCustomers() async {
+    final loginUser = await prefs.getUser();
     final endpoint =
-        'http://192.168.1.21:5000/api/customers/names?salon_id=$salonId';
+        '${Apis.baseUrl}${Endpoints.getCustomersName}${loginUser!.salonId}';
     final data =
         await dioClient.getData<Map<String, dynamic>>(endpoint, (json) => json);
     customers.value = data['data'] ?? [];
   }
 
   void fetchProducts() async {
-    final endpoint = 'http://192.168.1.21:5000/api/products?salon_id=$salonId';
+    final loginUser = await prefs.getUser();
+    final endpoint =
+        '${Apis.baseUrl}${Endpoints.getProductsName}${loginUser!.salonId}';
     final data = await dioClient.getData<List<dynamic>>(
         endpoint, (json) => json as List<dynamic>);
     products.value = data;
@@ -96,7 +101,7 @@ class BuyProductController extends GetxController {
         cart.isEmpty) return false;
     isLoading.value = true;
     try {
-      final endpoint = 'http://192.168.1.21:5000/api/orders';
+      final endpoint = '${Apis.baseUrl}${Endpoints.postOrders}';
       final orderItems = cart.map((item) {
         final hasVariations = item['variant'] != null;
         return {
@@ -106,13 +111,14 @@ class BuyProductController extends GetxController {
           "price": item['price'],
         };
       }).toList();
+      final loginUser = await prefs.getUser();
       final data = {
-        "salon_id": salonId,
+        "salon_id": loginUser!.salonId,
         "branch_id": selectedBranch.value['_id'],
         "customer_id": selectedCustomer.value['_id'],
         "items": orderItems,
         "total_amount": totalAmount.value,
-        "payment_method": paymentMethod.value,
+        "payment_method": paymentMethod.value.toLowerCase(),
       };
       await dioClient.postData<Map<String, dynamic>>(
           endpoint, data, (json) => json);
