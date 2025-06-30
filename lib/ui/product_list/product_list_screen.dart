@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'product_list_controller.dart';
 import 'product_list_model.dart';
+import 'update_stock_sheet.dart';
 
 class ProductListScreen extends StatelessWidget {
   final ProductListController controller = Get.put(ProductListController());
@@ -23,21 +24,70 @@ class ProductListScreen extends StatelessWidget {
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Container(
-              width: 1000,
               color: Colors.white,
-              child: ListView(
-                children: [
-                  _buildHeader(),
-                  ...controller.productList.map((product) {
-                    return _ProductListItem(product: product);
-                  }).toList(),
-                ],
+              child: DataTable(
+                columns: _createColumns(),
+                rows: _createRows(),
+                columnSpacing: 30,
+                horizontalMargin: 16,
               ),
             ),
           );
         }
       }),
     );
+  }
+
+  List<DataColumn> _createColumns() {
+    return [
+      DataColumn(
+          label: Text("Product",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+      DataColumn(
+          label: Text("Brand",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+      DataColumn(
+          label: Text("Category",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+      DataColumn(
+          label: Text("Price",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+      DataColumn(
+          label: Text("Quantity",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+      DataColumn(
+          label: Text("Status",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+      DataColumn(
+          label: Text("Action",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+    ];
+  }
+
+  List<DataRow> _createRows() {
+    return controller.productList
+        .map((product) => DataRow(cells: [
+              DataCell(_ProductListItem(product: product)._buildProductInfo()),
+              DataCell(Text(product.brandId?.name ?? 'N/A',
+                  style: TextStyle(color: Colors.black))),
+              DataCell(Text(product.categoryId?.name ?? 'N/A',
+                  style: TextStyle(color: Colors.black))),
+              DataCell(Text(_ProductListItem(product: product).getPrice(),
+                  style: TextStyle(color: Colors.black))),
+              DataCell(Text(_ProductListItem(product: product).getQuantity(),
+                  style: TextStyle(color: Colors.black))),
+              DataCell(_ProductListItem(product: product)._buildStatus()),
+              DataCell(_ProductListItem(product: product)
+                  ._buildActionButtons(Get.context!)),
+            ]))
+        .toList();
   }
 
   Widget _buildHeader() {
@@ -96,43 +146,17 @@ class _ProductListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String price = getPrice();
-    String quantity = getQuantity();
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(bottom: BorderSide(color: Colors.grey[300]!))),
-      child: Row(
-        children: [
-          Expanded(flex: 3, child: _buildProductInfo()),
-          Expanded(
-              flex: 2,
-              child: Text(product.brandId?.name ?? 'N/A',
-                  style: TextStyle(color: Colors.black))),
-          Expanded(
-              flex: 2,
-              child: Text(product.categoryId?.name ?? 'N/A',
-                  style: TextStyle(color: Colors.black))),
-          Expanded(
-              flex: 2,
-              child: Text(price, style: TextStyle(color: Colors.black))),
-          Expanded(
-              flex: 2,
-              child: Text(quantity, style: TextStyle(color: Colors.black))),
-          Expanded(flex: 1, child: _buildStatus()),
-          Expanded(flex: 2, child: _buildActionButtons()),
-        ],
-      ),
-    );
+    // This widget is now only used for its helper methods.
+    // The actual row is built in _createRows.
+    return Container();
   }
 
   Widget _buildProductInfo() {
     return Row(
       children: [
         CircleAvatar(
-          backgroundImage: NetworkImage(product.image),
+          backgroundColor: Colors.amberAccent,
+          // backgroundImage: NetworkImage(product.image),
           radius: 20,
         ),
         SizedBox(width: 8),
@@ -162,18 +186,27 @@ class _ProductListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: Colors.brown[400],
-            borderRadius: BorderRadius.circular(4),
+        GestureDetector(
+          onTap: () {
+            Get.bottomSheet(
+              UpdateStockSheet(product: product),
+              backgroundColor: Colors.transparent,
+              isScrollControlled: true,
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.brown[400],
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text('+ Stock',
+                style: TextStyle(color: Colors.white, fontSize: 12)),
           ),
-          child: Text('+ Stock',
-              style: TextStyle(color: Colors.white, fontSize: 12)),
         ),
         IconButton(
           icon: Icon(Icons.edit, color: Colors.blue),
