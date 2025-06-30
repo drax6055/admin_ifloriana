@@ -320,26 +320,54 @@ class AddProductScreen extends StatelessWidget {
               flex: 3,
               child: Obx(() {
                 final variationType = group.selectedType.value;
-                final values = variationType?.values ?? [];
-                return DropdownButtonFormField<String>(
-                  value: group.selectedValues.isNotEmpty
-                      ? group.selectedValues.first
-                      : null,
-                  decoration: const InputDecoration(
-                    labelText: "Variation Value",
-                    border: OutlineInputBorder(),
-                  ),
-                  items: values.map((v) {
-                    return DropdownMenuItem<String>(
-                      value: v,
-                      child: Text(v),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      controller.onVariationValuesChanged(index, [newValue]);
+                return InkWell(
+                  onTap: () {
+                    if (variationType?.values == null ||
+                        variationType!.values.isEmpty) {
+                      CustomSnackbar.showError(
+                          "Error", "Select a variation type first.");
+                      return;
                     }
+                    _showMultiSelectDialog(
+                      context: Get.context!,
+                      title: 'Select ${variationType.name} Values',
+                      items: variationType.values,
+                      selectedItems: group.selectedValues,
+                      onConfirm: (List<String> newSelection) {
+                        controller.onVariationValuesChanged(
+                            index, newSelection);
+                      },
+                    );
                   },
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Variation Value',
+                      border: OutlineInputBorder(),
+                    ),
+                    child: Obx(() => group.selectedValues.isEmpty
+                        ? const Text('Select Values',
+                            style: TextStyle(color: Colors.black54))
+                        : Wrap(
+                            spacing: 6.0,
+                            runSpacing: 0.0,
+                            children: group.selectedValues
+                                .map((value) => Chip(
+                                      label: Text(value),
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      labelPadding: const EdgeInsets.symmetric(
+                                          horizontal: 4),
+                                      onDeleted: () {
+                                        List<String> currentSelection =
+                                            List.from(group.selectedValues);
+                                        currentSelection.remove(value);
+                                        controller.onVariationValuesChanged(
+                                            index, currentSelection);
+                                      },
+                                    ))
+                                .toList(),
+                          )),
+                  ),
                 );
               })),
           IconButton(
@@ -348,6 +376,56 @@ class AddProductScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _showMultiSelectDialog({
+    required BuildContext context,
+    required String title,
+    required List<String> items,
+    required List<String> selectedItems,
+    required Function(List<String>) onConfirm,
+  }) {
+    final tempSelectedItems = RxList<String>.from(selectedItems);
+
+    Get.dialog(AlertDialog(
+      title: Text(title),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: items.length,
+          itemBuilder: (ctx, index) {
+            final item = items[index];
+            return Obx(() => CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(item),
+                  value: tempSelectedItems.contains(item),
+                  onChanged: (bool? selected) {
+                    if (selected == true) {
+                      tempSelectedItems.add(item);
+                    } else {
+                      tempSelectedItems.remove(item);
+                    }
+                  },
+                ));
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Get.back(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            onConfirm(tempSelectedItems.toList());
+            Get.back();
+          },
+          child: const Text('OK'),
+        ),
+      ],
+    ));
   }
 
   Widget _buildVariantInputRow(GeneratedVariant variant) {

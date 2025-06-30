@@ -16,8 +16,7 @@ final SharedPreferenceManager prefs = SharedPreferenceManager();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.
-  load(fileName: "assets/.env");
+  await dotenv.load(fileName: "assets/.env");
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: primaryColor,
     statusBarColor: primaryColor,
@@ -48,7 +47,7 @@ class MyApp extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         title: 'iFloriana_Super_Admin',
-        initialRoute: Routes.splashScreen,
+        initialRoute: Routes.productListScreen,
         getPages: AppPages.routes,
       ),
     );

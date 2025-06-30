@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
 
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
@@ -87,19 +86,15 @@ class Variation {
 
   Variation({required this.id, required this.name, required this.values});
 
-  factory Variation.fromJson(Map<String, dynamic> json) {
-    return Variation(
+  factory Variation.fromJson(Map<String, dynamic> json) => Variation(
       id: json['_id'],
       name: json['name'],
-      values: List<String>.from(json['value']),
-    );
-  }
+      values: List<String>.from(json['value']));
 }
 
 class VariationGroup {
   Rx<Variation?> selectedType = Rx(null);
   RxList<String> selectedValues = <String>[].obs;
-  final MultiSelectController<String> valueController = MultiSelectController();
 }
 
 class GeneratedVariant {
@@ -207,8 +202,7 @@ class AddProductController extends GetxController {
   Future<void> getCategories(String salonId) async {
     try {
       final response = await dioClient.getData(
-          '${Apis.baseUrl}${Endpoints.getproductName}$salonId',
-          (json) => json);
+          '${Apis.baseUrl}${Endpoints.getproductName}$salonId', (json) => json);
       final data = response['data'] as List;
       categoryList.value = data.map((e) => Category.fromJson(e)).toList();
     } catch (e) {
@@ -219,8 +213,7 @@ class AddProductController extends GetxController {
   Future<void> getTags(String salonId) async {
     try {
       final response = await dioClient.getData(
-          '${Apis.baseUrl}${Endpoints.getTagsName}$salonId',
-          (json) => json);
+          '${Apis.baseUrl}${Endpoints.getTagsName}$salonId', (json) => json);
       final data = response['data'] as List;
       tagList.value = data.map((e) => Tag.fromJson(e)).toList();
     } catch (e) {
@@ -231,8 +224,7 @@ class AddProductController extends GetxController {
   Future<void> getUnits(String salonId) async {
     try {
       final response = await dioClient.getData(
-          '${Apis.baseUrl}${Endpoints.getUnitNames}$salonId',
-          (json) => json);
+          '${Apis.baseUrl}${Endpoints.getUnitNames}$salonId', (json) => json);
       final data = response['data'] as List;
       unitList.value = data.map((e) => Unit.fromJson(e)).toList();
     } catch (e) {
@@ -243,8 +235,7 @@ class AddProductController extends GetxController {
   Future<void> getVariations(String salonId) async {
     try {
       final response = await dioClient.getData(
-          '${Apis.baseUrl}${Endpoints.getVariation}$salonId',
-          (json) => json);
+          '${Apis.baseUrl}${Endpoints.getVariation}$salonId', (json) => json);
       final data = response['data'] as List;
       variationList.value = data.map((e) => Variation.fromJson(e)).toList();
     } catch (e) {
@@ -338,19 +329,19 @@ class AddProductController extends GetxController {
 
     isLoading.value = true;
     try {
-      final salonId = (await prefs.getUser())!.salonId;
+      // final salonId = (await prefs.getUser())!.salonId;
+       final loginUser = await prefs.getUser();
       final Map<String, dynamic> payload = {
-        'product_name': toTitleCase(productNameController.text),
+        'product_name': productNameController.text,
         'description': descriptionController.text,
         'brand_id': selectedBrand.value?.id,
         'category_id': selectedCategory.value?.id,
         'unit_id': selectedUnit.value?.id,
         'tag_id': selectedTag.value?.id,
         'status': status.value == 'active' ? 1 : 0,
-        'branch_id':
-            selectedBranch.value != null ? [selectedBranch.value!.id] : [],
+        'branch_id': selectedBranch.value!.id,
         'has_variations': hasVariations.value ? 1 : 0,
-        'salon_id': salonId,
+        'salon_id': loginUser!.salonId,
       };
 
       if (discountAmountController.text.isNotEmpty) {
@@ -398,10 +389,8 @@ class AddProductController extends GetxController {
         ));
       }
 
-      await dioClient.postFormData(
-          '${Apis.baseUrl}${Endpoints.uploadProducts}', // Corrected Endpoint
-          formData,
-          (json) => json);
+      await dioClient.postFormData('${Apis.baseUrl}${Endpoints.uploadProducts}',
+          formData, (json) => json);
 
       CustomSnackbar.showSuccess("Success", "Product added successfully!");
       Get.back();

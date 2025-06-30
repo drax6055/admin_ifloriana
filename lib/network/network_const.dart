@@ -1,5 +1,5 @@
 class Apis {
-  static const baseUrl = 'http://192.168.1.21:5000/api';
+  static const baseUrl = 'http://192.168.1.12:5000/api';
 }
 
 class Endpoints {
@@ -76,5 +76,5 @@ class Endpoints {
   static const String getCustomersName = "/customers/names?salon_id=";
   static const String getProductsName = "/products?salon_id=";
   static const String postOrders = "/order";
-  static const String uploadProducts = "/productes";
+  static const String uploadProducts = "/products";
 }

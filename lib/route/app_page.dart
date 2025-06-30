@@ -28,10 +28,15 @@ import '../ui/drawer/products/variations/variationScreen.dart';
 import '../ui/splash/splash_screen.dart';
 import 'app_route.dart';
 import '../ui/drawer/branches/getBranches/getBranchesScreen.Dart';
+import 'package:flutter_template/ui/product_list/product_list_screen.dart';
 
 class AppPages {
   static const initial = Routes.splashScreen;
   static final routes = [
+    GetPage(
+        name: Routes.productListScreen,
+        page: () => ProductListScreen(),
+        transition: Transition.rightToLeft),
     GetPage(
         name: Routes.splashScreen,
         page: () => SplashScreen(),
@@ -116,25 +121,23 @@ class AppPages {
         name: Routes.customersScreen,
         page: () => CustomersScreen(),
         transition: Transition.rightToLeft),
-
-        GetPage(
+    GetPage(
         name: Routes.addCustomer,
         page: () => Addcustomerscreen(),
         transition: Transition.rightToLeft),
-          GetPage(
+    GetPage(
         name: Routes.addBranchMembership,
         page: () => BranchMembershipListScreen(),
         transition: Transition.rightToLeft),
-GetPage(
+    GetPage(
         name: Routes.addVariationscreen,
         page: () => Variationscreen(),
         transition: Transition.rightToLeft),
-
-        GetPage(
+    GetPage(
         name: Routes.branchmembershipaddscreen,
         page: () => Branchmembershipaddscreen(),
         transition: Transition.rightToLeft),
-            GetPage(
+    GetPage(
         name: Routes.placeOrder,
         page: () => BuyProductScreen(),
         transition: Transition.rightToLeft),
