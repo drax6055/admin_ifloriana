@@ -6,7 +6,7 @@ import '../../network/network_const.dart';
 
 class BuyProductController extends GetxController {
   final DioClient dioClient = DioClient();
-  // final String salonId = "684011271ee646f27873fddc";
+
 
   RxList branches = [].obs;
   RxList customers = [].obs;

@@ -22,6 +22,7 @@ import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_scre
 import 'package:flutter_template/ui/tax/addNewTaxScreen.dart';
 import 'package:get/get.dart';
 import '../ui/auth/forgot/forgot_screen.dart';
+import '../ui/buy_product/buy_product_screen.dart';
 import '../ui/drawer/dashboard/dashboard_screen.dart';
 import '../ui/drawer/products/variations/variationScreen.dart';
 import '../ui/splash/splash_screen.dart';
@@ -132,6 +133,10 @@ GetPage(
         GetPage(
         name: Routes.branchmembershipaddscreen,
         page: () => Branchmembershipaddscreen(),
+        transition: Transition.rightToLeft),
+            GetPage(
+        name: Routes.placeOrder,
+        page: () => BuyProductScreen(),
         transition: Transition.rightToLeft),
   ];
 }

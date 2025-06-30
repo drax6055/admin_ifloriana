@@ -45,14 +45,9 @@ class BuyProductScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(child: _productDropdown(controller)),
-                    SizedBox(width: 16),
-                    Expanded(child: _quantityField(controller)),
-                  ],
-                ),
+                _productDropdown(controller),
                 SizedBox(height: 8),
+                _quantityField(controller),
                 ElevatedButton.icon(
                   onPressed: controller.selectedProduct.value == null
                       ? null
@@ -108,42 +103,27 @@ class BuyProductScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Obx(() => ElevatedButton(
-                            onPressed: controller.cart.isEmpty ||
-                                    controller.isLoading.value
-                                ? null
-                                : () async {
-                                    final success =
-                                        await controller.placeOrder();
-                                    if (success) {
-                                      Get.snackbar(
-                                          'Order', 'Order placed successfully!',
-                                          backgroundColor: Colors.green,
-                                          colorText: Colors.white);
-                                    } else {
-                                      Get.snackbar(
-                                          'Order', 'Failed to place order',
-                                          backgroundColor: Colors.red,
-                                          colorText: Colors.white);
-                                    }
-                                  },
-                            child: controller.isLoading.value
-                                ? CircularProgressIndicator(color: Colors.black)
-                                : Text("Place Order"),
-                          )),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("Cancel"),
-                      ),
-                    ),
-                  ],
-                ),
+                Obx(() => ElevatedButton(
+                      onPressed: controller.cart.isEmpty ||
+                              controller.isLoading.value
+                          ? null
+                          : () async {
+                              final success = await controller.placeOrder();
+                              if (success) {
+                                Get.snackbar(
+                                    'Order', 'Order placed successfully!',
+                                    backgroundColor: Colors.green,
+                                    colorText: Colors.white);
+                              } else {
+                                Get.snackbar('Order', 'Failed to place order',
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white);
+                              }
+                            },
+                      child: controller.isLoading.value
+                          ? CircularProgressIndicator(color: Colors.black)
+                          : Text("Place Order"),
+                    )),
               ],
             )),
       ),
@@ -155,8 +135,8 @@ class BuyProductScreen extends StatelessWidget {
     required dynamic value,
     required List items,
     required String Function(dynamic) getLabel,
-      required Function(dynamic) onChanged,
-    }) {
+    required Function(dynamic) onChanged,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

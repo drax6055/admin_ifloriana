@@ -1,0 +1,121 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
+import '../../../route/app_route.dart';
+import 'getOrderListController.dart';
+
+class Getorderlistscreen extends StatelessWidget {
+  const Getorderlistscreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final Getorderlistcontroller controller = Get.put(Getorderlistcontroller());
+
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Order List'),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  TextField(
+                    onChanged: (value) => controller.updateSearchQuery(value),
+                    decoration: const InputDecoration(
+                      labelText: 'Search by Client Name',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Obx(
+                    () => DropdownButtonFormField<String>(
+                      value: controller.selectedPaymentMethod.value,
+                      decoration: const InputDecoration(
+                        labelText: 'Filter by Payment Method',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: controller.paymentMethods
+                          .map((method) => DropdownMenuItem(
+                                value: method,
+                                child: Text(method),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        controller.updatePaymentMethodFilter(value);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.orderReports.isEmpty) {
+                  return const Center(child: Text('No data available'));
+                }
+                if (controller.filteredOrderReports.isEmpty) {
+                  return const Center(
+                      child: Text('No orders found matching the criteria.'));
+                }
+                return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DataTable(
+                          columns: const [
+                            DataColumn(label: Text('Client')),
+                            DataColumn(label: Text('Email')),
+                            DataColumn(label: Text('Phone')),
+                            DataColumn(label: Text('Created At')),
+                            DataColumn(label: Text('Product Count')),
+                            DataColumn(label: Text('Payment Method')),
+                            DataColumn(label: Text('Total Price')),
+                          ],
+                          rows: controller.filteredOrderReports.map((report) {
+                            return DataRow(cells: [
+                              DataCell(Text(report.customerId?.fullName ?? '')),
+                              DataCell(Text(report.customerId?.email ?? '')),
+                              DataCell(
+                                  Text(report.customerId?.phoneNumber ?? '')),
+                              DataCell(Text(report.createdAt != null
+                                  ? DateFormat('yyyy-MM-dd')
+                                      .format(DateTime.parse(report.createdAt!))
+                                  : '')),
+                              DataCell(
+                                  Text(report.productCount?.toString() ?? '0')),
+                              DataCell(Text(report.paymentMethod ?? '')),
+                              DataCell(
+                                  Text(report.totalPrice?.toString() ?? '0')),
+                            ]);
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+             Get.toNamed(Routes.placeOrder);
+          },
+          child: Icon(Icons.add),
+        ),
+      ),
+    );
+  }
+}
