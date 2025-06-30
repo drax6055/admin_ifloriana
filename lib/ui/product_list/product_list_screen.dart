@@ -84,10 +84,54 @@ class ProductListScreen extends StatelessWidget {
               DataCell(Text(_ProductListItem(product: product).getQuantity(),
                   style: TextStyle(color: Colors.black))),
               DataCell(_ProductListItem(product: product)._buildStatus()),
-              DataCell(_ProductListItem(product: product)
-                  ._buildActionButtons(Get.context!)),
+              DataCell(_buildActionButtons(Get.context!, product)),
             ]))
         .toList();
+  }
+
+  Widget _buildActionButtons(BuildContext context, Product product) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: () {
+            Get.bottomSheet(
+              UpdateStockSheet(product: product),
+              backgroundColor: Colors.transparent,
+              isScrollControlled: true,
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.brown[400],
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text('+ Stock',
+                style: TextStyle(color: Colors.white, fontSize: 12)),
+          ),
+        ),
+        IconButton(
+          icon: Icon(Icons.edit, color: Colors.blue),
+          onPressed: () {},
+        ),
+        IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              Get.defaultDialog(
+                title: "Delete Product",
+                middleText: "Are you sure you want to delete this product?",
+                textConfirm: "Delete",
+                textCancel: "Cancel",
+                confirmTextColor: Colors.white,
+                onConfirm: () {
+                  controller.deleteProduct(product.id);
+                  Get.back();
+                },
+              );
+            }),
+      ],
+    );
   }
 
   Widget _buildHeader() {
@@ -187,37 +231,8 @@ class _ProductListItem extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Get.bottomSheet(
-              UpdateStockSheet(product: product),
-              backgroundColor: Colors.transparent,
-              isScrollControlled: true,
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.brown[400],
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text('+ Stock',
-                style: TextStyle(color: Colors.white, fontSize: 12)),
-          ),
-        ),
-        IconButton(
-          icon: Icon(Icons.edit, color: Colors.blue),
-          onPressed: () {},
-        ),
-        IconButton(
-          icon: Icon(Icons.delete, color: Colors.red),
-          onPressed: () {},
-        ),
-      ],
-    );
+    // This method is now in ProductListScreen
+    return Container();
   }
 
   String getPrice() {

@@ -65,4 +65,23 @@ class ProductListController extends GetxController {
       isLoading(false);
     }
   }
+
+  Future<void> deleteProduct(String productId) async {
+    try {
+      isLoading(true);
+      final String baseUrl = 'http://192.168.1.12:5000/api/products';
+
+      await dioClient.deleteData(
+        '$baseUrl/$productId',
+        (json) => json,
+      );
+
+      Get.snackbar('Success', 'Product deleted successfully');
+      fetchProducts(); // Refresh the list
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to delete product: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
 }
