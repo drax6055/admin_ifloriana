@@ -26,7 +26,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(Getorderlistscreen());
+          Get.to(AddProductScreen());
         }
       });
     } catch (e) {

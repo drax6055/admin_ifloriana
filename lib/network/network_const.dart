@@ -76,4 +76,5 @@ class Endpoints {
   static const String getCustomersName = "/customers/names?salon_id=";
   static const String getProductsName = "/products?salon_id=";
   static const String postOrders = "/order";
+  static const String uploadProducts = "/productes";
 }

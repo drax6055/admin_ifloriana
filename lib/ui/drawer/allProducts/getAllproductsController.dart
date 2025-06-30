@@ -1,6 +1,12 @@
-import 'package:get/get.dart';
+import 'dart:io';
 
-import '../../../main.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:flutter/material.dart';
+import 'package:flutter_template/main.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
+
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
@@ -12,6 +18,20 @@ class Branch {
 
   factory Branch.fromJson(Map<String, dynamic> json) {
     return Branch(
+      id: json['_id'],
+      name: json['name'],
+    );
+  }
+}
+
+class Brand {
+  final String? id;
+  final String? name;
+
+  Brand({this.id, this.name});
+
+  factory Brand.fromJson(Map<String, dynamic> json) {
+    return Brand(
       id: json['_id'],
       name: json['name'],
     );
@@ -76,7 +96,22 @@ class Variation {
   }
 }
 
-class Getallproductscontroller extends GetxController {
+class VariationGroup {
+  Rx<Variation?> selectedType = Rx(null);
+  RxList<String> selectedValues = <String>[].obs;
+  final MultiSelectController<String> valueController = MultiSelectController();
+}
+
+class GeneratedVariant {
+  final Map<String, String> combination;
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController stockController = TextEditingController();
+  final TextEditingController skuController = TextEditingController();
+  final TextEditingController codeController = TextEditingController();
+  GeneratedVariant({required this.combination});
+}
+
+class AddProductController extends GetxController {
   var branchList = <Branch>[].obs;
   var selectedBranch = Rx<Branch?>(null);
   var selectedCategory = Rx<Category?>(null);
@@ -89,54 +124,103 @@ class Getallproductscontroller extends GetxController {
   var selectedVariation = Rx<Variation?>(null);
   var selectedVariationValues = <String>[].obs;
 
+  final formKey = GlobalKey<FormState>();
+
+  // Form field controllers and state
+  final productNameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final Rx<File?> imageFile = Rx(null);
+
+  final selectedBrand = Rx<Brand?>(null);
+
+  final hasVariations = false.obs;
+  final status = 'active'.obs;
+
+  // State for simple product (no variations)
+  final priceController = TextEditingController();
+  final stockController = TextEditingController();
+  final skuController = TextEditingController();
+  final codeController = TextEditingController();
+
+  // State for variations
+  final variationGroups = <VariationGroup>[].obs;
+  final generatedVariants = <GeneratedVariant>[].obs;
+
+  // State for product discount
+  final discountType = 'fixed'.obs;
+  final discountAmountController = TextEditingController();
+  final Rx<DateTime?> startDate = Rx(null);
+  final Rx<DateTime?> endDate = Rx(null);
+
+  final isLoading = false.obs;
+
+  // Observables for dropdown data
+  final brandList = <Brand>[].obs;
+
   @override
   void onInit() {
     super.onInit();
-    getBranches();
-    getCatedory();
-    getTags();
-    getUnits();
-    getVariations();
+    _fetchAllDropdownData();
+    // Add a default variation group when variations are enabled
+    ever(hasVariations, (has) {
+      if (has && variationGroups.isEmpty) {
+        addVariationGroup();
+      }
+      _generateVariants();
+    });
   }
 
-  Future<void> getBranches() async {
-    final loginUser = await prefs.getUser();
+  void _fetchAllDropdownData() async {
+    final salonId = (await prefs.getUser())?.salonId;
+    if (salonId == null) return;
+
+    getBrands(salonId);
+    getBranches(salonId);
+    getCategories(salonId);
+    getTags(salonId);
+    getUnits(salonId);
+    getVariations(salonId);
+  }
+
+  Future<void> getBrands(String salonId) async {
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchName}${loginUser!.salonId}',
-        (json) => json,
-      );
+          '${Apis.baseUrl}${Endpoints.getBrands}$salonId', (json) => json);
+      final data = response['data'] as List;
+      brandList.value = data.map((e) => Brand.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get brands: $e');
+    }
+  }
 
+  Future<void> getBranches(String salonId) async {
+    try {
+      final response = await dioClient.getData(
+          '${Apis.baseUrl}${Endpoints.getBranchName}$salonId', (json) => json);
       final data = response['data'] as List;
       branchList.value = data.map((e) => Branch.fromJson(e)).toList();
     } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+      CustomSnackbar.showError('Error', 'Failed to get branches: $e');
     }
   }
 
-  Future<void> getCatedory() async {
-    final loginUser = await prefs.getUser();
+  Future<void> getCategories(String salonId) async {
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getproductName}${loginUser!.salonId}',
-        (json) => json,
-      );
-
+          '${Apis.baseUrl}${Endpoints.getproductName}$salonId',
+          (json) => json);
       final data = response['data'] as List;
       categoryList.value = data.map((e) => Category.fromJson(e)).toList();
     } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to get data: $e');
+      CustomSnackbar.showError('Error', 'Failed to get categories: $e');
     }
   }
 
-  Future<void> getTags() async {
-    final loginUser = await prefs.getUser();
+  Future<void> getTags(String salonId) async {
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getTagsName}${loginUser!.salonId}',
-        (json) => json,
-      );
-
+          '${Apis.baseUrl}${Endpoints.getTagsName}$salonId',
+          (json) => json);
       final data = response['data'] as List;
       tagList.value = data.map((e) => Tag.fromJson(e)).toList();
     } catch (e) {
@@ -144,14 +228,11 @@ class Getallproductscontroller extends GetxController {
     }
   }
 
-  Future<void> getUnits() async {
-    final loginUser = await prefs.getUser();
+  Future<void> getUnits(String salonId) async {
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getUnitNames}${loginUser!.salonId}',
-        (json) => json,
-      );
-
+          '${Apis.baseUrl}${Endpoints.getUnitNames}$salonId',
+          (json) => json);
       final data = response['data'] as List;
       unitList.value = data.map((e) => Unit.fromJson(e)).toList();
     } catch (e) {
@@ -159,18 +240,175 @@ class Getallproductscontroller extends GetxController {
     }
   }
 
-  Future<void> getVariations() async {
-    final loginUser = await prefs.getUser();
+  Future<void> getVariations(String salonId) async {
     try {
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getVariation}${loginUser!.salonId}',
-        (json) => json,
-      );
-      // /variations/names?salon_id=
+          '${Apis.baseUrl}${Endpoints.getVariation}$salonId',
+          (json) => json);
       final data = response['data'] as List;
       variationList.value = data.map((e) => Variation.fromJson(e)).toList();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get variations: $e');
+    }
+  }
+
+  void pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      imageFile.value = File(pickedFile.path);
+    }
+  }
+
+  void addVariationGroup() {
+    variationGroups.add(VariationGroup());
+  }
+
+  void removeVariationGroup(int index) {
+    variationGroups.removeAt(index);
+    _generateVariants();
+  }
+
+  void onVariationValuesChanged(int groupIndex, List<String> values) {
+    variationGroups[groupIndex].selectedValues.value = values;
+    _generateVariants();
+  }
+
+  void _generateVariants() {
+    if (!hasVariations.value || variationGroups.isEmpty) {
+      generatedVariants.clear();
+      return;
+    }
+
+    final validGroups = variationGroups
+        .where(
+            (g) => g.selectedType.value != null && g.selectedValues.isNotEmpty)
+        .toList();
+
+    if (validGroups.isEmpty) {
+      generatedVariants.clear();
+      return;
+    }
+
+    List<List<String>> valueSets =
+        validGroups.map((g) => g.selectedValues.toList()).toList();
+    List<List<String>> combinations = _getCartesianProduct(valueSets);
+
+    generatedVariants.value = combinations.map((combo) {
+      Map<String, String> combinationMap = {};
+      for (int i = 0; i < combo.length; i++) {
+        final group = validGroups[i];
+        combinationMap[group.selectedType.value!.name] = combo[i];
+      }
+      return GeneratedVariant(combination: combinationMap);
+    }).toList();
+  }
+
+  List<List<T>> _getCartesianProduct<T>(List<List<T>> lists) {
+    if (lists.isEmpty) return [[]];
+    List<List<T>> result = [[]];
+    for (var list in lists) {
+      List<List<T>> temp = [];
+      for (var element in list) {
+        for (var combination in result) {
+          temp.add([...combination, element]);
+        }
+      }
+      result = temp;
+    }
+    return result;
+  }
+
+  String toTitleCase(String str) {
+    if (str.isEmpty) return '';
+    return str
+        .split(' ')
+        .map((word) => word.isNotEmpty
+            ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+            : '')
+        .join(' ');
+  }
+
+  void addProduct() async {
+    if (!formKey.currentState!.validate()) {
+      CustomSnackbar.showError(
+          "Validation Error", "Please fill all required fields.");
+      return;
+    }
+
+    isLoading.value = true;
+    try {
+      final salonId = (await prefs.getUser())!.salonId;
+      final Map<String, dynamic> payload = {
+        'product_name': toTitleCase(productNameController.text),
+        'description': descriptionController.text,
+        'brand_id': selectedBrand.value?.id,
+        'category_id': selectedCategory.value?.id,
+        'unit_id': selectedUnit.value?.id,
+        'tag_id': selectedTag.value?.id,
+        'status': status.value == 'active' ? 1 : 0,
+        'branch_id':
+            selectedBranch.value != null ? [selectedBranch.value!.id] : [],
+        'has_variations': hasVariations.value ? 1 : 0,
+        'salon_id': salonId,
+      };
+
+      if (discountAmountController.text.isNotEmpty) {
+        payload['product_discount'] = {
+          'type': discountType.value,
+          'start_date': startDate.value?.toIso8601String(),
+          'end_date': endDate.value?.toIso8601String(),
+          'discount_amount':
+              double.tryParse(discountAmountController.text) ?? 0,
+        };
+      }
+
+      if (hasVariations.value) {
+        payload['variation_id'] = variationGroups
+            .where((g) => g.selectedType.value != null)
+            .map((g) => g.selectedType.value!.id)
+            .toList();
+
+        payload['variants'] = generatedVariants.map((variant) {
+          return {
+            'combination': variant.combination.entries
+                .map((e) => {
+                      'variation_type': e.key,
+                      'variation_value': e.value,
+                    })
+                .toList(),
+            'price': double.tryParse(variant.priceController.text) ?? 0,
+            'stock': int.tryParse(variant.stockController.text) ?? 0,
+            'sku': variant.skuController.text,
+            'code': variant.codeController.text,
+          };
+        }).toList();
+      } else {
+        payload['price'] = double.tryParse(priceController.text) ?? 0;
+        payload['stock'] = int.tryParse(stockController.text) ?? 0;
+        payload['sku'] = skuController.text;
+        payload['code'] = codeController.text;
+      }
+
+      final formData = dio.FormData.fromMap(payload);
+      if (imageFile.value != null) {
+        formData.files.add(MapEntry(
+          'image',
+          await dio.MultipartFile.fromFile(imageFile.value!.path),
+        ));
+      }
+
+      await dioClient.postFormData(
+          '${Apis.baseUrl}${Endpoints.uploadProducts}', // Corrected Endpoint
+          formData,
+          (json) => json);
+
+      CustomSnackbar.showSuccess("Success", "Product added successfully!");
+      Get.back();
+    } catch (e) {
+      CustomSnackbar.showError("Error", "Failed to add product: $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 }
