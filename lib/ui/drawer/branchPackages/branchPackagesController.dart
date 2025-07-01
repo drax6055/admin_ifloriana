@@ -217,8 +217,23 @@ class DynamicInputController extends GetxController {
         Get.back();
         CustomSnackbar.showSuccess('Success', 'Package created successfully');
       }
+
+      // Clear all controllers and reset state after success
+      clearForm();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to submit package: $e');
     }
+  }
+
+  void clearForm() {
+    containerList.clear();
+    addContainer();
+    nameController.clear();
+    discriptionController.clear();
+    StarttimeController.clear();
+    EndtimeController.clear();
+    selectedBranch.value = null;
+    isActive.value = true;
+    grandTotal.value = 0;
   }
 }
