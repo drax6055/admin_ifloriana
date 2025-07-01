@@ -60,12 +60,15 @@ class DynamicInputController extends GetxController {
   void onInit() {
     super.onInit();
     addContainer();
-    getServices();
-    getBranches().then((_) {
-      if (packageToEdit != null) {
-        loadPackageForEdit(packageToEdit!);
-      }
-    });
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    await getServices();
+    await getBranches();
+    if (packageToEdit != null) {
+      loadPackageForEdit(packageToEdit!);
+    }
   }
 
   void loadPackageForEdit(BranchPackageModel package) {
