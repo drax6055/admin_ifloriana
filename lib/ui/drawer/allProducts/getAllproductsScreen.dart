@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_template/ui/drawer/allProducts/getAllproductsController.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
-
 import '../../../wiget/custome_snackbar.dart';
 
 class AddProductScreen extends StatelessWidget {

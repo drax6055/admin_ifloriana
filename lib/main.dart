@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         title: 'iFloriana_Super_Admin',
-        initialRoute: Routes.productListScreen,
+        initialRoute: Routes.splashScreen,
         getPages: AppPages.routes,
       ),
     );

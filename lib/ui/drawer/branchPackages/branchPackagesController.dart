@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/network/model/branch_package_model.dart';
 import 'package:get/get.dart';
 
 import '../../../main.dart';
@@ -52,11 +53,57 @@ class DynamicInputController extends GetxController {
   var discriptionController = TextEditingController();
   var nameController = TextEditingController();
 
+  final BranchPackageModel? packageToEdit = Get.arguments;
+
   @override
   void onInit() {
     super.onInit();
     getServices();
-    getBranches();
+    getBranches().then((_) {
+      if (packageToEdit != null) {
+        loadPackageForEdit(packageToEdit!);
+      }
+    });
+  }
+
+  void loadPackageForEdit(BranchPackageModel package) {
+    nameController.text = package.packageName;
+    discriptionController.text = package.description;
+    StarttimeController.text =
+        package.startDate.toIso8601String().split('T').first;
+    EndtimeController.text = package.endDate.toIso8601String().split('T').first;
+    isActive.value = package.status == 1;
+
+    if (package.branchId.isNotEmpty) {
+      final branch = branchList.firstWhere(
+        (b) => b.id == package.branchId.first.id,
+        orElse: () => branchList.first,
+      );
+      selectedBranch.value = branch;
+    }
+
+    containerList.clear();
+    for (var detail in package.packageDetails) {
+      final container = ContainerData();
+      final service = serviceList.firstWhere(
+        (s) => s.id == detail.serviceId.id,
+        orElse: () => Service(
+            id: detail.serviceId.id,
+            name: detail.serviceId.name,
+            regularPrice: detail.discountedPrice),
+      );
+
+      container.selectedService.value = service;
+      container.discountedPriceController.text =
+          detail.discountedPrice.toString();
+      container.quantityController.text = detail.quantity.toString();
+
+      container.discountedPriceController
+          .addListener(() => updateTotal(container));
+      container.quantityController.addListener(() => updateTotal(container));
+      containerList.add(container);
+    }
+    calculateGrandTotal();
   }
 
   void addContainer() {
@@ -128,8 +175,6 @@ class DynamicInputController extends GetxController {
   }
 
   Future<void> submitPackage() async {
-   
-
     try {
       final packageDetails = containerList.map((container) {
         if (container.selectedService.value == null) {
@@ -153,17 +198,28 @@ class DynamicInputController extends GetxController {
         'package_details': packageDetails,
         'salon_id': loginUser!.salonId,
       };
- 
-      final response = await dioClient.postData(
-        '${Apis.baseUrl}${Endpoints.branchPackages}',
-        requestBody,
-        (json) => json,
-      );
 
-      CustomSnackbar.showSuccess('Success', 'Package created successfully');
-      Get.back(); 
+      if (packageToEdit != null) {
+        // Update existing package
+        final response = await dioClient.putData(
+          '${Apis.baseUrl}${Endpoints.branchPackages}/${packageToEdit!.id}',
+          requestBody,
+          (json) => json,
+        );
+        CustomSnackbar.showSuccess('Success', 'Package updated successfully');
+      } else {
+        // Create new package
+        final response = await dioClient.postData(
+          '${Apis.baseUrl}${Endpoints.branchPackages}',
+          requestBody,
+          (json) => json,
+        );
+        CustomSnackbar.showSuccess('Success', 'Package created successfully');
+      }
+
+      Get.back();
     } catch (e) {
-      CustomSnackbar.showError('Error', 'Failed to create package: $e');
+      CustomSnackbar.showError('Error', 'Failed to submit package: $e');
     }
   }
 }

@@ -118,17 +118,7 @@ class ProductListScreen extends StatelessWidget {
         IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              Get.defaultDialog(
-                title: "Delete Product",
-                middleText: "Are you sure you want to delete this product?",
-                textConfirm: "Delete",
-                textCancel: "Cancel",
-                confirmTextColor: Colors.white,
-                onConfirm: () {
-                  controller.deleteProduct(product.id);
-                  Get.back();
-                },
-              );
+              controller.deleteProduct(product.id);
             }),
       ],
     );

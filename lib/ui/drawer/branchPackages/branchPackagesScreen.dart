@@ -15,15 +15,18 @@ class DynamicInputScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = controller.packageToEdit != null;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Dynamic Service Inputs')),
+      appBar:
+          AppBar(title: Text(isEditing ? 'Update Package' : 'Create Package')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             ElevatedButton(
               onPressed: controller.addContainer,
-              child: Text('Add Container'),
+              child: Text('Add Service'),
             ),
             SizedBox(height: 20),
             Expanded(
@@ -76,18 +79,27 @@ class DynamicInputScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 10),
-                                CustomTextFormField(
-                                  controller: data.discountedPriceController,
-                                  labelText: 'Discounted Price',
-                                  hintText: 'Enter Discounted Price',
-                                  keyboardType: TextInputType.number,
-                                ),
-                                SizedBox(height: 10),
-                                CustomTextFormField(
-                                  controller: data.quantityController,
-                                  labelText: 'Quantity',
-                                  hintText: 'Enter Quantity',
-                                  keyboardType: TextInputType.number,
+                                Row(
+                                  spacing: 10,
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextFormField(
+                                        controller:
+                                            data.discountedPriceController,
+                                        labelText: 'Discounted Price',
+                                        hintText: 'Enter Discounted Price',
+                                        keyboardType: TextInputType.number,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: CustomTextFormField(
+                                        controller: data.quantityController,
+                                        labelText: 'Quantity',
+                                        hintText: 'Enter Quantity',
+                                        keyboardType: TextInputType.number,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(height: 10),
                                 Text("Total: ₹${data.total.value}",
@@ -174,7 +186,7 @@ class DynamicInputScreen extends StatelessWidget {
                 minimumSize: Size(double.infinity, 50),
               ),
               child: Text(
-                'Create Package',
+                isEditing ? 'Update Package' : 'Create Package',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
