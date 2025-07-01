@@ -106,6 +106,9 @@ class DynamicInputController extends GetxController {
       container.discountedPriceController
           .addListener(() => updateTotal(container));
       container.quantityController.addListener(() => updateTotal(container));
+
+      updateTotal(container);
+
       containerList.add(container);
     }
     calculateGrandTotal();
