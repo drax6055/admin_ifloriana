@@ -200,24 +200,22 @@ class DynamicInputController extends GetxController {
       };
 
       if (packageToEdit != null) {
-        // Update existing package
         final response = await dioClient.putData(
           '${Apis.baseUrl}${Endpoints.branchPackages}/${packageToEdit!.id}',
           requestBody,
           (json) => json,
         );
+        Get.back();
         CustomSnackbar.showSuccess('Success', 'Package updated successfully');
       } else {
-        // Create new package
         final response = await dioClient.postData(
           '${Apis.baseUrl}${Endpoints.branchPackages}',
           requestBody,
           (json) => json,
         );
+        Get.back();
         CustomSnackbar.showSuccess('Success', 'Package created successfully');
       }
-
-      Get.back();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to submit package: $e');
     }
