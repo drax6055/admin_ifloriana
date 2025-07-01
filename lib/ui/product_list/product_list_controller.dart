@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/network/network_const.dart';
 import 'package:get/get.dart';
 
 import 'product_list_model.dart';
@@ -33,7 +34,7 @@ class ProductListController extends GetxController {
       {int? stock, List<Map<String, dynamic>>? updatedStocks}) async {
     try {
       isLoading(true);
-      final String baseUrl = 'http://192.168.1.12:5000/api/products';
+      final String baseUrl = '${Apis.baseUrl}${Endpoints.uploadProducts}';
 
       if (updatedStocks != null) {
         // has variations
@@ -69,7 +70,7 @@ class ProductListController extends GetxController {
   Future<void> deleteProduct(String productId) async {
     try {
       isLoading(true);
-      final String baseUrl = 'http://192.168.1.12:5000/api/products';
+      final String baseUrl = '${Apis.baseUrl}${Endpoints.uploadProducts}';
 
       await dioClient.deleteData(
         '$baseUrl/$productId',
