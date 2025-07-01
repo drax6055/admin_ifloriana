@@ -22,23 +22,45 @@ class DynamicInputScreen extends StatelessWidget {
           AppBar(title: Text(isEditing ? 'Update Package' : 'Create Package')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: controller.addContainer,
-              child: Text('Add Service'),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: Obx(() => ListView.builder(
-                    itemCount: controller.containerList.length,
-                    itemBuilder: (context, index) {
+        child: SingleChildScrollView(
+          child: Column(
+            spacing: 10,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                onPressed: controller.addContainer,
+                child: Text('Add Service'),
+              ),
+              branchDropdown(),
+              CustomTextFormField(
+                controller: controller.nameController,
+                labelText: 'Name',
+                keyboardType: TextInputType.text,
+                validator: (value) => Validation.validatename(value),
+              ),
+              CustomTextFormField(
+                controller: controller.discriptionController,
+                labelText: 'Discription',
+                maxLines: 2,
+                keyboardType: TextInputType.text,
+                validator: (value) => Validation.validatedisscription(value),
+              ),
+              Row(
+                children: [
+                  Expanded(child: startTime(context)),
+                  SizedBox(width: 5),
+                  Expanded(child: endTime(context)),
+                ],
+              ),
+              Obx(() => Column(
+                    children:
+                        List.generate(controller.containerList.length, (index) {
                       final data = controller.containerList[index];
                       return Obx(() => Container(
-                            margin: EdgeInsets.only(bottom: 16),
+                            margin: EdgeInsets.only(bottom: 10),
                             padding: EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blue),
+                              border: Border.all(color: primaryColor),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(
@@ -48,7 +70,7 @@ class DynamicInputScreen extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text("Container ${index + 1}",
+                                    Text("Service ${index + 1}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold)),
                                     IconButton(
@@ -80,7 +102,6 @@ class DynamicInputScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 10),
                                 Row(
-                                  spacing: 10,
                                   children: [
                                     Expanded(
                                       child: CustomTextFormField(
@@ -109,93 +130,70 @@ class DynamicInputScreen extends StatelessWidget {
                               ],
                             ),
                           ));
-                    },
+                    }),
                   )),
-            ),
-            branchDropdown(),
-            CustomTextFormField(
-              controller: controller.nameController,
-              labelText: 'Name',
-              keyboardType: TextInputType.text,
-              validator: (value) => Validation.validatename(value),
-            ),
-            CustomTextFormField(
-              controller: controller.discriptionController,
-              labelText: 'Discription',
-              maxLines: 2,
-              keyboardType: TextInputType.text,
-              validator: (value) => Validation.validatedisscription(value),
-            ),
-            Row(
-              children: [
-                Expanded(child: startTime(context)),
-                SizedBox(
-                  width: 5,
-                ),
-                Expanded(child: endTime(context)),
-              ],
-            ),
-            Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextWidget(
-                      text: 'Status',
-                      textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
-                    ),
-                    Switch(
-                      value: controller.isActive.value,
-                      onChanged: (value) {
-                        controller.isActive.value = value;
-                      },
-                      activeColor: primaryColor,
-                    ),
-                  ],
-                )),
-            Obx(() => Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
+              Obx(() => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Grand Total:",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      CustomTextWidget(
+                        text: 'Status',
+                        textStyle:
+                            CustomTextStyles.textFontRegular(size: 14.sp),
                       ),
-                      Text(
-                        "₹${controller.grandTotal.value}",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
+                      Switch(
+                        value: controller.isActive.value,
+                        onChanged: (value) {
+                          controller.isActive.value = value;
+                        },
+                        activeColor: primaryColor,
                       ),
                     ],
+                  )),
+              Obx(() => Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Grand Total:",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "₹${controller.grandTotal.value}",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              ElevatedButton(
+                onPressed: controller.submitPackage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                child: Text(
+                  isEditing ? 'Update Package' : 'Create Package',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                )),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: controller.submitPackage,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                minimumSize: Size(double.infinity, 50),
-              ),
-              child: Text(
-                isEditing ? 'Update Package' : 'Create Package',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-          ],
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

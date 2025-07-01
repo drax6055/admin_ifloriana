@@ -58,6 +58,7 @@ class DynamicInputController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    addContainer();
     getServices();
     getBranches().then((_) {
       if (packageToEdit != null) {
