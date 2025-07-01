@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../main.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
+import 'getBranchPackagesController.dart';
 
 class Service {
   String? id;
@@ -206,6 +207,11 @@ class DynamicInputController extends GetxController {
           requestBody,
           (json) => json,
         );
+        // Refresh package list on previous screen
+        final getBranchPackagesController =
+            Get.find<GetBranchPackagesController>();
+        await getBranchPackagesController.getBranchPackages();
+
         Get.back();
         CustomSnackbar.showSuccess('Success', 'Package updated successfully');
       } else {
@@ -214,6 +220,12 @@ class DynamicInputController extends GetxController {
           requestBody,
           (json) => json,
         );
+        // Refresh package list on previous screen
+
+        final getBranchPackagesController =
+            Get.find<GetBranchPackagesController>();
+        await getBranchPackagesController.getBranchPackages();
+
         Get.back();
         CustomSnackbar.showSuccess('Success', 'Package created successfully');
       }
