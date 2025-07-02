@@ -3,6 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
+import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 
 class Service {
   String? id;
@@ -68,6 +69,9 @@ class Addnewstaffcontroller extends GetxController {
   var selectedBranch = Rx<Branch?>(null);
   var selectedCommition = Rx<Commition?>(null);
 
+  var isEditMode = false.obs;
+  String? editingStaffId;
+
   void toggleShowPass() {
     showPass.value = !showPass.value;
   }
@@ -109,13 +113,6 @@ class Addnewstaffcontroller extends GetxController {
       currentStep.value--;
     }
   }
-
-  // String formatTimeToString(TimeOfDay timeOfDay) {
-  //   final now = DateTime.now();
-  //   final time = DateTime(
-  //       now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
-  //   return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}";
-  // }
 
   Future<void> getServices() async {
     final loginUser = await prefs.getUser();
@@ -162,6 +159,76 @@ class Addnewstaffcontroller extends GetxController {
     }
   }
 
+  void populateFromStaff(Data staff) {
+    fullnameController.text = staff.fullName ?? '';
+    emailController.text = staff.email ?? '';
+    phoneController.text = staff.phoneNumber ?? '';
+    passwordController.text = '';
+    confirmpasswordController.text = '';
+    selectedGender.value = staff.gender?.capitalizeFirst ?? 'Male';
+    salaryController.text = staff.salary?.toString() ?? '';
+    shiftStarttimeController.text = staff.assignTime?.startShift ?? '';
+    shiftEndtimeController.text = staff.assignTime?.endShift ?? '';
+    durationController.text = staff.lunchTime?.duration?.toString() ?? '';
+    LunchStarttimeController.text = staff.lunchTime?.timing ?? '';
+
+    // Set selectedBranch
+    selectedBranch.value =
+        branchList.firstWhereOrNull((b) => b.id == staff.branchId?.sId);
+
+    // Set selectedServices
+    selectedServices.assignAll(
+      serviceList
+          .where((s) => staff.serviceId?.any((sid) => sid.sId == s.id) ?? false)
+          .toList(),
+    );
+
+    // Set selectedCommition (assuming only one commission is used)
+    selectedCommition.value = commitionList.firstWhereOrNull(
+      (c) =>
+          staff.commissionId?.isNotEmpty == true &&
+          c.id == staff.commissionId!.first,
+    );
+
+    // Set image
+    singleImage.value = staff.image;
+  }
+
+  Future onUpdateStaffPress() async {
+    if (editingStaffId == null) return;
+    Map<String, dynamic> staffData = {
+      'full_name': fullnameController.text,
+      'email': emailController.text,
+      'phone_number': phoneController.text,
+      'gender': selectedGender.value.toLowerCase(),
+      'branch_id': selectedBranch.value?.id,
+      'service_id': selectedServices.map((s) => s.id).toList(),
+      'status': 1,
+      'assigned_commission_id': selectedCommition.value?.id,
+      'salon_id': (await prefs.getUser())?.salonId,
+      'image': null,
+      'salary': int.tryParse(salaryController.text) ?? 0,
+      'assign_time': {
+        'start_shift': shiftStarttimeController.text,
+        'end_shift': shiftEndtimeController.text,
+      },
+      'lunch_time': {
+        'duration': int.tryParse(durationController.text) ?? 0,
+        'timing': LunchStarttimeController.text,
+      },
+    };
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.postStaffDetails}/$editingStaffId',
+        staffData,
+        (json) => json,
+      );
+      CustomSnackbar.showSuccess('Success', 'Staff updated successfully');
+    } catch (e) {
+      CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
   Future onAddStaffPress() async {
     Map<String, dynamic> staffData = {
       'full_name': fullnameController.text,
@@ -173,7 +240,7 @@ class Addnewstaffcontroller extends GetxController {
       'branch_id': selectedBranch.value?.id,
       'service_id': selectedServices.map((s) => s.id).toList(),
       'status': 1,
-      'assigned_commission_id':selectedCommition.value?.id,
+      'assigned_commission_id': selectedCommition.value?.id,
       'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
       'salary': int.tryParse(salaryController.text) ?? 0,

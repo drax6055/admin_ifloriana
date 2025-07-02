@@ -5,6 +5,7 @@ import 'package:flutter_template/utils/app_images.dart';
 import 'package:get/get.dart';
 
 import '../../../wiget/loading.dart';
+import '../../../ui/drawer/staff/addNewStaffScreen.dart';
 
 class Staffdetailsscreen extends StatelessWidget {
   final Staffdetailscontroller controller = Get.put(Staffdetailscontroller());
@@ -61,11 +62,22 @@ class Staffdetailsscreen extends StatelessWidget {
                       ),
                   ],
                 ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    _confirmDelete(context, staff.id ?? '', controller);
-                  },
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        Get.to(() => Addnewstaffscreen(staff: staff));
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        _confirmDelete(context, staff.sId ?? '', controller);
+                      },
+                    ),
+                  ],
                 ),
               ),
             );

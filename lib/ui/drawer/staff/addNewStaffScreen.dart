@@ -11,10 +11,12 @@ import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:step_progress/step_progress.dart';
+import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 
 class Addnewstaffscreen extends StatelessWidget {
   final bool showAppBar;
-  Addnewstaffscreen({super.key, this.showAppBar = true});
+  final Data? staff;
+  Addnewstaffscreen({super.key, this.showAppBar = true, this.staff});
   final Addnewstaffcontroller getController = Get.put(Addnewstaffcontroller());
 
   final _formKey = GlobalKey<FormState>();
@@ -34,6 +36,12 @@ class Addnewstaffscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // If editing, populate fields and set edit mode
+    if (staff != null && !getController.isEditMode.value) {
+      getController.isEditMode.value = true;
+      getController.editingStaffId = staff!.sId;
+      getController.populateFromStaff(staff!);
+    }
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -94,14 +102,20 @@ class Addnewstaffscreen extends StatelessWidget {
                             Expanded(
                               child: ElevatedButtonExample(
                                 height: 35.h,
-                                text: getController.currentStep.value == 1
-                                    ? 'Add Staff'
-                                    : 'Next',
+                                text: getController.isEditMode.value
+                                    ? 'Update Staff'
+                                    : getController.currentStep.value == 1
+                                        ? 'Add Staff'
+                                        : 'Next',
                                 onPressed: () {
                                   if (getController.currentStep.value < 1) {
                                     getController.nextStep();
                                   } else {
-                                    getController.onAddStaffPress();
+                                    if (getController.isEditMode.value) {
+                                      getController.onUpdateStaffPress();
+                                    } else {
+                                      getController.onAddStaffPress();
+                                    }
                                   }
                                 },
                               ),
@@ -127,7 +141,7 @@ class Addnewstaffscreen extends StatelessWidget {
         InputTxtfield_Email(),
         InputTxtfield_Pass(),
         InputTxtfield_confirmPass(),
-         CommitionDropdown(),
+        CommitionDropdown(),
       ],
     );
   }
@@ -138,7 +152,6 @@ class Addnewstaffscreen extends StatelessWidget {
       children: [
         serviceDropdown(),
         branchDropdown(),
-
         InputTxtfield_Phone(),
         Row(
           children: [
@@ -443,7 +456,7 @@ class Addnewstaffscreen extends StatelessWidget {
   //     );
   //   });
   // }
-Widget branchDropdown() {
+  Widget branchDropdown() {
     return Obx(() {
       return DropdownButtonFormField<Branch>(
         value: getController.selectedBranch.value,

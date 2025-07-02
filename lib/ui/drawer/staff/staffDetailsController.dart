@@ -21,103 +21,184 @@ class GetStaffDetails {
 }
 
 class Data {
-  String? id;
+  AssignTime? assignTime;
+  LunchTime? lunchTime;
+  String? sId;
   String? fullName;
   String? email;
+  String? phoneNumber;
+  String? password;
+  String? gender;
   BranchId? branchId;
-  String? image;
-  List<Service>? serviceId;
+  List<String>? commissionId;
+  List<ServiceId>? serviceId;
   int? status;
+  String? image;
+  int? salary;
+  bool? showInCalendar;
+  String? createdAt;
+  String? updatedAt;
+  int? iV;
 
   Data({
-    this.id,
+    this.assignTime,
+    this.lunchTime,
+    this.sId,
     this.fullName,
     this.email,
+    this.phoneNumber,
+    this.password,
+    this.gender,
     this.branchId,
-    this.image,
+    this.commissionId,
     this.serviceId,
     this.status,
+    this.image,
+    this.salary,
+    this.showInCalendar,
+    this.createdAt,
+    this.updatedAt,
+    this.iV,
   });
 
   Data.fromJson(Map<String, dynamic> json) {
-    id = json['_id']?.toString() ?? json['id']?.toString();
+    assignTime = json['assign_time'] != null
+        ? AssignTime.fromJson(json['assign_time'])
+        : null;
+    lunchTime = json['lunch_time'] != null
+        ? LunchTime.fromJson(json['lunch_time'])
+        : null;
+    sId = json['_id'];
     fullName = json['full_name'];
     email = json['email'];
+    phoneNumber = json['phone_number'];
+    password = json['password'];
+    gender = json['gender'];
     branchId =
         json['branch_id'] != null ? BranchId.fromJson(json['branch_id']) : null;
-    image = json['image'];
-    status = json['status'];
-    serviceId = [];
-    if (json['service_id'] != null && json['service_id'] is List) {
-      for (var item in json['service_id']) {
-        if (item is String) {
-          serviceId!.add(Service(id: item));
-        } else if (item is Map<String, dynamic>) {
-          serviceId!.add(Service.fromJson(item));
-        }
-      }
+    commissionId = json['commission_id']?.cast<String>();
+    if (json['service_id'] != null) {
+      serviceId = <ServiceId>[];
+      json['service_id'].forEach((v) {
+        serviceId!.add(ServiceId.fromJson(v));
+      });
     }
+    status = json['status'];
+    image = json['image'];
+    salary = json['salary'];
+    showInCalendar = json['show_in_calendar'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    iV = json['__v'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (assignTime != null) {
+      data['assign_time'] = assignTime!.toJson();
+    }
+    if (lunchTime != null) {
+      data['lunch_time'] = lunchTime!.toJson();
+    }
+    data['_id'] = sId;
+    data['full_name'] = fullName;
+    data['email'] = email;
+    data['phone_number'] = phoneNumber;
+    data['password'] = password;
+    data['gender'] = gender;
+    if (branchId != null) {
+      data['branch_id'] = branchId!.toJson();
+    }
+    data['commission_id'] = commissionId;
+    if (serviceId != null) {
+      data['service_id'] = serviceId!.map((v) => v.toJson()).toList();
+    }
+    data['status'] = status;
+    data['image'] = image;
+    data['salary'] = salary;
+    data['show_in_calendar'] = showInCalendar;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['__v'] = iV;
+    return data;
+  }
+}
+
+class AssignTime {
+  String? startShift;
+  String? endShift;
+
+  AssignTime({this.startShift, this.endShift});
+
+  AssignTime.fromJson(Map<String, dynamic> json) {
+    startShift = json['start_shift'];
+    endShift = json['end_shift'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['start_shift'] = startShift;
+    data['end_shift'] = endShift;
+    return data;
+  }
+}
+
+class LunchTime {
+  int? duration;
+  String? timing;
+
+  LunchTime({this.duration, this.timing});
+
+  LunchTime.fromJson(Map<String, dynamic> json) {
+    duration = json['duration'];
+    timing = json['timing'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['duration'] = duration;
+    data['timing'] = timing;
+    return data;
   }
 }
 
 class BranchId {
+  String? sId;
   String? name;
+  // ... other fields as needed ...
 
-  BranchId({this.name});
+  BranchId({this.sId, this.name});
 
   BranchId.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
     name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = sId;
+    data['name'] = name;
+    return data;
   }
 }
 
-// ✅ Full Service class updated to support all fields from API response
-class Service {
-  String? id;
+class ServiceId {
+  String? sId;
   String? name;
-  String? image;
-  int? serviceDuration;
-  String? categoryId;
-  String? description;
-  int? status;
-  String? salonId;
-  String? createdAt;
-  String? updatedAt;
-  int? v;
-  int? membersPrice;
-  int? regularPrice;
+  // ... other fields as needed ...
 
-  Service({
-    this.id,
-    this.name,
-    this.image,
-    this.serviceDuration,
-    this.categoryId,
-    this.description,
-    this.status,
-    this.salonId,
-    this.createdAt,
-    this.updatedAt,
-    this.v,
-    this.membersPrice,
-    this.regularPrice,
-  });
+  ServiceId({this.sId, this.name});
 
-  Service.fromJson(Map<String, dynamic> json) {
-    id = json['_id']?.toString() ?? json['id']?.toString();
+  ServiceId.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
     name = json['name'];
-    image = json['image'];
-    serviceDuration = json['service_duration'];
-    categoryId = json['category_id'];
-    description = json['description'];
-    status = json['status'] is int
-        ? json['status']
-        : int.tryParse(json['status']?.toString() ?? '');
-    salonId = json['salon_id'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    v = json['__v'];
-    membersPrice = json['members_price'];
-    regularPrice = json['regular_price'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = sId;
+    data['name'] = name;
+    return data;
   }
 }
 
@@ -155,7 +236,7 @@ class Staffdetailscontroller extends GetxController {
         (json) => json,
       );
       CustomSnackbar.showSuccess('Success', 'Staff deleted successfully');
-      getCustomerDetails(); 
+      getCustomerDetails();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to delete staff: $e');
     }
