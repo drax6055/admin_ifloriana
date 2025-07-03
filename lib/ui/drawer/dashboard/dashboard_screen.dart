@@ -19,7 +19,8 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
+          body: RefreshIndicator(
+        child: SingleChildScrollView(
           child: Container(
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -38,7 +39,11 @@ class DashboardScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
+        onRefresh: () async {
+          controller.selectedBranch.value = null;
+          controller.CalllApis();
+        },
+      )),
     );
   }
 
