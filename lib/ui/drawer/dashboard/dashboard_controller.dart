@@ -10,10 +10,11 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getBranches();
+    getDashbordData();
+    getChartData();
   }
 
-  Future<void> getBranches() async {
+  Future<void> getDashbordData() async {
     try {
       final loginUser = await prefs.getUser();
       final now = DateTime.now();
@@ -31,4 +32,26 @@ class DashboardController extends GetxController {
       CustomSnackbar.showError('Error', 'Failed to fetch branches: $e');
     }
   }
+
+ Future<void> getChartData() async {
+    try {
+      final loginUser = await prefs.getUser();
+
+      final today = DateTime.now();
+      final oneWeekAgo = today.subtract(Duration(days: 7));
+
+      final String endDate =
+          "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+      final String startDate =
+          "${oneWeekAgo.year}-${oneWeekAgo.month.toString().padLeft(2, '0')}-${oneWeekAgo.day.toString().padLeft(2, '0')}";
+
+      final response = await dioClient.getData(
+        '${Apis.baseUrl}/dashboard/dashboard-summary?salon_id=${loginUser!.salonId}&startDate=$startDate&endDate=$endDate',
+        (json) => json,
+      );
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to fetch chart data: $e');
+    }
+  }
+
 }
