@@ -28,6 +28,7 @@ class OrderReportData {
   CustomerId? customerId;
   num? totalPrice;
   String? paymentMethod;
+  String? order_code;
   String? createdAt;
   int? productCount;
 
@@ -35,6 +36,7 @@ class OrderReportData {
       {this.customerId,
       this.totalPrice,
       this.paymentMethod,
+      this.order_code,
       this.createdAt,
       this.productCount});
 
@@ -44,6 +46,7 @@ class OrderReportData {
         : null;
     totalPrice = json['total_price'];
     paymentMethod = json['payment_method'];
+    order_code = json['order_code'];
     createdAt = json['createdAt'];
     productCount = json['productCount'];
   }
@@ -55,6 +58,7 @@ class OrderReportData {
     }
     data['total_price'] = totalPrice;
     data['payment_method'] = paymentMethod;
+    data['order_code'] = order_code;
     data['createdAt'] = createdAt;
     data['productCount'] = productCount;
     return data;

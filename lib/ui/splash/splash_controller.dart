@@ -7,6 +7,7 @@ import '../auth/forgot/forgot_screen.dart';
 import '../drawer/branches/getBranches/getBranchesScreen.Dart';
 import '../drawer/branches/post_branches_screena.dart/postBranchesScreen.dart';
 import '../drawer/drawer_screen.dart';
+import '../drawer/reports/orderReport/order_report_screen.dart';
 import '../drawer/reports/staffServiceReport/staff_service_report_screen.dart';
 import '../drawer/staff/addNewStaffScreen.dart';
 
@@ -27,7 +28,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(GetBranchesScreen());
+          Get.to(OrderReportScreen());
         }
       });
     } catch (e) {

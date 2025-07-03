@@ -50,18 +50,18 @@ class OrderReportScreen extends StatelessWidget {
                       children: [
                         DataTable(
                           columns: const [
+                            DataColumn(label: Text('Order Code')),
                             DataColumn(label: Text('Client')),
-                            DataColumn(label: Text('Email')),
                             DataColumn(label: Text('Phone')),
-                            DataColumn(label: Text('Created At')),
-                            DataColumn(label: Text('Product Count')),
+                            DataColumn(label: Text('Order Data')),
+                            DataColumn(label: Text('Item')),
                             DataColumn(label: Text('Payment Method')),
-                            DataColumn(label: Text('Total Price')),
+                            DataColumn(label: Text('Total Payment')),
                           ],
                           rows: controller.filteredOrderReports.map((report) {
                             return DataRow(cells: [
+                              DataCell(Text(report.order_code ?? '')),
                               DataCell(Text(report.customerId?.fullName ?? '')),
-                              DataCell(Text(report.customerId?.email ?? '')),
                               DataCell(
                                   Text(report.customerId?.phoneNumber ?? '')),
                               DataCell(Text(report.createdAt != null
