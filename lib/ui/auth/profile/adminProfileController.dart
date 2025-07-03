@@ -83,7 +83,7 @@ class Adminprofilecontroller extends GetxController {
     try {
       final loginUser = await prefs.getUser();
       final response = await dioClient.putFormData(
-        '${Apis.baseUrl}${Endpoints.get_register_details}${loginUser!.adminId}',
+        '${Apis.baseUrl}/auth/update-admin/${loginUser!.adminId}',
         formData,
         (data) => data,
       );
