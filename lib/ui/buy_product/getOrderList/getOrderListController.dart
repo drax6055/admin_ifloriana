@@ -3,8 +3,9 @@ import '../../../../main.dart';
 import '../../../../network/model/order_report_model.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class  Getorderlistcontroller extends GetxController {
+class Getorderlistcontroller extends GetxController {
   final orderReports = <OrderReportData>[].obs;
   final filteredOrderReports = <OrderReportData>[].obs;
   final isLoading = true.obs;
@@ -46,6 +47,19 @@ class  Getorderlistcontroller extends GetxController {
     }).toList();
 
     filteredOrderReports.value = filteredList;
+  }
+
+  Future<void> openPdf(String url) async {
+    final uri = Uri.parse(url);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
+      CustomSnackbar.showError('Error', 'Could not open PDF.');
+    }
   }
 
   Future<void> getOrderReports() async {

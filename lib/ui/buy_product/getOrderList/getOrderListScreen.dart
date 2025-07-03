@@ -7,12 +7,11 @@ import '../../../route/app_route.dart';
 import 'getOrderListController.dart';
 
 class Getorderlistscreen extends StatelessWidget {
-  const Getorderlistscreen({super.key});
+  Getorderlistscreen({super.key});
+  final Getorderlistcontroller controller = Get.put(Getorderlistcontroller());
 
   @override
   Widget build(BuildContext context) {
-    final Getorderlistcontroller controller = Get.put(Getorderlistcontroller());
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -99,13 +98,22 @@ class Getorderlistscreen extends StatelessWidget {
                               DataCell(Text(report.paymentMethod ?? '')),
                               DataCell(
                                   Text(report.totalPrice?.toString() ?? '0')),
-                              DataCell(IconButton(
-                                icon: Icon(Icons.remove_red_eye),
-                                onPressed: () {
-                                  print(
-                                      '=====> http://192.168.1.31:5000${report.invoice_pdf_url}');
-                                },
-                              )),
+                              DataCell(Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.remove_red_eye),
+                                    onPressed: () {
+                                      String pdfUrl =
+                                          'http://192.168.1.31:5000${report.invoice_pdf_url}';
+                                      controller.openPdf(pdfUrl);
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ))
                             ]);
                           }).toList(),
                         ),

@@ -57,6 +57,8 @@ dependencies:
   geocoding: ^2.1.0
   multi_dropdown: ^3.0.1
   cached_network_image: ^3.3.1
+  url_launcher: ^6.2.5
+
 
 
 dev_dependencies:
