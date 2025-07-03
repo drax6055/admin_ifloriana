@@ -53,8 +53,8 @@ class Postbranchescontroller extends GetxController {
   final RxList<String> selectedPaymentMethod = <String>[].obs;
   var pincodeController = TextEditingController();
 
-  var latController = TextEditingController();
-  var lngController = TextEditingController();
+  // var latController = TextEditingController();
+  // var lngController = TextEditingController();
 
   final List<String> dropdownItemSelectedCategory = [
     'Male',
@@ -187,8 +187,8 @@ class Postbranchescontroller extends GetxController {
       "state": stateController.text,
       "city": cityController.text,
       "postal_code": postalCodeController.text,
-      "latitude": latitude.value,
-      "longitude": longitude.value,
+      // "latitude": latitude.value,
+      // "longitude": longitude.value,
       "description": discriptionController.text,
       "image": null,
       "address": addressController.text

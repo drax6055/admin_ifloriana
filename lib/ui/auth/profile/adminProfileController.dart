@@ -119,29 +119,5 @@ class Adminprofilecontroller extends GetxController {
     }
   }
 
-  Future<void> fetchLocationDetails(String pincode) async {
-    isLoading.value = true;
-    error.value = '';
 
-    try {
-      final response = await dioClient.getData(
-        'https://api.postalpincode.in/pincode/$pincode',
-        (data) => data,
-      );
-
-      if (response != null && response[0]['Status'] == 'Success') {
-        final postOffice = response[0]['PostOffice'][0];
-        country.value = postOffice['Country'] ?? '';
-        state.value = postOffice['State'] ?? '';
-        district.value = postOffice['District'] ?? '';
-        block.value = postOffice['Block'] ?? '';
-      } else {
-        error.value = 'Invalid Pincode or no data found.';
-      }
-    } catch (e) {
-      error.value = 'Failed to fetch data: $e';
-    } finally {
-      isLoading.value = false;
-    }
-  }
 }

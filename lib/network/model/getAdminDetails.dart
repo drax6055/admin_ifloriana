@@ -2,7 +2,7 @@ class GetAdminDetails {
   Admin? admin;
   SalonDetails? salonDetails;
 
-  GetAdminDetails({this.admin, this.salonDetails});
+  GetAdminDetails({this.admin, this.salonDetails}); 
 
   GetAdminDetails.fromJson(Map<String, dynamic> json) {
     admin = json['admin'] != null ? new Admin.fromJson(json['admin']) : null;

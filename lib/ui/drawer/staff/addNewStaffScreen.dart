@@ -161,7 +161,7 @@ class Addnewstaffscreen extends StatelessWidget {
           ],
         ),
         Gender(),
-        InputTxtfield_Salary(),
+        // InputTxtfield_Salary(),
         Row(
           children: [
             Expanded(child: InputTxtfield_Duration()),
@@ -238,14 +238,14 @@ class Addnewstaffscreen extends StatelessWidget {
     );
   }
 
-  Widget InputTxtfield_Salary() {
-    return CustomTextFormField(
-      controller: getController.salaryController,
-      labelText: "Salary",
-      keyboardType: TextInputType.number,
-      validator: (value) => Validation.validateSalary(value),
-    );
-  }
+  // Widget InputTxtfield_Salary() {
+  //   return CustomTextFormField(
+  //     controller: getController.salaryController,
+  //     labelText: "Salary",
+  //     keyboardType: TextInputType.number,
+  //     validator: (value) => Validation.validateSalary(value),
+  //   );
+  // }
 
   Widget InputTxtfield_Duration() {
     return CustomTextFormField(

@@ -4,7 +4,11 @@ import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
 import '../auth/forgot/forgot_screen.dart';
+import '../drawer/branches/getBranches/getBranchesScreen.Dart';
+import '../drawer/branches/post_branches_screena.dart/postBranchesScreen.dart';
 import '../drawer/drawer_screen.dart';
+import '../drawer/reports/staffServiceReport/staff_service_report_screen.dart';
+import '../drawer/staff/addNewStaffScreen.dart';
 
 class SplashController extends GetxController {
   @override
@@ -23,7 +27,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(DrawerScreen());
+          Get.to(GetBranchesScreen());
         }
       });
     } catch (e) {

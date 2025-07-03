@@ -69,8 +69,8 @@ class Getbranchescontroller extends GetxController {
     required String contactEmail,
     required String description,
     required String landmark,
-    required double latitude,
-    required double longitude,
+    // required double latitude,
+    // required double longitude,
     required List<String> paymentMethod,
   }) async {
     try {
@@ -88,8 +88,8 @@ class Getbranchescontroller extends GetxController {
         'contact_email': contactEmail,
         'description': description,
         'landmark': landmark,
-        'latitude': latitude,
-        'longitude': longitude,
+        // 'latitude': latitude,
+        // 'longitude': longitude,
         'payment_method': paymentMethod,
         'salon_id': loginUser!.salonId,
       };

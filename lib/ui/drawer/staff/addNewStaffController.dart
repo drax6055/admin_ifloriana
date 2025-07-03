@@ -54,7 +54,7 @@ class Addnewstaffcontroller extends GetxController {
   var shiftStarttimeController = TextEditingController();
   var shiftEndtimeController = TextEditingController();
   var selectedGender = "Male".obs;
-  var salaryController = TextEditingController();
+  // var salaryController = TextEditingController();
   var durationController = TextEditingController();
   var LunchStarttimeController = TextEditingController();
 
@@ -166,7 +166,7 @@ class Addnewstaffcontroller extends GetxController {
     passwordController.text = '';
     confirmpasswordController.text = '';
     selectedGender.value = staff.gender?.capitalizeFirst ?? 'Male';
-    salaryController.text = staff.salary?.toString() ?? '';
+    // salaryController.text = staff.salary?.toString() ?? '';
     shiftStarttimeController.text = staff.assignTime?.startShift ?? '';
     shiftEndtimeController.text = staff.assignTime?.endShift ?? '';
     durationController.text = staff.lunchTime?.duration?.toString() ?? '';
@@ -207,7 +207,7 @@ class Addnewstaffcontroller extends GetxController {
       'assigned_commission_id': selectedCommition.value?.id,
       'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
-      'salary': int.tryParse(salaryController.text) ?? 0,
+      // 'salary': int.tryParse(salaryController.text) ?? 0,
       'assign_time': {
         'start_shift': shiftStarttimeController.text,
         'end_shift': shiftEndtimeController.text,
@@ -243,7 +243,7 @@ class Addnewstaffcontroller extends GetxController {
       'assigned_commission_id': selectedCommition.value?.id,
       'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
-      'salary': int.tryParse(salaryController.text) ?? 0,
+      // 'salary': int.tryParse(salaryController.text) ?? 0,
       'assign_time': {
         'start_shift': shiftStarttimeController.text,
         'end_shift': shiftEndtimeController.text,

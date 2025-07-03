@@ -50,10 +50,10 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
     _descriptionController =
         TextEditingController(text: widget.branch.description);
     _landmarkController = TextEditingController(text: widget.branch.landmark);
-    _latitudeController =
-        TextEditingController(text: widget.branch.latitude.toString());
-    _longitudeController =
-        TextEditingController(text: widget.branch.longitude.toString());
+    // _latitudeController =
+    //     TextEditingController(text: widget.branch.latitude.toString());
+    // _longitudeController =
+    //     TextEditingController(text: widget.branch.longitude.toString());
     _selectedPaymentMethods = List.from(widget.branch.paymentMethod);
   }
 
@@ -69,8 +69,8 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
     _contactEmailController.dispose();
     _descriptionController.dispose();
     _landmarkController.dispose();
-    _latitudeController.dispose();
-    _longitudeController.dispose();
+    // _latitudeController.dispose();
+    // _longitudeController.dispose();
     super.dispose();
   }
 
@@ -89,8 +89,8 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
         contactEmail: _contactEmailController.text,
         description: _descriptionController.text,
         landmark: _landmarkController.text,
-        latitude: double.parse(_latitudeController.text),
-        longitude: double.parse(_longitudeController.text),
+        // latitude: double.parse(_latitudeController.text),
+        // longitude: double.parse(_longitudeController.text),
         paymentMethod: _selectedPaymentMethods,
       );
       Get.back();
@@ -196,40 +196,40 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                 controller: _landmarkController,
                 label: 'Landmark',
               ),
-              SizedBox(height: 16.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField(
-                      controller: _latitudeController,
-                      label: 'Latitude',
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value?.isEmpty ?? true)
-                          return 'Please enter latitude';
-                        if (double.tryParse(value!) == null)
-                          return 'Please enter valid latitude';
-                        return null;
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Expanded(
-                    child: _buildTextField(
-                      controller: _longitudeController,
-                      label: 'Longitude',
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value?.isEmpty ?? true)
-                          return 'Please enter longitude';
-                        if (double.tryParse(value!) == null)
-                          return 'Please enter valid longitude';
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              // SizedBox(height: 16.h),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: _buildTextField(
+              //         controller: _latitudeController,
+              //         label: 'Latitude',
+              //         keyboardType: TextInputType.number,
+              //         validator: (value) {
+              //           if (value?.isEmpty ?? true)
+              //             return 'Please enter latitude';
+              //           if (double.tryParse(value!) == null)
+              //             return 'Please enter valid latitude';
+              //           return null;
+              //         },
+              //       ),
+              //     ),
+              //     SizedBox(width: 16.w),
+              //     Expanded(
+              //       child: _buildTextField(
+              //         controller: _longitudeController,
+              //         label: 'Longitude',
+              //         keyboardType: TextInputType.number,
+              //         validator: (value) {
+              //           if (value?.isEmpty ?? true)
+              //             return 'Please enter longitude';
+              //           if (double.tryParse(value!) == null)
+              //             return 'Please enter valid longitude';
+              //           return null;
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
               SizedBox(height: 24.h),
               Text(
                 'Payment Methods',

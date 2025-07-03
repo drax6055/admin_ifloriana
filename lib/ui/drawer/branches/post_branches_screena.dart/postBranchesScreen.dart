@@ -106,39 +106,39 @@ class Postbranchesscreen extends StatelessWidget {
                 labelText: 'Postal Code',
                 keyboardType: TextInputType.text,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Obx(() => CustomTextFormField(
-                          controller: getController.latController
-                            ..text = getController.latitude.value,
-                          labelText: 'Latitude',
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.gps_fixed),
-                            onPressed: () async {
-                              await getController.fetchLocation();
-                            },
-                          ),
-                        )),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Expanded(
-                    child: Obx(() => CustomTextFormField(
-                          controller: getController.lngController
-                            ..text = getController.longitude.value,
-                          labelText: 'Longitude',
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.gps_fixed),
-                            onPressed: () async {
-                              await getController.fetchLocation();
-                            },
-                          ),
-                        )),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Obx(() => CustomTextFormField(
+              //             controller: getController.latController
+              //               ..text = getController.latitude.value,
+              //             labelText: 'Latitude',
+              //             suffixIcon: IconButton(
+              //               icon: Icon(Icons.gps_fixed),
+              //               onPressed: () async {
+              //                 await getController.fetchLocation();
+              //               },
+              //             ),
+              //           )),
+              //     ),
+              //     SizedBox(
+              //       width: 5.w,
+              //     ),
+              //     Expanded(
+              //       child: Obx(() => CustomTextFormField(
+              //             controller: getController.lngController
+              //               ..text = getController.longitude.value,
+              //             labelText: 'Longitude',
+              //             suffixIcon: IconButton(
+              //               icon: Icon(Icons.gps_fixed),
+              //               onPressed: () async {
+              //                 await getController.fetchLocation();
+              //               },
+              //             ),
+              //           )),
+              //     ),
+              //   ],
+              // ),
               Btn_addBranch()
             ],
           ),
