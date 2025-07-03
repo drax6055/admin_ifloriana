@@ -1,5 +1,6 @@
 import 'package:flutter_template/network/network_const.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import '../../../main.dart';
 import '../../../network/model/dashboard_model.dart';
 import '../../../wiget/custome_snackbar.dart';
@@ -9,6 +10,7 @@ class DashboardController extends GetxController {
   var chartData = ChartData().obs;
   var branchList = <Branch>[].obs;
   var selectedBranch = Rx<Branch?>(null);
+  var selectedDateRange = Rx<DateTimeRange?>(null);
 
   @override
   void onInit() {
@@ -25,14 +27,23 @@ class DashboardController extends GetxController {
   Future<void> getDashbordData() async {
     try {
       final loginUser = await prefs.getUser();
-      final now = DateTime.now();
-      final currentMonth = now.month;
-      final currentYear = now.year;
+      String startDate, endDate;
+      if (selectedDateRange.value != null) {
+        startDate =
+            "${selectedDateRange.value!.start.year}-${selectedDateRange.value!.start.month.toString().padLeft(2, '0')}-${selectedDateRange.value!.start.day.toString().padLeft(2, '0')}";
+        endDate =
+            "${selectedDateRange.value!.end.year}-${selectedDateRange.value!.end.month.toString().padLeft(2, '0')}-${selectedDateRange.value!.end.day.toString().padLeft(2, '0')}";
+      } else {
+        final today = DateTime.now();
+        startDate =
+            "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+        endDate = startDate;
+      }
       final branchId = selectedBranch.value?.id;
       final branchParam = branchId != null ? '&branch_id=$branchId' : '';
 
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/dashboard?salon_id=${loginUser!.salonId}&month=$currentMonth&year=$currentYear$branchParam',
+        '${Apis.baseUrl}/dashboard?salon_id=${loginUser!.salonId}&startDate=$startDate&endDate=$endDate$branchParam',
         (json) => json,
       );
       if (response != null) {
@@ -60,12 +71,20 @@ class DashboardController extends GetxController {
   Future<void> getChartData() async {
     try {
       final loginUser = await prefs.getUser();
-      final today = DateTime.now();
-      final oneWeekAgo = today.subtract(Duration(days: 7));
-      final String endDate =
-          "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
-      final String startDate =
-          "${oneWeekAgo.year}-${oneWeekAgo.month.toString().padLeft(2, '0')}-${oneWeekAgo.day.toString().padLeft(2, '0')}";
+      String startDate, endDate;
+      if (selectedDateRange.value != null) {
+        startDate =
+            "${selectedDateRange.value!.start.year}-${selectedDateRange.value!.start.month.toString().padLeft(2, '0')}-${selectedDateRange.value!.start.day.toString().padLeft(2, '0')}";
+        endDate =
+            "${selectedDateRange.value!.end.year}-${selectedDateRange.value!.end.month.toString().padLeft(2, '0')}-${selectedDateRange.value!.end.day.toString().padLeft(2, '0')}";
+      } else {
+        final today = DateTime.now();
+        final oneWeekAgo = today.subtract(Duration(days: 7));
+        endDate =
+            "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+        startDate =
+            "${oneWeekAgo.year}-${oneWeekAgo.month.toString().padLeft(2, '0')}-${oneWeekAgo.day.toString().padLeft(2, '0')}";
+      }
       final branchId = selectedBranch.value?.id;
       final branchParam = branchId != null ? '&branch_id=$branchId' : '';
 
@@ -80,6 +99,12 @@ class DashboardController extends GetxController {
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch chart data: $e');
     }
+  }
+
+  void setDateRange(DateTimeRange? range) {
+    selectedDateRange.value = range;
+    getDashbordData();
+    getChartData();
   }
 }
 

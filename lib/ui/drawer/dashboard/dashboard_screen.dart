@@ -28,6 +28,7 @@ class DashboardScreen extends StatelessWidget {
                 spacing: 10,
                 children: [
                   _buildBranchDropdown(),
+                  _buildDateRangePicker(context),
                   Obx(() => performce_widget(controller)),
                   Obx(() => lineChart(controller)),
                   Obx(() => upcomming_booking(controller)),
@@ -41,6 +42,7 @@ class DashboardScreen extends StatelessWidget {
         ),
         onRefresh: () async {
           controller.selectedBranch.value = null;
+          controller.selectedDateRange.value = null;
           controller.CalllApis();
         },
       )),
@@ -122,6 +124,37 @@ class DashboardScreen extends StatelessWidget {
           },
           validator: (v) => v == null ? 'Required' : null,
         ));
+  }
+
+  Widget _buildDateRangePicker(BuildContext context) {
+    return Obx(() {
+      final range = controller.selectedDateRange.value;
+      String label;
+      if (range != null) {
+        label =
+            '${DateFormat('yyyy-MM-dd').format(range.start)} - ${DateFormat('yyyy-MM-dd').format(range.end)}';
+      } else {
+        label = 'Select Date Range';
+      }
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: OutlinedButton.icon(
+          icon: Icon(Icons.date_range),
+          label: Text(label),
+          onPressed: () async {
+            final picked = await showDateRangePicker(
+              context: context,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+              initialDateRange: range,
+            );
+            if (picked != null) {
+              controller.setDateRange(picked);
+            }
+          },
+        ),
+      );
+    });
   }
 
   Widget lineChart(DashboardController controller) {
