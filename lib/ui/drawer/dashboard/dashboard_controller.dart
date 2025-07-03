@@ -35,9 +35,11 @@ class DashboardController extends GetxController {
             "${selectedDateRange.value!.end.year}-${selectedDateRange.value!.end.month.toString().padLeft(2, '0')}-${selectedDateRange.value!.end.day.toString().padLeft(2, '0')}";
       } else {
         final today = DateTime.now();
+        final sevenDaysAgo = today.subtract(Duration(days: 6));
         startDate =
+            "${sevenDaysAgo.year}-${sevenDaysAgo.month.toString().padLeft(2, '0')}-${sevenDaysAgo.day.toString().padLeft(2, '0')}";
+        endDate =
             "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
-        endDate = startDate;
       }
       final branchId = selectedBranch.value?.id;
       final branchParam = branchId != null ? '&branch_id=$branchId' : '';
@@ -79,11 +81,11 @@ class DashboardController extends GetxController {
             "${selectedDateRange.value!.end.year}-${selectedDateRange.value!.end.month.toString().padLeft(2, '0')}-${selectedDateRange.value!.end.day.toString().padLeft(2, '0')}";
       } else {
         final today = DateTime.now();
-        final oneWeekAgo = today.subtract(Duration(days: 7));
+        final sevenDaysAgo = today.subtract(Duration(days: 6));
+        startDate =
+            "${sevenDaysAgo.year}-${sevenDaysAgo.month.toString().padLeft(2, '0')}-${sevenDaysAgo.day.toString().padLeft(2, '0')}";
         endDate =
             "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
-        startDate =
-            "${oneWeekAgo.year}-${oneWeekAgo.month.toString().padLeft(2, '0')}-${oneWeekAgo.day.toString().padLeft(2, '0')}";
       }
       final branchId = selectedBranch.value?.id;
       final branchParam = branchId != null ? '&branch_id=$branchId' : '';
