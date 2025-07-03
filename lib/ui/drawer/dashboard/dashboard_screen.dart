@@ -25,17 +25,17 @@ class DashboardScreen extends StatelessWidget {
           child: Container(
             child: Padding(
               padding: const EdgeInsets.all(10),
-              child: Obx(() => Column(
-                    spacing: 10,
-                    children: [
-                      performce_widget(controller),
-                      lineChart(),
-                      upcomming_booking(controller),
-                      combinedChart(),
-                      total_revenue(controller),
-                      SizedBox(height: 10.h),
-                    ],
-                  )),
+              child: Column(
+                spacing: 10,
+                children: [
+                  Obx(() => performce_widget(controller)),
+                  Obx(() => lineChart(controller)),
+                  Obx(() => upcomming_booking(controller)),
+                  Obx(() => combinedChart(controller)),
+                  Obx(() => total_revenue(controller)),
+                  SizedBox(height: 10.h),
+                ],
+              ),
             ),
           ),
         ),
@@ -44,7 +44,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget performce_widget(DashboardController controller) {
-    final dashboard = controller.dashboardModel.value;
+    final dashboard = controller.dashboardData.value;
     // Use root-level fields from the API response
     final List<Map<String, dynamic>> items = [
       {'label': 'Appointments', 'value': dashboard.appointmentCount ?? 0},
@@ -101,9 +101,9 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget lineChart() {
-    final dashboard = Get.find<DashboardController>().dashboardModel.value;
-    final List<LineChartDataPoint> revenueData = dashboard.lineChart ?? [];
+  Widget lineChart(DashboardController controller) {
+    final List<LineChartDataPoint> revenueData =
+        controller.chartData.value.lineChart ?? [];
     final List<String> dateLabels =
         revenueData.map((e) => e.date ?? '').toList();
     final List<FlSpot> spots = List.generate(
@@ -217,7 +217,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget upcomming_booking(DashboardController controller) {
-    final dashboard = controller.dashboardModel.value;
+    final dashboard = controller.dashboardData.value;
     final items = dashboard.upcomingAppointments ?? [];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,9 +317,9 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget combinedChart() {
-    final dashboard = Get.find<DashboardController>().dashboardModel.value;
-    final List<BarChartDataPoint> data = dashboard.barChart ?? [];
+  Widget combinedChart(DashboardController controller) {
+    final List<BarChartDataPoint> data =
+        controller.chartData.value.barChart ?? [];
     final List<String> dateLabels = data.map((e) => e.date ?? '').toList();
     final List<BarChartGroupData> barGroups = data.asMap().entries.map((entry) {
       int index = entry.key;
@@ -491,7 +491,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget total_revenue(DashboardController controller) {
-    final dashboard = controller.dashboardModel.value;
+    final dashboard = controller.dashboardData.value;
     final List<String> headers = ['Service', 'Total Count', 'Total Amount'];
     final List<dynamic> services = dashboard.topServices ?? [];
     return Column(

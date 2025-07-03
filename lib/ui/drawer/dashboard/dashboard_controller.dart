@@ -5,7 +5,9 @@ import '../../../network/model/dashboard_model.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class DashboardController extends GetxController {
-  var dashboardModel = Dashboard_model().obs;
+
+  var dashboardData = DashboardData().obs;
+  var chartData = ChartData().obs;
 
   @override
   void onInit() {
@@ -30,8 +32,8 @@ class DashboardController extends GetxController {
         (json) => json,
       );
       if (response != null) {
-        dashboardModel.value =
-            Dashboard_model.fromJson(response['data'] ?? response);
+        final data = response['data'] ?? response;
+        dashboardData.value = DashboardData.fromJson(data);
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch branches: $e');
@@ -55,19 +57,85 @@ class DashboardController extends GetxController {
         (json) => json,
       );
       if (response != null) {
-        // Only update the chart fields, keep the rest of the dashboard data
         final data = response['data'] ?? response;
-        dashboardModel.update((model) {
-          model?.lineChart = (data['lineChart'] as List?)
-              ?.map((e) => LineChartDataPoint.fromJson(e))
-              .toList();
-          model?.barChart = (data['barChart'] as List?)
-              ?.map((e) => BarChartDataPoint.fromJson(e))
-              .toList();
-        });
+        chartData.value = ChartData.fromJson(data);
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch chart data: $e');
     }
+  }
+}
+
+// New models for separation
+class DashboardData {
+  int? appointmentCount;
+  int? customerCount;
+  int? orderCount;
+  int? productSales;
+  int? totalCommission;
+  List<Performance>? performance;
+  List<UpcomingAppointments>? upcomingAppointments;
+  List<AppointmentsRevenueGraph>? appointmentsRevenueGraph;
+  List<TopServices>? topServices;
+
+  DashboardData({
+    this.appointmentCount,
+    this.customerCount,
+    this.orderCount,
+    this.productSales,
+    this.totalCommission,
+    this.performance,
+    this.upcomingAppointments,
+    this.appointmentsRevenueGraph,
+    this.topServices,
+  });
+
+  factory DashboardData.fromJson(Map<String, dynamic> json) {
+    return DashboardData(
+      appointmentCount: json['appointmentCount'] ?? json['appointment_count'],
+      customerCount: json['customerCount'] ?? json['customer_count'],
+      orderCount: json['orderCount'] ?? json['order_count'],
+      productSales: json['productSales'] ?? json['product_sales'],
+      totalCommission: json['totalCommission'] ?? json['total_commission'],
+      performance: (json['performance'] as List?)
+          ?.map((v) => Performance.fromJson(v))
+          .toList(),
+      upcomingAppointments: (json['upcomingAppointments'] as List?)
+              ?.map((v) => UpcomingAppointments.fromJson(v))
+              .toList() ??
+          (json['upcoming_appointments'] as List?)
+              ?.map((v) => UpcomingAppointments.fromJson(v))
+              .toList(),
+      appointmentsRevenueGraph: (json['appointmentsRevenueGraph'] as List?)
+              ?.map((v) => AppointmentsRevenueGraph.fromJson(v))
+              .toList() ??
+          (json['appointments_revenue_graph'] as List?)
+              ?.map((v) => AppointmentsRevenueGraph.fromJson(v))
+              .toList(),
+      topServices: (json['topServices'] as List?)
+              ?.map((v) => TopServices.fromJson(v))
+              .toList() ??
+          (json['top_services'] as List?)
+              ?.map((v) => TopServices.fromJson(v))
+              .toList(),
+    );
+  }
+}
+
+class ChartData {
+  List<LineChartDataPoint>? lineChart;
+  List<BarChartDataPoint>? barChart;
+
+  ChartData({this.lineChart, this.barChart});
+
+  factory ChartData.fromJson(Map<String, dynamic> json) {
+    return ChartData(
+      lineChart: (json['lineChart'] as List?)
+          ?.map((e) => LineChartDataPoint.fromJson(e))
+          .toList(),
+      barChart: (json['barChart'] as List?)
+          ?.map((e) => BarChartDataPoint.fromJson(e))
+          .toList(),
+    );
   }
 }
