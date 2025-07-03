@@ -10,8 +10,12 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getDashbordData();
+    CalllApis();
+  }
+
+  void CalllApis() {
     getChartData();
+    getDashbordData();
   }
 
   Future<void> getDashbordData() async {
@@ -26,14 +30,15 @@ class DashboardController extends GetxController {
         (json) => json,
       );
       if (response != null) {
-        dashboardModel.value = Dashboard_model.fromJson(response);
+        dashboardModel.value =
+            Dashboard_model.fromJson(response['data'] ?? response);
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch branches: $e');
     }
   }
 
- Future<void> getChartData() async {
+  Future<void> getChartData() async {
     try {
       final loginUser = await prefs.getUser();
 
@@ -49,9 +54,20 @@ class DashboardController extends GetxController {
         '${Apis.baseUrl}/dashboard/dashboard-summary?salon_id=${loginUser!.salonId}&startDate=$startDate&endDate=$endDate',
         (json) => json,
       );
+      if (response != null) {
+        // Only update the chart fields, keep the rest of the dashboard data
+        final data = response['data'] ?? response;
+        dashboardModel.update((model) {
+          model?.lineChart = (data['lineChart'] as List?)
+              ?.map((e) => LineChartDataPoint.fromJson(e))
+              .toList();
+          model?.barChart = (data['barChart'] as List?)
+              ?.map((e) => BarChartDataPoint.fromJson(e))
+              .toList();
+        });
+      }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch chart data: $e');
     }
   }
-
 }

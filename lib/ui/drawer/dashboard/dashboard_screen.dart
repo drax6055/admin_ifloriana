@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 
 import 'dashboard_controller.dart';
 import 'package:flutter_template/ui/drawer/dashboard/upcoming_bookings_screen.dart';
+import 'package:flutter_template/network/model/dashboard_model.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -25,6 +26,7 @@ class DashboardScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Obx(() => Column(
+                    spacing: 10,
                     children: [
                       performce_widget(controller),
                       lineChart(),
@@ -100,25 +102,17 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget lineChart() {
-    final List<Map<String, dynamic>> revenueData = [
-      {"date": "2025-04-30", "revenue": 4325},
-      {"date": "2025-05-01", "revenue": 1289},
-      {"date": "2025-05-03", "revenue": 6794},
-      {"date": "2025-05-05", "revenue": 3579},
-      {"date": "2025-05-06", "revenue": 1567},
-    ];
-
+    final dashboard = Get.find<DashboardController>().dashboardModel.value;
+    final List<LineChartDataPoint> revenueData = dashboard.lineChart ?? [];
     final List<String> dateLabels =
-        revenueData.map((e) => e["date"] as String).toList();
-
+        revenueData.map((e) => e.date ?? '').toList();
     final List<FlSpot> spots = List.generate(
       revenueData.length,
       (index) => FlSpot(
         index.toDouble(),
-        (revenueData[index]["revenue"] as num).toDouble(),
+        (revenueData[index].sales ?? 0).toDouble(),
       ),
     );
-
     return Container(
       decoration: BoxDecoration(
         color: white,
@@ -185,7 +179,7 @@ class DashboardScreen extends StatelessWidget {
                   return touchedSpots.map((LineBarSpot spot) {
                     return LineTooltipItem(
                       // Custom text format
-                      'Revenue: ₹${spot.y.toInt()}',
+                      'Sales: ₹${spot.y.toInt()}',
                       const TextStyle(
                         color: white,
                         fontWeight: FontWeight.bold,
@@ -324,18 +318,12 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget combinedChart() {
-    final List<Map<String, dynamic>> data = [
-      {"date": "2025-04-30", "revenue": 4325, "sales": 2600},
-      {"date": "2025-05-01", "revenue": 1289, "sales": 50},
-      {"date": "2025-05-03", "revenue": 6794, "sales": 2750},
-      {"date": "2025-05-05", "revenue": 3579, "sales": 200},
-      {"date": "2025-05-06", "revenue": 1567, "sales": 2100},
-    ];
-    final List<String> dateLabels =
-        data.map((e) => e["date"] as String).toList();
+    final dashboard = Get.find<DashboardController>().dashboardModel.value;
+    final List<BarChartDataPoint> data = dashboard.barChart ?? [];
+    final List<String> dateLabels = data.map((e) => e.date ?? '').toList();
     final List<BarChartGroupData> barGroups = data.asMap().entries.map((entry) {
       int index = entry.key;
-      final sales = (entry.value["sales"] as num).toDouble(); // ✅ Fix here
+      final sales = (entry.value.sales ?? 0).toDouble();
       return BarChartGroupData(
         x: index,
         barRods: [
@@ -347,18 +335,16 @@ class DashboardScreen extends StatelessWidget {
         ],
       );
     }).toList();
-
     final List<FlSpot> lineSpots = data
         .asMap()
         .entries
-        .where((entry) => entry.value["revenue"] != 0)
+        .where((entry) => (entry.value.appointments ?? 0) != 0)
         .map((entry) {
       return FlSpot(
         entry.key.toDouble(),
-        (entry.value["revenue"] as num).toDouble(),
+        (entry.value.appointments ?? 0).toDouble(),
       );
     }).toList();
-
     return Container(
       height: 210.h,
       decoration: BoxDecoration(
@@ -450,7 +436,7 @@ class DashboardScreen extends StatelessWidget {
                         return touchedSpots.map((LineBarSpot spot) {
                           return LineTooltipItem(
                             // Custom text format
-                            'Revenue: ₹${spot.y.toInt()}',
+                            'Appointments: ${spot.y.toInt()}',
                             const TextStyle(
                               color: white,
                               fontWeight: FontWeight.bold,

@@ -5,12 +5,13 @@ class Dashboard_model {
   int? orderCount;
   int? productSales;
   int? totalCommission;
-  
 
   List<Performance>? performance;
   List<UpcomingAppointments>? upcomingAppointments;
   List<AppointmentsRevenueGraph>? appointmentsRevenueGraph;
   List<TopServices>? topServices;
+  List<LineChartDataPoint>? lineChart;
+  List<BarChartDataPoint>? barChart;
 
   Dashboard_model(
       {this.appointmentCount,
@@ -21,7 +22,9 @@ class Dashboard_model {
       this.performance,
       this.upcomingAppointments,
       this.appointmentsRevenueGraph,
-      this.topServices});
+      this.topServices,
+      this.lineChart,
+      this.barChart});
 
   Dashboard_model.fromJson(Map<String, dynamic> json) {
     appointmentCount = json['appointmentCount'] ?? json['appointment_count'];
@@ -66,6 +69,18 @@ class Dashboard_model {
       topServices = <TopServices>[];
       json['top_services'].forEach((v) {
         topServices!.add(new TopServices.fromJson(v));
+      });
+    }
+    if (json['lineChart'] != null) {
+      lineChart = <LineChartDataPoint>[];
+      json['lineChart'].forEach((v) {
+        lineChart!.add(LineChartDataPoint.fromJson(v));
+      });
+    }
+    if (json['barChart'] != null) {
+      barChart = <BarChartDataPoint>[];
+      json['barChart'].forEach((v) {
+        barChart!.add(BarChartDataPoint.fromJson(v));
       });
     }
   }
@@ -266,5 +281,27 @@ class TopServices {
     data['totalAmount'] = this.totalAmount;
     data['total_amount'] = this.total_amount;
     return data;
+  }
+}
+
+class LineChartDataPoint {
+  String? date;
+  int? sales;
+  LineChartDataPoint({this.date, this.sales});
+  LineChartDataPoint.fromJson(Map<String, dynamic> json) {
+    date = json['date'];
+    sales = json['sales'];
+  }
+}
+
+class BarChartDataPoint {
+  String? date;
+  int? sales;
+  int? appointments;
+  BarChartDataPoint({this.date, this.sales, this.appointments});
+  BarChartDataPoint.fromJson(Map<String, dynamic> json) {
+    date = json['date'];
+    sales = json['sales'];
+    appointments = json['appointments'];
   }
 }
