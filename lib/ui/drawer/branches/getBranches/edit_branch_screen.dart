@@ -28,9 +28,9 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
   late TextEditingController _contactEmailController;
   late TextEditingController _descriptionController;
   late TextEditingController _landmarkController;
-  late TextEditingController _latitudeController;
-  late TextEditingController _longitudeController;
-  final List<String> _paymentMethods = ['cash', 'upi', 'razorpay'];
+  // late TextEditingController _latitudeController;
+  // late TextEditingController _longitudeController;
+  final List<String> _paymentMethods = ['cash', 'upi'];
   List<String> _selectedPaymentMethods = [];
 
   @override
