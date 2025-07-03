@@ -28,9 +28,11 @@ class DashboardController extends GetxController {
       final now = DateTime.now();
       final currentMonth = now.month;
       final currentYear = now.year;
+      final branchId = selectedBranch.value?.id;
+      final branchParam = branchId != null ? '&branch_id=$branchId' : '';
 
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/dashboard?salon_id=${loginUser!.salonId}&month=$currentMonth&year=$currentYear',
+        '${Apis.baseUrl}/dashboard?salon_id=${loginUser!.salonId}&month=$currentMonth&year=$currentYear$branchParam',
         (json) => json,
       );
       if (response != null) {
@@ -58,17 +60,17 @@ class DashboardController extends GetxController {
   Future<void> getChartData() async {
     try {
       final loginUser = await prefs.getUser();
-
       final today = DateTime.now();
       final oneWeekAgo = today.subtract(Duration(days: 7));
-
       final String endDate =
           "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
       final String startDate =
           "${oneWeekAgo.year}-${oneWeekAgo.month.toString().padLeft(2, '0')}-${oneWeekAgo.day.toString().padLeft(2, '0')}";
+      final branchId = selectedBranch.value?.id;
+      final branchParam = branchId != null ? '&branch_id=$branchId' : '';
 
       final response = await dioClient.getData(
-        '${Apis.baseUrl}/dashboard/dashboard-summary?salon_id=${loginUser!.salonId}&startDate=$startDate&endDate=$endDate',
+        '${Apis.baseUrl}/dashboard/dashboard-summary?salon_id=${loginUser!.salonId}&startDate=$startDate&endDate=$endDate$branchParam',
         (json) => json,
       );
       if (response != null) {

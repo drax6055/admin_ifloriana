@@ -109,7 +109,12 @@ class DashboardScreen extends StatelessWidget {
               .map((item) =>
                   DropdownMenuItem(value: item, child: Text(item.name ?? '')))
               .toList(),
-          onChanged: (v) => controller.selectedBranch.value = v,
+          onChanged: (v) {
+            controller.selectedBranch.value = v;
+            // Recall APIs to update dashboard and chart data for selected branch
+            controller.getDashbordData();
+            controller.getChartData();
+          },
           validator: (v) => v == null ? 'Required' : null,
         ));
   }
