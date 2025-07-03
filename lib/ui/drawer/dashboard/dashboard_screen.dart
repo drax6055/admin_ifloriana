@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import 'dashboard_controller.dart';
+import 'package:flutter_template/ui/drawer/dashboard/upcoming_bookings_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -237,11 +238,17 @@ class DashboardScreen extends StatelessWidget {
                 color: black,
               ),
             ),
-            CustomTextWidget(
-              text: 'View All',
-              textStyle: CustomTextStyles.textFontRegular(
-                size: 14.sp,
-                color: primaryColor,
+            GestureDetector(
+              onTap: () {
+                Get.to(
+                    () => UpcomingBookingsScreen(upcomingAppointments: items));
+              },
+              child: CustomTextWidget(
+                text: 'View All',
+                textStyle: CustomTextStyles.textFontRegular(
+                  size: 14.sp,
+                  color: primaryColor,
+                ),
               ),
             ),
           ],
