@@ -5,9 +5,10 @@ import '../../../network/model/dashboard_model.dart';
 import '../../../wiget/custome_snackbar.dart';
 
 class DashboardController extends GetxController {
-
   var dashboardData = DashboardData().obs;
   var chartData = ChartData().obs;
+  var branchList = <Branch>[].obs;
+  var selectedBranch = Rx<Branch?>(null);
 
   @override
   void onInit() {
@@ -16,6 +17,7 @@ class DashboardController extends GetxController {
   }
 
   void CalllApis() {
+    getBranches();
     getChartData();
     getDashbordData();
   }
@@ -37,6 +39,19 @@ class DashboardController extends GetxController {
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to fetch branches: $e');
+    }
+  }
+
+  Future<void> getBranches() async {
+    try {
+      final loginUser = await prefs.getUser();
+      final response = await dioClient.getData(
+          '${Apis.baseUrl}${Endpoints.getBranchName}${loginUser!.salonId}',
+          (json) => json);
+      final data = response['data'] as List;
+      branchList.value = data.map((e) => Branch.fromJson(e)).toList();
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to get branches: $e');
     }
   }
 
@@ -136,6 +151,20 @@ class ChartData {
       barChart: (json['barChart'] as List?)
           ?.map((e) => BarChartDataPoint.fromJson(e))
           .toList(),
+    );
+  }
+}
+
+class Branch {
+  final String? id;
+  final String? name;
+
+  Branch({this.id, this.name});
+
+  factory Branch.fromJson(Map<String, dynamic> json) {
+    return Branch(
+      id: json['_id'],
+      name: json['name'],
     );
   }
 }

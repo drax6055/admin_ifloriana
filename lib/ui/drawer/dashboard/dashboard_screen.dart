@@ -13,12 +13,10 @@ import 'package:flutter_template/ui/drawer/dashboard/upcoming_bookings_screen.da
 import 'package:flutter_template/network/model/dashboard_model.dart';
 
 class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
-
+  DashboardScreen({super.key});
+  final DashboardController controller = Get.put(DashboardController());
   @override
   Widget build(BuildContext context) {
-    final DashboardController controller = Get.put(DashboardController());
-
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -28,6 +26,7 @@ class DashboardScreen extends StatelessWidget {
               child: Column(
                 spacing: 10,
                 children: [
+                  _buildBranchDropdown(),
                   Obx(() => performce_widget(controller)),
                   Obx(() => lineChart(controller)),
                   Obx(() => upcomming_booking(controller)),
@@ -99,6 +98,20 @@ class DashboardScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildBranchDropdown() {
+    return Obx(() => DropdownButtonFormField<Branch>(
+          value: controller.selectedBranch.value,
+          decoration: const InputDecoration(
+              labelText: 'Branch *', border: OutlineInputBorder()),
+          items: controller.branchList
+              .map((item) =>
+                  DropdownMenuItem(value: item, child: Text(item.name ?? '')))
+              .toList(),
+          onChanged: (v) => controller.selectedBranch.value = v,
+          validator: (v) => v == null ? 'Required' : null,
+        ));
   }
 
   Widget lineChart(DashboardController controller) {

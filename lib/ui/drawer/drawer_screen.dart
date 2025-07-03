@@ -36,7 +36,7 @@ class DrawerScreen extends StatelessWidget {
     final List<Map<String, dynamic>> pages = [
       {
         'title': 'Dashboard',
-        'widget': const DashboardScreen(),
+        'widget':  DashboardScreen(),
       },
       {
         'title': 'CalenderScreen',
@@ -86,7 +86,7 @@ class DrawerScreen extends StatelessWidget {
           if (selectedIndex < pages.length) {
             return pages[selectedIndex]['widget'];
           } else {
-            return const DashboardScreen();
+            return  DashboardScreen();
           }
         }),
         drawer: Drawer(
