@@ -6,6 +6,7 @@ import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/utils/custom_text_styles.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'dashboard_controller.dart';
 
@@ -258,6 +259,16 @@ class DashboardScreen extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               final item = items[index];
+              String formattedDate = '';
+              if (item.appointmentDate != null &&
+                  item.appointmentDate!.isNotEmpty) {
+                try {
+                  final dt = DateTime.parse(item.appointmentDate!);
+                  formattedDate = DateFormat('yyyy-MM-dd').format(dt);
+                } catch (e) {
+                  formattedDate = item.appointmentDate!;
+                }
+              }
               return Column(
                 children: [
                   ListTile(
@@ -279,7 +290,7 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         CustomTextWidget(
                             text:
-                                '${item.appointmentDate ?? ''} | ${item.appointmentTime ?? ''} | ${item.serviceName ?? ''}',
+                                '$formattedDate | ${item.appointmentTime ?? ''} | ${item.serviceName ?? ''}',
                             textStyle: CustomTextStyles.textFontRegular(
                                 size: 12.sp, color: grey)),
                         Row(
