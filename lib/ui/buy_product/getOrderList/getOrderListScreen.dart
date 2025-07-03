@@ -82,6 +82,7 @@ class Getorderlistscreen extends StatelessWidget {
                             DataColumn(label: Text('Item')),
                             DataColumn(label: Text('Payment Method')),
                             DataColumn(label: Text('Total Price')),
+                            DataColumn(label: Text('Action')),
                           ],
                           rows: controller.filteredOrderReports.map((report) {
                             return DataRow(cells: [
@@ -98,6 +99,13 @@ class Getorderlistscreen extends StatelessWidget {
                               DataCell(Text(report.paymentMethod ?? '')),
                               DataCell(
                                   Text(report.totalPrice?.toString() ?? '0')),
+                              DataCell(IconButton(
+                                icon: Icon(Icons.remove_red_eye),
+                                onPressed: () {
+                                  print(
+                                      '=====> http://192.168.1.31:5000${report.invoice_pdf_url}');
+                                },
+                              )),
                             ]);
                           }).toList(),
                         ),

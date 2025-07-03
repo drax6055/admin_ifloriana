@@ -30,6 +30,7 @@ class OrderReportData {
   String? paymentMethod;
   String? order_code;
   String? createdAt;
+  String? invoice_pdf_url;
   int? productCount;
 
   OrderReportData(
@@ -38,6 +39,7 @@ class OrderReportData {
       this.paymentMethod,
       this.order_code,
       this.createdAt,
+      this.invoice_pdf_url,
       this.productCount});
 
   OrderReportData.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class OrderReportData {
     totalPrice = json['total_price'];
     paymentMethod = json['payment_method'];
     order_code = json['order_code'];
+    invoice_pdf_url = json['invoice_pdf_url'];
     createdAt = json['createdAt'];
     productCount = json['productCount'];
   }
@@ -59,6 +62,7 @@ class OrderReportData {
     data['total_price'] = totalPrice;
     data['payment_method'] = paymentMethod;
     data['order_code'] = order_code;
+    data['invoice_pdf_url'] = invoice_pdf_url;
     data['createdAt'] = createdAt;
     data['productCount'] = productCount;
     return data;
