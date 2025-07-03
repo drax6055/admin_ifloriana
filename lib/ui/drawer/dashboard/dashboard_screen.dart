@@ -14,7 +14,7 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(DashboardController());
+    final DashboardController controller = Get.put(DashboardController());
 
     return SafeArea(
       child: Scaffold(
@@ -22,17 +22,16 @@ class DashboardScreen extends StatelessWidget {
           child: Container(
             child: Padding(
               padding: const EdgeInsets.all(10),
-              child: Column(
-                spacing: 10.h,
-                children: [
-                  performce_widget(),
-                  lineChart(),
-                  upcomming_booking(),
-                  combinedChart(),
-                  total_revenue(),
-                  SizedBox(height: 10.h),
-                ],
-              ),
+              child: Obx(() => Column(
+                    children: [
+                      performce_widget(controller),
+                      lineChart(),
+                      upcomming_booking(controller),
+                      combinedChart(),
+                      total_revenue(controller),
+                      SizedBox(height: 10.h),
+                    ],
+                  )),
             ),
           ),
         ),
@@ -40,15 +39,15 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget performce_widget() {
-    final List<String> items = [
-      'Appointments',
-      'Total Revenue',
-      'Sales Commission',
-      'New Customers',
-      'Orders',
-      'Products',
-      'Total P/L',
+  Widget performce_widget(DashboardController controller) {
+    final dashboard = controller.dashboardModel.value;
+    // Use root-level fields from the API response
+    final List<Map<String, dynamic>> items = [
+      {'label': 'Appointments', 'value': dashboard.appointmentCount ?? 0},
+      {'label': 'Total Commission', 'value': dashboard.totalCommission ?? 0},
+      {'label': 'New Customers', 'value': dashboard.customerCount ?? 0},
+      {'label': 'Orders', 'value': dashboard.orderCount ?? 0},
+      {'label': 'Products', 'value': dashboard.productSales ?? 0},
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,12 +78,12 @@ class DashboardScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomTextWidget(
-                      text: '120',
+                      text: items[index]['value'].toString(),
                       textStyle: CustomTextStyles.textFontBold(
                           size: 22.sp, color: black),
                     ),
                     CustomTextWidget(
-                      text: items[index],
+                      text: items[index]['label'],
                       textStyle: CustomTextStyles.textFontMedium(size: 12.sp),
                     ),
                   ],
@@ -106,7 +105,7 @@ class DashboardScreen extends StatelessWidget {
       {"date": "2025-05-05", "revenue": 3579},
       {"date": "2025-05-06", "revenue": 1567},
     ];
- 
+
     final List<String> dateLabels =
         revenueData.map((e) => e["date"] as String).toList();
 
@@ -221,13 +220,9 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget upcomming_booking() {
-    final items = [
-      'Rhoda Weissnat',
-      'Leonardo Auer',
-      'John Doe',
-    ];
-
+  Widget upcomming_booking(DashboardController controller) {
+    final dashboard = controller.dashboardModel.value;
+    final items = dashboard.upcomingAppointments ?? [];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -262,6 +257,7 @@ class DashboardScreen extends StatelessWidget {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
+              final item = items[index];
               return Column(
                 children: [
                   ListTile(
@@ -275,14 +271,15 @@ class DashboardScreen extends StatelessWidget {
                       color: primaryColor,
                     ),
                     title: CustomTextWidget(
-                        text: items[index],
+                        text: item.customerName ?? '-',
                         textStyle: CustomTextStyles.textFontBold(
                             size: 14.sp, color: black)),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomTextWidget(
-                            text: 'May 08 | 6:15 AM | Glamour Cuts',
+                            text:
+                                '${item.appointmentDate ?? ''} | ${item.appointmentTime ?? ''} | ${item.serviceName ?? ''}',
                             textStyle: CustomTextStyles.textFontRegular(
                                 size: 12.sp, color: grey)),
                         Row(
@@ -290,7 +287,7 @@ class DashboardScreen extends StatelessWidget {
                             Icon(Icons.timer_outlined,
                                 size: 12.h, color: primaryColor),
                             CustomTextWidget(
-                                text: "In 1 hour",
+                                text: '', // You can add time diff logic here
                                 textStyle: CustomTextStyles.textFontMedium(
                                     size: 12.sp, color: primaryColor)),
                           ],
@@ -489,37 +486,10 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget total_revenue() {
+  Widget total_revenue(DashboardController controller) {
+    final dashboard = controller.dashboardModel.value;
     final List<String> headers = ['Service', 'Total Count', 'Total Amount'];
-
-    final List<Map<String, dynamic>> services = [
-      {
-        'Service': 'Buzz Cut',
-        'Total Count': 6,
-        'Total Amount': '\$12,000.00',
-      },
-      {
-        'Service': 'Traditional Bridal Makeup',
-        'Total Count': 2,
-        'Total Amount': '\$5,000.00',
-      },
-      {
-        'Service': 'Airbrush Makeup',
-        'Total Count': 2,
-        'Total Amount': '\$5,000.00',
-      },
-      {
-        'Service': "Men's Haircut",
-        'Total Count': 7,
-        'Total Amount': '\$2,800.00',
-      },
-      {
-        'Service': 'Full Body Massage',
-        'Total Count': 6,
-        'Total Amount': '\$2,400.00',
-      },
-    ];
-
+    final List<dynamic> services = dashboard.topServices ?? [];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -576,7 +546,7 @@ class DashboardScreen extends StatelessWidget {
                         flex: 1,
                         child: CustomTextWidget(
                           textAlign: TextAlign.center,
-                          text: service['Service'],
+                          text: service.serviceName ?? '-',
                           textStyle:
                               CustomTextStyles.textFontRegular(size: 12.sp),
                         ),
@@ -586,7 +556,8 @@ class DashboardScreen extends StatelessWidget {
                         child: Center(
                           child: CustomTextWidget(
                             textAlign: TextAlign.center,
-                            text: service['Total Count'].toString(),
+                            text: (service.count ?? service.totalCount ?? '-')
+                                .toString(),
                             textStyle:
                                 CustomTextStyles.textFontRegular(size: 12.sp),
                           ),
@@ -596,7 +567,7 @@ class DashboardScreen extends StatelessWidget {
                         flex: 1,
                         child: CustomTextWidget(
                           textAlign: TextAlign.center,
-                          text: service['Total Amount'],
+                          text: (service.totalAmount ?? '-').toString(),
                           textStyle:
                               CustomTextStyles.textFontRegular(size: 12.sp),
                         ),
