@@ -76,17 +76,17 @@ class Getorderlistscreen extends StatelessWidget {
                         DataTable(
                           columns: const [
                             DataColumn(label: Text('Client')),
-                            DataColumn(label: Text('Email')),
+                            // DataColumn(label: Text('Email')),
                             DataColumn(label: Text('Phone')),
-                            DataColumn(label: Text('Created At')),
-                            DataColumn(label: Text('Product Count')),
+                            DataColumn(label: Text('Places On')),
+                            DataColumn(label: Text('Item')),
                             DataColumn(label: Text('Payment Method')),
                             DataColumn(label: Text('Total Price')),
                           ],
                           rows: controller.filteredOrderReports.map((report) {
                             return DataRow(cells: [
                               DataCell(Text(report.customerId?.fullName ?? '')),
-                              DataCell(Text(report.customerId?.email ?? '')),
+                              // DataCell(Text(report.customerId?.email ?? '')),
                               DataCell(
                                   Text(report.customerId?.phoneNumber ?? '')),
                               DataCell(Text(report.createdAt != null
@@ -111,7 +111,7 @@ class Getorderlistscreen extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-             Get.toNamed(Routes.placeOrder);
+            Get.toNamed(Routes.placeOrder);
           },
           child: Icon(Icons.add),
         ),

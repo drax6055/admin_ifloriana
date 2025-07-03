@@ -4,13 +4,13 @@ import '../../../../network/model/order_report_model.dart';
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
 
-class Getorderlistcontroller extends GetxController {
+class  Getorderlistcontroller extends GetxController {
   final orderReports = <OrderReportData>[].obs;
   final filteredOrderReports = <OrderReportData>[].obs;
   final isLoading = true.obs;
   final searchQuery = ''.obs;
   final selectedPaymentMethod = 'All'.obs;
-  final paymentMethods = ['All', 'Cash', 'Card', 'Upi'];
+  final paymentMethods = ['All', 'Cash', 'Upi'];
 
   @override
   void onInit() {

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
 import '../auth/forgot/forgot_screen.dart';
+import '../buy_product/getOrderList/getOrderListScreen.dart';
 import '../drawer/branches/getBranches/getBranchesScreen.Dart';
 import '../drawer/branches/post_branches_screena.dart/postBranchesScreen.dart';
 import '../drawer/drawer_screen.dart';
@@ -28,7 +29,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(OrderReportScreen());
+          Get.to(Getorderlistscreen());
         }
       });
     } catch (e) {
