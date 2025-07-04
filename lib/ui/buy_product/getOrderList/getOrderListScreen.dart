@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/network/network_const.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -65,59 +66,74 @@ class Getorderlistscreen extends StatelessWidget {
                   return const Center(
                       child: Text('No orders found matching the criteria.'));
                 }
-                return SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
+                return RefreshIndicator(
+                  onRefresh: controller.getOrderReports,
                   child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DataTable(
-                          columns: const [
-                            DataColumn(label: Text('Client')),
-                            // DataColumn(label: Text('Email')),
-                            DataColumn(label: Text('Phone')),
-                            DataColumn(label: Text('Places On')),
-                            DataColumn(label: Text('Item')),
-                            DataColumn(label: Text('Payment Method')),
-                            DataColumn(label: Text('Total Price')),
-                            DataColumn(label: Text('Action')),
-                          ],
-                          rows: controller.filteredOrderReports.map((report) {
-                            return DataRow(cells: [
-                              DataCell(Text(report.customerId?.fullName ?? '')),
-                              // DataCell(Text(report.customerId?.email ?? '')),
-                              DataCell(
-                                  Text(report.customerId?.phoneNumber ?? '')),
-                              DataCell(Text(report.createdAt != null
-                                  ? DateFormat('yyyy-MM-dd')
-                                      .format(DateTime.parse(report.createdAt!))
-                                  : '')),
-                              DataCell(
-                                  Text(report.productCount?.toString() ?? '0')),
-                              DataCell(Text(report.paymentMethod ?? '')),
-                              DataCell(
-                                  Text(report.totalPrice?.toString() ?? '0')),
-                              DataCell(Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.remove_red_eye),
-                                    onPressed: () {
-                                      String pdfUrl =
-                                          'http://192.168.1.31:5000${report.invoice_pdf_url}';
-                                      controller.openPdf(pdfUrl);
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {},
-                                  ),
-                                ],
-                              ))
-                            ]);
-                          }).toList(),
-                        ),
-                      ],
+                    scrollDirection: Axis.vertical,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DataTable(
+                            columns: const [
+                              DataColumn(label: Text('Client')),
+                              // DataColumn(label: Text('Email')),
+                              DataColumn(label: Text('Phone')),
+                              DataColumn(label: Text('Places On')),
+                              DataColumn(label: Text('Item')),
+                              DataColumn(label: Text('Payment Method')),
+                              DataColumn(label: Text('Total Price')),
+                              DataColumn(label: Text('Action')),
+                            ],
+                            rows: controller.filteredOrderReports.map((report) {
+                              return DataRow(cells: [
+                                DataCell(
+                                    Text(report.customerId?.fullName ?? '')),
+                                // DataCell(Text(report.customerId?.email ?? '')),
+                                DataCell(
+                                    Text(report.customerId?.phoneNumber ?? '')),
+                                DataCell(Text(report.createdAt != null
+                                    ? DateFormat('yyyy-MM-dd').format(
+                                        DateTime.parse(report.createdAt!))
+                                    : '')),
+                                DataCell(Text(
+                                    report.productCount?.toString() ?? '0')),
+                                DataCell(Text(report.paymentMethod ?? '')),
+                                DataCell(
+                                    Text(report.totalPrice?.toString() ?? '0')),
+                                DataCell(Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.remove_red_eye),
+                                      onPressed: () {
+                                        String pdfUrl =
+                                            '${Apis.pdfUrl}${report.invoice_pdf_url}';
+                                        controller.openPdf(pdfUrl);
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {
+                                        if (report.order_code != null) {
+                                          controller.deleteOrder(report.id!);
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    'Order code not found.')),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ))
+                              ]);
+                            }).toList(),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -126,8 +142,11 @@ class Getorderlistscreen extends StatelessWidget {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Get.toNamed(Routes.placeOrder);
+          onPressed: () async {
+            final result = await Get.toNamed(Routes.placeOrder);
+            if (result == true) {
+              controller.getOrderReports();
+            }
           },
           child: Icon(Icons.add),
         ),

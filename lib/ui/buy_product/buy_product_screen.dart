@@ -110,6 +110,7 @@ class BuyProductScreen extends StatelessWidget {
                           : () async {
                               final success = await controller.placeOrder();
                               if (success) {
+                                Get.back(result: true);
                                 Get.snackbar(
                                     'Order', 'Order placed successfully!',
                                     backgroundColor: Colors.green,

@@ -25,6 +25,7 @@ class OrderReportModel {
 }
 
 class OrderReportData {
+  String? id;
   CustomerId? customerId;
   num? totalPrice;
   String? paymentMethod;
@@ -34,7 +35,8 @@ class OrderReportData {
   int? productCount;
 
   OrderReportData(
-      {this.customerId,
+      {this.id,
+      this.customerId,
       this.totalPrice,
       this.paymentMethod,
       this.order_code,
@@ -43,6 +45,7 @@ class OrderReportData {
       this.productCount});
 
   OrderReportData.fromJson(Map<String, dynamic> json) {
+    id = json['_id'];
     customerId = json['customer_id'] != null
         ? CustomerId.fromJson(json['customer_id'])
         : null;
@@ -59,6 +62,7 @@ class OrderReportData {
     if (customerId != null) {
       data['customer_id'] = customerId!.toJson();
     }
+    data['_id'] = id;
     data['total_price'] = totalPrice;
     data['payment_method'] = paymentMethod;
     data['order_code'] = order_code;

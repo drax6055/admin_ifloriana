@@ -83,4 +83,17 @@ class Getorderlistcontroller extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> deleteOrder(String orderId) async {
+    try {
+      await dioClient.deleteData(
+        '${Apis.baseUrl}${Endpoints.orderReport}/$orderId',
+        (json) => json,
+      );
+      await getOrderReports();
+      CustomSnackbar.showSuccess('Success', 'Order deleted successfully');
+    } catch (e) {
+      CustomSnackbar.showError('Error', 'Failed to delete order: $e');
+    }
+  }
 }
