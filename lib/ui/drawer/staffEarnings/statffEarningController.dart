@@ -7,11 +7,21 @@ import '../../../wiget/custome_snackbar.dart';
 class Statffearningcontroller extends GetxController {
   RxList staffEarnings = [].obs;
   RxBool isLoading = false.obs;
+  RxString searchQuery = ''.obs;
+
+  List get filteredStaffEarnings => staffEarnings.where((staff) {
+        final name = (staff['staff_name'] ?? '').toString().toLowerCase();
+        return name.contains(searchQuery.value.toLowerCase());
+      }).toList();
 
   @override
   void onInit() {
     super.onInit();
     getStaffEarningData();
+  }
+
+  void updateSearchQuery(String query) {
+    searchQuery.value = query;
   }
 
   Future<void> getStaffEarningData() async {

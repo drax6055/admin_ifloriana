@@ -18,52 +18,71 @@ class Statffearningscreen extends StatelessWidget {
             if (getController.isLoading.value) {
               return Center(child: CircularProgressIndicator());
             }
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Total Booking')),
-                  DataColumn(label: Text('Service Amount')),
-                  DataColumn(label: Text('Commission Earning')),
-                  DataColumn(label: Text('Tip Earning')),
-                  DataColumn(label: Text('Staff Earning')),
-                  DataColumn(label: Text('Action')),
-                ],
-                rows: getController.staffEarnings.map<DataRow>((staff) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: staff['staff_image'] != null
-                                ? NetworkImage(staff['staff_image'])
-                                : null,
-                            child: staff['staff_image'] == null
-                                ? Icon(Icons.person)
-                                : null,
-                          ),
-                          SizedBox(width: 8),
-                          Text(staff['staff_name'] ?? ''),
-                        ],
-                      )),
-                      DataCell(Text('${staff['total_booking']}')),
-                      DataCell(Text('₹ ${staff['service_amount']}')),
-                      DataCell(Text('₹ ${staff['commission_earning']}')),
-                      DataCell(Text('₹ ${staff['tip_earning']}')),
-                      DataCell(Text('₹ ${staff['staff_earning']}')),
-                      DataCell(
-                        IconButton(
-                          icon: Icon(Icons.payments, color: Colors.green),
-                          onPressed: () {
-                            _showPayoutSheet(context, staff, getController);
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
-              ),
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Search by Staff Name',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    onChanged: getController.updateSearchQuery,
+                  ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: const [
+                        DataColumn(label: Text('Name')),
+                        DataColumn(label: Text('Total Booking')),
+                        DataColumn(label: Text('Service Amount')),
+                        DataColumn(label: Text('Commission Earning')),
+                        DataColumn(label: Text('Tip Earning')),
+                        DataColumn(label: Text('Staff Earning')),
+                        DataColumn(label: Text('Action')),
+                      ],
+                      rows: getController.filteredStaffEarnings
+                          .map<DataRow>((staff) {
+                        return DataRow(
+                          cells: [
+                            DataCell(Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage: staff['staff_image'] != null
+                                      ? NetworkImage(staff['staff_image'])
+                                      : null,
+                                  child: staff['staff_image'] == null
+                                      ? Icon(Icons.person)
+                                      : null,
+                                ),
+                                SizedBox(width: 8),
+                                Text(staff['staff_name'] ?? ''),
+                              ],
+                            )),
+                            DataCell(Text('${staff['total_booking']}')),
+                            DataCell(Text('₹ ${staff['service_amount']}')),
+                            DataCell(Text('₹ ${staff['commission_earning']}')),
+                            DataCell(Text('₹ ${staff['tip_earning']}')),
+                            DataCell(Text('₹ ${staff['staff_earning']}')),
+                            DataCell(
+                              IconButton(
+                                icon: Icon(Icons.payments, color: Colors.green),
+                                onPressed: () {
+                                  _showPayoutSheet(
+                                      context, staff, getController);
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
             );
           }),
         ),
