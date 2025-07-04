@@ -4,18 +4,40 @@ import 'package:flutter_template/network/network_const.dart';
 import 'package:get/get.dart';
 import '../../../wiget/custome_snackbar.dart';
 import 'staff_payout_model.dart';
+import 'package:intl/intl.dart';
 
 class StatffearningReportcontroller extends GetxController {
   var payouts = <StaffPayout>[].obs;
   var isLoading = true.obs;
   var filterText = ''.obs;
+  var startDate = Rxn<DateTime>();
+  var endDate = Rxn<DateTime>();
 
   List<StaffPayout> get filteredPayouts {
-    if (filterText.value.isEmpty) return payouts;
-    return payouts
-        .where((p) =>
-            p.staffName.toLowerCase().contains(filterText.value.toLowerCase()))
-        .toList();
+    var list = payouts.toList();
+    if (filterText.value.isNotEmpty) {
+      list = list
+          .where((p) => p.staffName
+              .toLowerCase()
+              .contains(filterText.value.toLowerCase()))
+          .toList();
+    }
+    if (startDate.value != null) {
+      list = list.where((p) {
+        final date = DateTime.tryParse(p.paymentDate);
+        return date != null && !date.isBefore(startDate.value!);
+      }).toList();
+    }
+    if (endDate.value != null) {
+      list = list.where((p) {
+        final date = DateTime.tryParse(p.paymentDate);
+        final endOfDay = endDate.value!
+            .add(Duration(days: 1))
+            .subtract(Duration(microseconds: 1));
+        return date != null && !date.isAfter(endOfDay);
+      }).toList();
+    }
+    return list;
   }
 
   @override
