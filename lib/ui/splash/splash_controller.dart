@@ -11,6 +11,7 @@ import '../drawer/drawer_screen.dart';
 import '../drawer/reports/orderReport/order_report_screen.dart';
 import '../drawer/reports/staffServiceReport/staff_service_report_screen.dart';
 import '../drawer/staff/addNewStaffScreen.dart';
+import '../drawer/staffEarnings/statffEarningScreen.dart';
 
 class SplashController extends GetxController {
   @override
@@ -29,7 +30,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(Getorderlistscreen());
+          Get.to(Statffearningscreen());
         }
       });
     } catch (e) {
