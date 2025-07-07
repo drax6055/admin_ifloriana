@@ -116,7 +116,7 @@ class DashboardData {
   int? customerCount;
   int? orderCount;
   int? productSales;
-  int? totalCommission;
+  double? totalCommission;
   List<Performance>? performance;
   List<UpcomingAppointments>? upcomingAppointments;
   List<AppointmentsRevenueGraph>? appointmentsRevenueGraph;

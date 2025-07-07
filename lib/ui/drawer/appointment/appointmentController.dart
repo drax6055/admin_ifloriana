@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 
+import '../../../network/model/makePayment.dart';
 import '../../../network/network_const.dart';
 import '../../../wiget/custome_snackbar.dart';
 
@@ -11,6 +12,7 @@ class Appointment {
   final String time;
   final String clientName;
   final String? clientImage;
+  final String? clientPhone;
   final int amount;
   final String staffName;
   final String? staffImage;
@@ -19,6 +21,8 @@ class Appointment {
   final String? package;
   final String status;
   final String paymentStatus;
+  final double? branchMembershipDiscount;
+  final String? branchMembershipDiscountType;
 
   Appointment({
     required this.appointmentId,
@@ -26,6 +30,7 @@ class Appointment {
     required this.time,
     required this.clientName,
     this.clientImage,
+    this.clientPhone,
     required this.amount,
     required this.staffName,
     this.staffImage,
@@ -34,6 +39,8 @@ class Appointment {
     this.package,
     required this.status,
     required this.paymentStatus,
+    this.branchMembershipDiscount,
+    this.branchMembershipDiscountType,
   });
 
   factory Appointment.fromJson(Map<String, dynamic> json) {
@@ -42,12 +49,14 @@ class Appointment {
     final firstService = services.isNotEmpty ? services[0] : {};
     final service = firstService['service'] ?? {};
     final staff = firstService['staff'] ?? {};
+    final branchMembership = customer['branch_membership'];
     return Appointment(
       appointmentId: json['appointment_id'] ?? '',
       date: (json['appointment_date'] ?? '').toString().split('T')[0],
       time: json['appointment_time'] ?? '',
       clientName: customer['full_name'] ?? '-',
       clientImage: customer['image'],
+      clientPhone: customer['phone_number'],
       amount: (json['total_payment'] ?? 0) is int
           ? json['total_payment']
           : int.tryParse(json['total_payment'].toString()) ?? 0,
@@ -63,6 +72,13 @@ class Appointment {
           : '-',
       status: json['status'] ?? '-',
       paymentStatus: json['payment_status'] ?? '-',
+      branchMembershipDiscount: branchMembership != null
+          ? (branchMembership['discount'] is int
+              ? (branchMembership['discount'] as int).toDouble()
+              : (branchMembership['discount'] ?? 0).toDouble())
+          : null,
+      branchMembershipDiscountType:
+          branchMembership != null ? branchMembership['discount_type'] : null,
     );
   }
 }
@@ -231,6 +247,35 @@ class AppointmentController extends GetxController {
     }
   }
 
+  Future onPaymentMade(Appointment appointment) async {
+    final loginUser = await prefs.getUser();
+    final state = paymentSummaryState;
+    Map<String, dynamic> paymentData = {
+      'salon_id': loginUser!.salonId,
+      'appointment_id': appointment.appointmentId,
+      'tax_id': state.selectedTax.value?.id,
+      'tips': double.tryParse(state.tips.value) ?? 0,
+      'payment_method': state.paymentMethod.value,
+      'coupon_id': state.appliedCoupon.value?.id,
+      'additional_discount_type':
+          state.addAdditionalDiscount.value ? state.discountType.value : null,
+      'additional_discount_value': state.addAdditionalDiscount.value
+          ? double.tryParse(state.discountValue.value) ?? 0
+          : null,
+    };
+    try {
+      await dioClient.postData<MakePayment>(
+        '${Apis.baseUrl}/payments',
+        paymentData,
+        (json) => MakePayment.fromJson(json),
+      );
+      CustomSnackbar.showSuccess('Succcess', 'Done');
+    } catch (e) {
+      print('==> here Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
   void calculateGrandTotal(double serviceAmount) {
     double total = serviceAmount;
     // Apply coupon discount
@@ -261,6 +306,62 @@ class AppointmentController extends GetxController {
     // Add tips
     final tips = double.tryParse(paymentSummaryState.tips.value) ?? 0;
     total += tips;
+    paymentSummaryState.grandTotal.value = total < 0 ? 0 : total;
+  }
+
+  void calculateGrandTotalWithMembership(Appointment appointment) {
+    double serviceAmount = appointment.amount.toDouble();
+    double tips = double.tryParse(paymentSummaryState.tips.value) ?? 0;
+
+    // Tax (applied on service amount only)
+    double taxAmount = 0;
+    final tax = paymentSummaryState.selectedTax.value;
+    if (tax != null) {
+      taxAmount = (serviceAmount * tax.value / 100);
+    }
+
+    // Subtotal before discounts
+    double subtotal = serviceAmount + taxAmount + tips;
+
+    // Membership discount
+    double membershipDiscount = 0;
+    if (appointment.branchMembershipDiscount != null &&
+        appointment.branchMembershipDiscountType != null) {
+      if (appointment.branchMembershipDiscountType == 'percentage') {
+        membershipDiscount =
+            (subtotal * appointment.branchMembershipDiscount! / 100);
+      } else {
+        membershipDiscount = appointment.branchMembershipDiscount!;
+      }
+    }
+
+    // Coupon discount
+    double couponDiscount = 0;
+    final coupon = paymentSummaryState.appliedCoupon.value;
+    if (coupon != null) {
+      if (coupon.discountType == 'percent') {
+        couponDiscount = (subtotal * coupon.discountAmount / 100);
+      } else {
+        couponDiscount = coupon.discountAmount;
+      }
+    }
+
+    // Additional discount
+    double additionalDiscount = 0;
+    if (paymentSummaryState.addAdditionalDiscount.value) {
+      final discountType = paymentSummaryState.discountType.value;
+      final discountValue =
+          double.tryParse(paymentSummaryState.discountValue.value) ?? 0;
+      if (discountType == 'percentage') {
+        additionalDiscount = (subtotal * discountValue / 100);
+      } else {
+        additionalDiscount = discountValue;
+      }
+    }
+
+    // Grand total
+    double total =
+        subtotal - membershipDiscount - couponDiscount - additionalDiscount;
     paymentSummaryState.grandTotal.value = total < 0 ? 0 : total;
   }
 }

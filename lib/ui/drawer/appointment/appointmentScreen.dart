@@ -137,7 +137,8 @@ class Appointmentscreen extends StatelessWidget {
                                 showModalBottomSheet(
                                   context: context,
                                   isScrollControlled: true,
-                                  backgroundColor: Colors.grey[900],
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(16)),
@@ -153,12 +154,9 @@ class Appointmentscreen extends StatelessWidget {
                                     state.addAdditionalDiscount.value = false;
                                     state.discountType.value = 'percentage';
                                     state.discountValue.value = '0';
-                                    state.selectedTax.value =
-                                        getController.taxes.isNotEmpty
-                                            ? getController.taxes.first
-                                            : null;
-                                    getController.calculateGrandTotal(
-                                        a.amount.toDouble());
+                                    state.selectedTax.value = null;
+                                    getController
+                                        .calculateGrandTotalWithMembership(a);
                                     return Padding(
                                       padding: EdgeInsets.only(
                                         left: 24,
@@ -171,134 +169,98 @@ class Appointmentscreen extends StatelessWidget {
                                       ),
                                       child: Obx(() => SingleChildScrollView(
                                             child: Column(
+                                              spacing: 10,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text('Payment Summary',
-                                                    style: TextStyle(
-                                                        fontSize: 22,
-                                                        color:
-                                                            Color(0xFFD2BBA0),
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                SizedBox(height: 16),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text('Date: ${a.date}',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .displaySmall
+                                                        ?.copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                // SizedBox(height: 16),
+                                                Text('Date: ${a.date}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w500)),
-                                                    Text(
-                                                        'Customer: ${a.clientName} - 918787787787',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
+                                                Text(
+                                                    'Customer: ${a.clientName}\n${a.clientPhone ?? '-'}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w500)),
-                                                  ],
-                                                ),
-                                                SizedBox(height: 8),
+                                                // SizedBox(height: 8),
                                                 Text(
                                                     'Service Amount: ₹ ${a.amount}',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w500)),
-                                                Divider(
-                                                    color: Colors.grey[700],
-                                                    height: 32),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500)),
+                                                Divider(height: 32),
                                                 Text('Billing Details',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18)),
-                                                SizedBox(height: 12),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium
+                                                        ?.copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                // SizedBox(height: 12),
                                                 Row(
                                                   children: [
                                                     Expanded(
-                                                      child:
+                                                      child: Obx(() =>
                                                           DropdownButtonFormField<
                                                               TaxModel>(
-                                                        value: state
-                                                            .selectedTax.value,
-                                                        dropdownColor:
-                                                            Colors.grey[850],
-                                                        decoration:
-                                                            InputDecoration(
-                                                          labelText: 'Tax',
-                                                          labelStyle: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                          filled: true,
-                                                          fillColor:
-                                                              Colors.grey[800],
-                                                          border:
-                                                              OutlineInputBorder(),
-                                                        ),
-                                                        items: getController
-                                                            .taxes
-                                                            .map((tax) =>
-                                                                DropdownMenuItem<
-                                                                    TaxModel>(
-                                                                  value: tax,
-                                                                  child: Text(
-                                                                      '${tax.title} (${tax.value.toStringAsFixed(0)}%)',
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.white)),
-                                                                ))
-                                                            .toList(),
-                                                        onChanged: (tax) {
-                                                          state.selectedTax
-                                                              .value = tax;
-                                                          getController
-                                                              .calculateGrandTotal(a
-                                                                  .amount
-                                                                  .toDouble());
-                                                        },
-                                                      ),
+                                                            value: state
+                                                                .selectedTax
+                                                                .value,
+                                                            dropdownColor:
+                                                                Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .surface,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              labelText: 'Tax',
+                                                              border:
+                                                                  OutlineInputBorder(),
+                                                            ),
+                                                            items: getController
+                                                                .taxes
+                                                                .map((tax) =>
+                                                                    DropdownMenuItem<
+                                                                        TaxModel>(
+                                                                      value:
+                                                                          tax,
+                                                                      child: Text(
+                                                                          '${tax.title} (${tax.value.toStringAsFixed(0)}%)'),
+                                                                    ))
+                                                                .toList(),
+                                                            onChanged: (tax) {
+                                                              state.selectedTax
+                                                                  .value = tax;
+                                                              getController
+                                                                  .calculateGrandTotalWithMembership(
+                                                                      a);
+                                                            },
+                                                          )),
                                                     ),
-                                                    SizedBox(width: 16),
-                                                    Expanded(
-                                                      child: TextFormField(
-                                                        initialValue:
-                                                            state.tips.value,
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
-                                                        decoration:
-                                                            InputDecoration(
-                                                          labelText: 'Tips',
-                                                          labelStyle: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                          filled: true,
-                                                          fillColor:
-                                                              Colors.grey[800],
-                                                          border:
-                                                              OutlineInputBorder(),
-                                                        ),
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        onChanged: (val) {
-                                                          state.tips.value =
-                                                              val;
-                                                          getController
-                                                              .calculateGrandTotal(a
-                                                                  .amount
-                                                                  .toDouble());
-                                                        },
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 16),
+                                                    SizedBox(width: 10),
                                                     Expanded(
                                                       child:
                                                           DropdownButtonFormField<
@@ -307,34 +269,23 @@ class Appointmentscreen extends StatelessWidget {
                                                             .paymentMethod
                                                             .value,
                                                         dropdownColor:
-                                                            Colors.grey[850],
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .surface,
                                                         decoration:
                                                             InputDecoration(
                                                           labelText:
                                                               'Payment Method *',
-                                                          labelStyle: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                          filled: true,
-                                                          fillColor:
-                                                              Colors.grey[800],
                                                           border:
                                                               OutlineInputBorder(),
                                                         ),
-                                                        items: [
-                                                          'UPI',
-                                                          'Cash',
-                                                          'Card'
-                                                        ]
+                                                        items: ['UPI', 'Card']
                                                             .map((method) =>
                                                                 DropdownMenuItem<
                                                                     String>(
                                                                   value: method,
                                                                   child: Text(
-                                                                      method,
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.white)),
+                                                                      method),
                                                                 ))
                                                             .toList(),
                                                         onChanged: (val) {
@@ -346,14 +297,39 @@ class Appointmentscreen extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(height: 24),
+                                                // SizedBox(height: 24),
+                                                TextFormField(
+                                                  initialValue:
+                                                      state.tips.value,
+                                                  style: TextStyle(
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 27, 25, 25)),
+                                                  decoration: InputDecoration(
+                                                    labelText: 'Tips',
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                  ),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onChanged: (val) {
+                                                    state.tips.value = val;
+                                                    getController
+                                                        .calculateGrandTotal(a
+                                                            .amount
+                                                            .toDouble());
+                                                  },
+                                                ),
+                                                // SizedBox(height: 24),
                                                 Text('Discounts',
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18)),
-                                                SizedBox(height: 12),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium
+                                                        ?.copyWith(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                // SizedBox(height: 12),
                                                 Row(
                                                   children: [
                                                     Expanded(
@@ -362,17 +338,11 @@ class Appointmentscreen extends StatelessWidget {
                                                             .couponCode.value,
                                                         style: TextStyle(
                                                             color:
-                                                                Colors.white),
+                                                                Colors.black),
                                                         decoration:
                                                             InputDecoration(
                                                           labelText:
                                                               'Coupon Code',
-                                                          labelStyle: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                          filled: true,
-                                                          fillColor:
-                                                              Colors.grey[800],
                                                           border:
                                                               OutlineInputBorder(),
                                                         ),
@@ -382,7 +352,7 @@ class Appointmentscreen extends StatelessWidget {
                                                         },
                                                       ),
                                                     ),
-                                                    SizedBox(width: 8),
+                                                    // SizedBox(width: 8),
                                                     ElevatedButton(
                                                       onPressed: () {
                                                         getController
@@ -396,19 +366,27 @@ class Appointmentscreen extends StatelessWidget {
                                                       },
                                                       child: Text('Apply'),
                                                     ),
-                                                    SizedBox(width: 16),
-                                                    if (a.membership == '-')
-                                                      Text(
-                                                          'Customer has no membership',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.amber,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
+                                                    // SizedBox(width: 16),
                                                   ],
                                                 ),
-                                                SizedBox(height: 12),
+                                                // SizedBox(height: 12),
+                                                // Coupon/Discount section
+                                                if (a.membership == '-')
+                                                  Text(
+                                                      'Customer has no membership',
+                                                      style: TextStyle(
+                                                          color: Colors.amber,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                if (a.membership == 'Yes' &&
+                                                    a.branchMembershipDiscount !=
+                                                        null)
+                                                  Text(
+                                                      'Membership Discount: ${a.branchMembershipDiscountType == 'percentage' ? '${a.branchMembershipDiscount?.toStringAsFixed(0)}%' : '₹${a.branchMembershipDiscount?.toStringAsFixed(2)}'} applied',
+                                                      style: TextStyle(
+                                                          color: Colors.green,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
                                                 Row(
                                                   children: [
                                                     Checkbox(
@@ -430,7 +408,7 @@ class Appointmentscreen extends StatelessWidget {
                                                         'Want to add additional discount?',
                                                         style: TextStyle(
                                                             color:
-                                                                Colors.white)),
+                                                                Colors.black)),
                                                   ],
                                                 ),
                                                 if (state.addAdditionalDiscount
@@ -445,18 +423,13 @@ class Appointmentscreen extends StatelessWidget {
                                                               .discountType
                                                               .value,
                                                           dropdownColor:
-                                                              Colors.grey[850],
+                                                              Theme.of(context)
+                                                                  .colorScheme
+                                                                  .surface,
                                                           decoration:
                                                               InputDecoration(
                                                             labelText:
                                                                 'Discount Type',
-                                                            labelStyle:
-                                                                TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                            filled: true,
-                                                            fillColor: Colors
-                                                                .grey[800],
                                                             border:
                                                                 OutlineInputBorder(),
                                                           ),
@@ -465,17 +438,11 @@ class Appointmentscreen extends StatelessWidget {
                                                                 value:
                                                                     'percentage',
                                                                 child: Text(
-                                                                    'Percentage (%)',
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white))),
+                                                                    'Percentage (%)')),
                                                             DropdownMenuItem(
                                                                 value: 'amount',
                                                                 child: Text(
-                                                                    'Amount',
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white))),
+                                                                    'Amount')),
                                                           ],
                                                           onChanged: (val) {
                                                             state.discountType
@@ -489,7 +456,7 @@ class Appointmentscreen extends StatelessWidget {
                                                           },
                                                         ),
                                                       ),
-                                                      SizedBox(width: 16),
+                                                      SizedBox(width: 10),
                                                       Expanded(
                                                         child: TextFormField(
                                                           initialValue: state
@@ -497,18 +464,11 @@ class Appointmentscreen extends StatelessWidget {
                                                               .value,
                                                           style: TextStyle(
                                                               color:
-                                                                  Colors.white),
+                                                                  Colors.black),
                                                           decoration:
                                                               InputDecoration(
                                                             labelText:
                                                                 'Discount Value',
-                                                            labelStyle:
-                                                                TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                            filled: true,
-                                                            fillColor: Colors
-                                                                .grey[800],
                                                             border:
                                                                 OutlineInputBorder(),
                                                           ),
@@ -527,29 +487,30 @@ class Appointmentscreen extends StatelessWidget {
                                                       ),
                                                     ],
                                                   ),
-                                                SizedBox(height: 24),
+                                                // SizedBox(height: 24),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
                                                     Text('Grand Total',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18)),
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .titleMedium
+                                                            ?.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
                                                     Text(
                                                         '₹ ${state.grandTotal.value.toStringAsFixed(2)}',
                                                         style: TextStyle(
-                                                            color: Colors
-                                                                .greenAccent,
+                                                            color: Colors.green,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             fontSize: 22)),
                                                   ],
                                                 ),
-                                                SizedBox(height: 24),
+                                                // SizedBox(height: 24),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.end,
@@ -572,20 +533,23 @@ class Appointmentscreen extends StatelessWidget {
                                                     SizedBox(width: 16),
                                                     ElevatedButton(
                                                       onPressed: () {
-                                                        // TODO: Implement bill generation logic
+                                                        getController
+                                                            .onPaymentMade(a);
                                                         Navigator.pop(context);
                                                       },
                                                       style: ElevatedButton
                                                           .styleFrom(
                                                         backgroundColor:
-                                                            Color(0xFF8C6E54),
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .primary,
                                                       ),
                                                       child:
                                                           Text('Generate Bill'),
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(height: 8),
+                                                // SizedBox(height: 8),
                                               ],
                                             ),
                                           )),
