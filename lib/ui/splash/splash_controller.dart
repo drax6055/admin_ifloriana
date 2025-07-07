@@ -3,16 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
-import '../auth/forgot/forgot_screen.dart';
-import '../buy_product/getOrderList/getOrderListScreen.dart';
-import '../drawer/branches/getBranches/getBranchesScreen.Dart';
-import '../drawer/branches/post_branches_screena.dart/postBranchesScreen.dart';
-import '../drawer/drawer_screen.dart';
-import '../drawer/reports/orderReport/order_report_screen.dart';
-import '../drawer/reports/staffServiceReport/staff_service_report_screen.dart';
-import '../drawer/staff/addNewStaffScreen.dart';
-import '../drawer/staffEarnings/statffEarningScreen.dart';
-import '../drawer/staffPayoutRepoer/staffPayoutReportScreen.dart';
+import '../drawer/appointment/appointmentScreen.dart';
 
 class SplashController extends GetxController {
   @override
@@ -31,7 +22,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(Staffpayoutreportscreen());
+          Get.to(Appointmentscreen());
         }
       });
     } catch (e) {

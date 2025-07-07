@@ -7,7 +7,7 @@ import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
 
-class Adminprofilecontroller extends GetxController {
+class   Adminprofilecontroller extends GetxController {
   var fullnameController = TextEditingController();
   var salonNameController = TextEditingController();
   var addressController = TextEditingController();
