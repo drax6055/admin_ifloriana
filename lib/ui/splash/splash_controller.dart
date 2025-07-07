@@ -22,7 +22,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.toNamed(Routes.dashboardScreen);
+          Get.to(Appointmentscreen());
         }
       });
     } catch (e) {

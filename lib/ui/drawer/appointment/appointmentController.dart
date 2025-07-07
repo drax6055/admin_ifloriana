@@ -276,92 +276,100 @@ class AppointmentController extends GetxController {
     }
   }
 
+  // Formula:
+  // service amount + tax - discount coupon - additional discount + tip
   void calculateGrandTotal(double serviceAmount) {
+    final state = paymentSummaryState;
     double total = serviceAmount;
-    // Apply coupon discount
-    final coupon = paymentSummaryState.appliedCoupon.value;
+
+    // Add tax if selected
+    final tax = state.selectedTax.value;
+    double taxAmount = 0;
+    if (tax != null) {
+      taxAmount = (serviceAmount * tax.value / 100);
+      total += taxAmount;
+    }
+
+    // Subtract coupon discount if any
+    final coupon = state.appliedCoupon.value;
     if (coupon != null) {
-      if (coupon.discountType == 'percent') {
+      if (coupon.discountType == 'percentage') {
         total -= (total * coupon.discountAmount / 100);
       } else {
         total -= coupon.discountAmount;
       }
     }
-    // Apply additional discount
-    if (paymentSummaryState.addAdditionalDiscount.value) {
-      final discountType = paymentSummaryState.discountType.value;
-      final discountValue =
-          double.tryParse(paymentSummaryState.discountValue.value) ?? 0;
-      if (discountType == 'percentage') {
+
+    // Subtract additional discount if enabled
+    if (state.addAdditionalDiscount.value) {
+      final discountValue = double.tryParse(state.discountValue.value) ?? 0;
+      if (state.discountType.value == 'percentage') {
         total -= (total * discountValue / 100);
       } else {
         total -= discountValue;
       }
     }
-    // Apply tax
-    final tax = paymentSummaryState.selectedTax.value;
-    if (tax != null) {
-      total += (total * tax.value / 100);
-    }
+
     // Add tips
-    final tips = double.tryParse(paymentSummaryState.tips.value) ?? 0;
+    final tips = double.tryParse(state.tips.value) ?? 0;
     total += tips;
-    paymentSummaryState.grandTotal.value = total < 0 ? 0 : total;
+
+    // Prevent negative total
+    if (total < 0) total = 0;
+    state.grandTotal.value = double.parse(total.toStringAsFixed(2));
   }
 
+  // Formula:
+  // (service amount - membership discount) + tax + tip - coupon discount - additional discount
   void calculateGrandTotalWithMembership(Appointment appointment) {
+    final state = paymentSummaryState;
     double serviceAmount = appointment.amount.toDouble();
-    double tips = double.tryParse(paymentSummaryState.tips.value) ?? 0;
+    double total = serviceAmount;
 
-    // Tax (applied on service amount only)
-    double taxAmount = 0;
-    final tax = paymentSummaryState.selectedTax.value;
-    if (tax != null) {
-      taxAmount = (serviceAmount * tax.value / 100);
-    }
-
-    // Subtotal before discounts
-    double subtotal = serviceAmount + taxAmount + tips;
-
-    // Membership discount
-    double membershipDiscount = 0;
+    // Subtract membership discount (only on service amount)
     if (appointment.branchMembershipDiscount != null &&
-        appointment.branchMembershipDiscountType != null) {
+        appointment.branchMembershipDiscount! > 0) {
       if (appointment.branchMembershipDiscountType == 'percentage') {
-        membershipDiscount =
-            (subtotal * appointment.branchMembershipDiscount! / 100);
+        total -= (serviceAmount * appointment.branchMembershipDiscount! / 100);
       } else {
-        membershipDiscount = appointment.branchMembershipDiscount!;
+        total -= appointment.branchMembershipDiscount!;
       }
     }
 
-    // Coupon discount
-    double couponDiscount = 0;
-    final coupon = paymentSummaryState.appliedCoupon.value;
+    // Add tax if selected (tax is now on the discounted amount)
+    final tax = state.selectedTax.value;
+    double taxAmount = 0;
+    if (tax != null) {
+      taxAmount = (total * tax.value / 100);
+      total += taxAmount;
+    }
+
+    // Add tips
+    final tips = double.tryParse(state.tips.value) ?? 0;
+    total += tips;
+
+    // Subtract coupon discount if any
+    final coupon = state.appliedCoupon.value;
     if (coupon != null) {
-      if (coupon.discountType == 'percent') {
-        couponDiscount = (subtotal * coupon.discountAmount / 100);
+      if (coupon.discountType == 'percentage') {
+        total -= (total * coupon.discountAmount / 100);
       } else {
-        couponDiscount = coupon.discountAmount;
+        total -= coupon.discountAmount;
       }
     }
 
-    // Additional discount
-    double additionalDiscount = 0;
-    if (paymentSummaryState.addAdditionalDiscount.value) {
-      final discountType = paymentSummaryState.discountType.value;
-      final discountValue =
-          double.tryParse(paymentSummaryState.discountValue.value) ?? 0;
-      if (discountType == 'percentage') {
-        additionalDiscount = (subtotal * discountValue / 100);
+    // Subtract additional discount if enabled
+    if (state.addAdditionalDiscount.value) {
+      final discountValue = double.tryParse(state.discountValue.value) ?? 0;
+      if (state.discountType.value == 'percentage') {
+        total -= (total * discountValue / 100);
       } else {
-        additionalDiscount = discountValue;
+        total -= discountValue;
       }
     }
 
-    // Grand total
-    double total =
-        subtotal - membershipDiscount - couponDiscount - additionalDiscount;
-    paymentSummaryState.grandTotal.value = total < 0 ? 0 : total;
+    // Prevent negative total
+    if (total < 0) total = 0;
+    state.grandTotal.value = double.parse(total.toStringAsFixed(2));
   }
 }
