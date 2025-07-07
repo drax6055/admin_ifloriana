@@ -142,6 +142,13 @@ class Appointmentscreen extends StatelessWidget {
                     DataCell(Row(
                       children: [
                         IconButton(
+                          icon: Icon(Icons.receipt,
+                              color: a.paymentStatus == 'Paid'
+                                  ? Colors.blue
+                                  : Colors.grey),
+                          onPressed: a.paymentStatus == 'Paid' ? () {} : null,
+                        ),
+                        IconButton(
                           icon: Icon(Icons.edit, color: Colors.cyanAccent),
                           onPressed: () {},
                         ),
