@@ -54,8 +54,13 @@ class Appointment {
       staffName: staff['full_name'] ?? '-',
       staffImage: staff['image'],
       serviceName: service['name'] ?? '-',
-      membership: json['branch_membership'] != null ? 'Yes' : '-',
-      package: json['branch_package'] != null ? 'Yes' : '-',
+      membership: customer['branch_membership'] != null ? 'Yes' : '-',
+      package: (customer['branch_package'] != null &&
+              (customer['branch_package'] is List
+                  ? customer['branch_package'].isNotEmpty
+                  : true))
+          ? 'Yes'
+          : '-',
       status: json['status'] ?? '-',
       paymentStatus: json['payment_status'] ?? '-',
     );

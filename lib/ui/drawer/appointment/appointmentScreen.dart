@@ -101,18 +101,18 @@ class Appointmentscreen extends StatelessWidget {
                     )),
                     DataCell(Text(a.serviceName,
                         style: TextStyle(color: Colors.black))),
-                    DataCell(a.membership == 'Yes'
-                        ? Chip(
+                    DataCell(a.membership == '-'
+                        ? Text('-', style: TextStyle(color: Colors.black))
+                        : Chip(
                             label: Text('Yes'),
                             backgroundColor: Colors.grey[700],
-                            labelStyle: TextStyle(color: Colors.black))
-                        : Text('-', style: TextStyle(color: Colors.black))),
-                    DataCell(a.package == 'Yes'
-                        ? Chip(
+                            labelStyle: TextStyle(color: Colors.black))),
+                    DataCell(a.package == '-'
+                        ? Text('-', style: TextStyle(color: Colors.black))
+                        : Chip(
                             label: Text('Yes'),
                             backgroundColor: Colors.grey[700],
-                            labelStyle: TextStyle(color: Colors.black))
-                        : Text('-', style: TextStyle(color: Colors.black))),
+                            labelStyle: TextStyle(color: Colors.black))),
                     DataCell(
                       Chip(
                         label: Text(
