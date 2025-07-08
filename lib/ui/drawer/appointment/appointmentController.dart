@@ -247,129 +247,28 @@ class AppointmentController extends GetxController {
     }
   }
 
-  Future onPaymentMade(Appointment appointment) async {
-    final loginUser = await prefs.getUser();
-    final state = paymentSummaryState;
-    Map<String, dynamic> paymentData = {
-      'salon_id': loginUser!.salonId,
-      'appointment_id': appointment.appointmentId,
-      'tax_id': state.selectedTax.value?.id,
-      'tips': double.tryParse(state.tips.value) ?? 0,
-      'payment_method': state.paymentMethod.value,
-      'coupon_id': state.appliedCoupon.value?.id,
-      'additional_discount_type':
-          state.addAdditionalDiscount.value ? state.discountType.value : null,
-      'additional_discount_value': state.addAdditionalDiscount.value
-          ? double.tryParse(state.discountValue.value) ?? 0
-          : null,
-    };
-    try {
-      await dioClient.postData<MakePayment>(
-        '${Apis.baseUrl}/payments',
-        paymentData,
-        (json) => MakePayment.fromJson(json),
-      );
-      CustomSnackbar.showSuccess('Succcess', 'Done');
-    } catch (e) {
-      print('==> here Error: $e');
-      CustomSnackbar.showError('Error', e.toString());
-    }
-  }
-
-  // Formula:
-  // service amount + tax - discount coupon - additional discount + tip
-  void calculateGrandTotal(double serviceAmount) {
-    final state = paymentSummaryState;
-    double total = serviceAmount;
-
-    // Add tax if selected
-    final tax = state.selectedTax.value;
-    double taxAmount = 0;
-    if (tax != null) {
-      taxAmount = (serviceAmount * tax.value / 100);
-      total += taxAmount;
-    }
-
-    // Subtract coupon discount if any
-    final coupon = state.appliedCoupon.value;
-    if (coupon != null) {
-      if (coupon.discountType == 'percentage') {
-        total -= (total * coupon.discountAmount / 100);
+  // Add this function to calculate the grand total
+  void calculateGrandTotal({
+    required double servicePrice,
+    double memberDiscount = 0.0,
+    double taxValue = 0.0,
+    double tip = 0.0,
+    double couponDiscount = 0.0,
+    double additionalDiscount = 0.0,
+    String discountType = 'percentage',
+  }) {
+    double total = servicePrice - memberDiscount;
+    total -= couponDiscount;
+    // Apply additional discount if any
+    if (additionalDiscount > 0) {
+      if (discountType == 'percentage') {
+        total -= (total * additionalDiscount / 100);
       } else {
-        total -= coupon.discountAmount;
+        total -= additionalDiscount;
       }
     }
-
-    // Subtract additional discount if enabled
-    if (state.addAdditionalDiscount.value) {
-      final discountValue = double.tryParse(state.discountValue.value) ?? 0;
-      if (state.discountType.value == 'percentage') {
-        total -= (total * discountValue / 100);
-      } else {
-        total -= discountValue;
-      }
-    }
-
-    // Add tips
-    final tips = double.tryParse(state.tips.value) ?? 0;
-    total += tips;
-
-    // Prevent negative total
-    if (total < 0) total = 0;
-    state.grandTotal.value = double.parse(total.toStringAsFixed(2));
-  }
-
-  // Formula:
-  // (service amount - membership discount) + tax + tip - coupon discount - additional discount
-  void calculateGrandTotalWithMembership(Appointment appointment) {
-    final state = paymentSummaryState;
-    double serviceAmount = appointment.amount.toDouble();
-    double total = serviceAmount;
-
-    // Subtract membership discount (only on service amount)
-    if (appointment.branchMembershipDiscount != null &&
-        appointment.branchMembershipDiscount! > 0) {
-      if (appointment.branchMembershipDiscountType == 'percentage') {
-        total -= (serviceAmount * appointment.branchMembershipDiscount! / 100);
-      } else {
-        total -= appointment.branchMembershipDiscount!;
-      }
-    }
-
-    // Add tax if selected (tax is now on the discounted amount)
-    final tax = state.selectedTax.value;
-    double taxAmount = 0;
-    if (tax != null) {
-      taxAmount = (total * tax.value / 100);
-      total += taxAmount;
-    }
-
-    // Add tips
-    final tips = double.tryParse(state.tips.value) ?? 0;
-    total += tips;
-
-    // Subtract coupon discount if any
-    final coupon = state.appliedCoupon.value;
-    if (coupon != null) {
-      if (coupon.discountType == 'percentage') {
-        total -= (total * coupon.discountAmount / 100);
-      } else {
-        total -= coupon.discountAmount;
-      }
-    }
-
-    // Subtract additional discount if enabled
-    if (state.addAdditionalDiscount.value) {
-      final discountValue = double.tryParse(state.discountValue.value) ?? 0;
-      if (state.discountType.value == 'percentage') {
-        total -= (total * discountValue / 100);
-      } else {
-        total -= discountValue;
-      }
-    }
-
-    // Prevent negative total
-    if (total < 0) total = 0;
-    state.grandTotal.value = double.parse(total.toStringAsFixed(2));
+    double totalWithTax = total + taxValue;
+    double grandTotal = totalWithTax + tip;
+    paymentSummaryState.grandTotal.value = grandTotal < 0 ? 0 : grandTotal;
   }
 }

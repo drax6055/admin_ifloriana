@@ -1,6 +1,6 @@
 class Apis {
-  static const baseUrl = 'http://192.168.1.30:5000/api';
-  static const pdfUrl = 'http://192.168.1.30:5000';
+  static const baseUrl = 'http://192.168.1.13:5000/api';
+  static const pdfUrl = 'http://192.168.1.13:5000';
 }
 
 class Endpoints {
