@@ -488,7 +488,7 @@ class Addnewstaffscreen extends StatelessWidget {
     return Obx(() {
       return DropdownButton<Commition>(
         value: getController.selectedCommition.value,
-        hint: Text("Select Commition"),
+        hint: Text("Select Commision"),
         items: getController.commitionList.map((Commition commition) {
           return DropdownMenuItem<Commition>(
             value: commition,

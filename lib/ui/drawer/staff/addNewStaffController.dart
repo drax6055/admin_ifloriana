@@ -71,6 +71,7 @@ class Addnewstaffcontroller extends GetxController {
 
   var isEditMode = false.obs;
   String? editingStaffId;
+  Data? _pendingStaffToPopulate;
 
   void toggleShowPass() {
     showPass.value = !showPass.value;
@@ -124,6 +125,7 @@ class Addnewstaffcontroller extends GetxController {
 
       final data = response['data'] as List;
       serviceList.value = data.map((e) => Service.fromJson(e)).toList();
+      _tryPopulatePendingStaff();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
@@ -139,6 +141,7 @@ class Addnewstaffcontroller extends GetxController {
 
       final data = response['data'] as List;
       branchList.value = data.map((e) => Branch.fromJson(e)).toList();
+      _tryPopulatePendingStaff();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
@@ -154,27 +157,49 @@ class Addnewstaffcontroller extends GetxController {
 
       final data = response['data'] as List;
       commitionList.value = data.map((e) => Commition.fromJson(e)).toList();
+      _tryPopulatePendingStaff();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
   }
 
+  void _tryPopulatePendingStaff() {
+    if (_pendingStaffToPopulate != null &&
+        branchList.isNotEmpty &&
+        commitionList.isNotEmpty &&
+        serviceList.isNotEmpty) {
+      populateFromStaff(_pendingStaffToPopulate!);
+      _pendingStaffToPopulate = null;
+    }
+  }
+
   void populateFromStaff(Data staff) {
+    if (branchList.isEmpty || commitionList.isEmpty || serviceList.isEmpty) {
+      _pendingStaffToPopulate = staff;
+      return;
+    }
+    _pendingStaffToPopulate = null;
     fullnameController.text = staff.fullName ?? '';
     emailController.text = staff.email ?? '';
     phoneController.text = staff.phoneNumber ?? '';
     passwordController.text = '';
     confirmpasswordController.text = '';
     selectedGender.value = staff.gender?.capitalizeFirst ?? 'Male';
-    // salaryController.text = staff.salary?.toString() ?? '';
     shiftStarttimeController.text = staff.assignTime?.startShift ?? '';
     shiftEndtimeController.text = staff.assignTime?.endShift ?? '';
     durationController.text = staff.lunchTime?.duration?.toString() ?? '';
     LunchStarttimeController.text = staff.lunchTime?.timing ?? '';
 
-    // Set selectedBranch
-    selectedBranch.value =
-        branchList.firstWhereOrNull((b) => b.id == staff.branchId?.sId);
+    // Set selectedBranch (preselect like example)
+    if (branchList.isNotEmpty) {
+      final branch = branchList.firstWhere(
+        (b) => b.id == staff.branchId?.sId,
+        orElse: () => branchList.first,
+      );
+      selectedBranch.value = branch;
+    } else {
+      selectedBranch.value = null;
+    }
 
     // Set selectedServices
     selectedServices.assignAll(
