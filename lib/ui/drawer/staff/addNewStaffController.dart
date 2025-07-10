@@ -67,7 +67,7 @@ class Addnewstaffcontroller extends GetxController {
   var branchList = <Branch>[].obs;
   var commitionList = <Commition>[].obs;
   var selectedBranch = Rx<Branch?>(null);
-  var selectedCommition = Rx<Commition?>(null);
+  var selectedCommitionId = Rx<String?>(null);
 
   var isEditMode = false.obs;
   String? editingStaffId;
@@ -208,12 +208,10 @@ class Addnewstaffcontroller extends GetxController {
           .toList(),
     );
 
-    // Set selectedCommition (assuming only one commission is used)
-    selectedCommition.value = commitionList.firstWhereOrNull(
-      (c) =>
-          staff.commissionId?.isNotEmpty == true &&
-          c.id == staff.commissionId!.first,
-    );
+    // Set selectedCommitionId (by id)
+    selectedCommitionId.value = staff.commissionId?.isNotEmpty == true
+        ? staff.commissionId!.first
+        : null;
 
     // Set image
     singleImage.value = staff.image;
@@ -229,7 +227,7 @@ class Addnewstaffcontroller extends GetxController {
       'branch_id': selectedBranch.value?.id,
       'service_id': selectedServices.map((s) => s.id).toList(),
       'status': 1,
-      'assigned_commission_id': selectedCommition.value?.id,
+      'assigned_commission_id': selectedCommitionId.value,
       'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
       // 'salary': int.tryParse(salaryController.text) ?? 0,
@@ -265,7 +263,7 @@ class Addnewstaffcontroller extends GetxController {
       'branch_id': selectedBranch.value?.id,
       'service_id': selectedServices.map((s) => s.id).toList(),
       'status': 1,
-      'assigned_commission_id': selectedCommition.value?.id,
+      'assigned_commission_id': selectedCommitionId.value,
       'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
       // 'salary': int.tryParse(salaryController.text) ?? 0,
