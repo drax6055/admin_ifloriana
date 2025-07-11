@@ -30,7 +30,7 @@ class Data {
   String? password;
   String? gender;
   BranchId? branchId;
-  List<String>? commissionId;
+  CommitionId? commissionId;
   List<ServiceId>? serviceId;
   int? status;
   String? image;
@@ -170,6 +170,26 @@ class BranchId {
   BranchId({this.sId, this.name});
 
   BranchId.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = sId;
+    data['name'] = name;
+    return data;
+  }
+}
+
+class CommitionId {
+  String? sId;
+  String? name;
+  // ... other fields as needed ...
+
+  CommitionId({this.sId, this.name});
+
+  CommitionId.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
   }

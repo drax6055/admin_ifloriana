@@ -67,7 +67,7 @@ class Addnewstaffcontroller extends GetxController {
   var branchList = <Branch>[].obs;
   var commitionList = <Commition>[].obs;
   var selectedBranch = Rx<Branch?>(null);
-  var selectedCommitionId = Rx<String?>(null);
+  var selectedCommitionId = Rx<Commition?>(null);
 
   var isEditMode = false.obs;
   String? editingStaffId;
@@ -209,10 +209,19 @@ class Addnewstaffcontroller extends GetxController {
     );
 
     // Set selectedCommitionId (by id)
-    selectedCommitionId.value = staff.commissionId?.isNotEmpty == true
-        ? staff.commissionId!.first
-        : null;
-
+    // selectedCommitionId.value = staff.commissionId?.isNotEmpty == true
+    //     ? staff.commissionId!.first
+    //     : null;
+if (commitionList.isNotEmpty) {
+      final commiison = commitionList.firstWhere(
+        (b) => b.id == staff.commissionId?.sId,
+        orElse: () => commitionList.first,
+      );
+      selectedCommitionId.value = commiison;
+    } else {
+      selectedCommitionId
+      .value = null;
+    }
     // Set image
     singleImage.value = staff.image;
   }
@@ -233,7 +242,7 @@ class Addnewstaffcontroller extends GetxController {
       // 'salary': int.tryParse(salaryController.text) ?? 0,
       'assign_time': {
         'start_shift': shiftStarttimeController.text,
-        'end_shift': shiftEndtimeController.text,
+        'end_shift': shiftEndtimeController.text,        
       },
       'lunch_time': {
         'duration': int.tryParse(durationController.text) ?? 0,

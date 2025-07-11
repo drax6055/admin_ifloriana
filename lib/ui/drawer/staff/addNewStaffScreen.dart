@@ -486,19 +486,19 @@ class Addnewstaffscreen extends StatelessWidget {
 
   Widget CommitionDropdown() {
     return Obx(() {
-      return DropdownButtonFormField<String>(
+      return DropdownButtonFormField<Commition>(
         value: getController.selectedCommitionId.value,
         decoration: InputDecoration(
           labelText: "Select Commision",
           border: OutlineInputBorder(),
         ),
         items: getController.commitionList.map((Commition commition) {
-          return DropdownMenuItem<String>(
-            value: commition.id,
+          return DropdownMenuItem<Commition>(
+            value: commition,
             child: Text(commition.name ?? ''),
           );
         }).toList(),
-        onChanged: (String? newValue) {
+        onChanged: (Commition? newValue) {
           if (newValue != null) {
             getController.selectedCommitionId.value = newValue;
             CustomSnackbar.showSuccess(
