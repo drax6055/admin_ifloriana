@@ -255,3 +255,4 @@ class DynamicInputController extends GetxController {
     grandTotal.value = 0;
   }
 }
+  
