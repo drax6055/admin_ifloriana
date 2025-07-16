@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_template/main.dart';
+import 'package:flutter_template/ui/drawer/customers/customersScreen.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
@@ -22,7 +23,9 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-          Get.to(Staffdetailsscreen());
+       
+          Get.to(CustomersScreen());
+            //  Get.to(Staffdetailsscreen());
         }
       });
     } catch (e) {
@@ -30,3 +33,4 @@ class SplashController extends GetxController {
     }
   }
 }
+  

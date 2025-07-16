@@ -29,6 +29,7 @@ import '../ui/splash/splash_screen.dart';
 import 'app_route.dart';
 import '../ui/drawer/branches/getBranches/getBranchesScreen.Dart';
 import 'package:flutter_template/ui/product_list/product_list_screen.dart';
+import 'package:flutter_template/ui/drawer/customers/edit_customer/edit_customer_screen.dart';
 
 class AppPages {
   static const initial = Routes.splashScreen;
@@ -140,6 +141,10 @@ class AppPages {
     GetPage(
         name: Routes.placeOrder,
         page: () => BuyProductScreen(),
+        transition: Transition.rightToLeft),
+    GetPage(
+        name: Routes.editCustomer,
+        page: () => EditCustomerScreen(),
         transition: Transition.rightToLeft),
   ];
 }
