@@ -138,8 +138,11 @@ class CustomerController extends GetxController {
         'salon_id': loginUser!.salonId
       };
       if (showPackageFields.value) {
-        customerData['branch_package'] =
-            selectedPackages.map((p) => p.id).toList();
+        final packageIds = selectedPackages
+            .map((p) => p.id)
+            .where((id) => id != null && id.toString().isNotEmpty)
+            .toList();
+        customerData['branch_package'] = packageIds;
         customerData['branch_membership'] = selectedBranchMembership.value;
       }
       final response = await dioClient.putData(
@@ -159,10 +162,9 @@ class CustomerController extends GetxController {
         );
         customerList.refresh();
       }
-       Get.back();
+      Get.back();
       CustomSnackbar.showSuccess('Success', 'Customer updated successfully');
       await fetchCustomers();
-     
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to update customer: $e');
     }

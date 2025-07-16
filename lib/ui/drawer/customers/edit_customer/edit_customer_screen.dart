@@ -94,7 +94,9 @@ class EditCustomerScreen extends StatelessWidget {
           !customerController.membershipsLoaded.value) {
         return const Center(child: CircularProgressIndicator());
       }
-      prefillCustomerFields(customer);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        prefillCustomerFields(customer);
+      });
 
       return Scaffold(
         appBar: CustomAppBar(title: "Edit Customer"),
