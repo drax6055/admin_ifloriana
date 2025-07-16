@@ -52,8 +52,12 @@ class EditCustomerScreen extends StatelessWidget {
 
     // Prefill branch packages
     if (hasPackages && customerController.branchPackageList.isNotEmpty) {
+      final customerPackageIds =
+          customer.branchPackage.map((id) => id.toString().trim()).toList();
       final selectedPkgs = customerController.branchPackageList
-          .where((pkg) => customer.branchPackage.contains(pkg.id))
+          .where((pkg) =>
+              pkg.id != null &&
+              customerPackageIds.contains(pkg.id.toString().trim()))
           .toList();
       customerController.selectedPackages.value = selectedPkgs;
       customerController.packageController.clearAll();
