@@ -4,6 +4,7 @@ import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import '../customerController.dart';
 
 class Salon {
   final String? id;
@@ -106,7 +107,6 @@ class Addcustomercontroller extends GetxController {
   var selectedBranchMembership = ''.obs;
   var selectedPackages = <BranchPackage>[].obs;
 
-
   // Lists for dropdowns
   var branchPackageList = <BranchPackage>[].obs;
   var branchMembershipList = <BranchMembership>[].obs;
@@ -118,7 +118,6 @@ class Addcustomercontroller extends GetxController {
     super.onInit();
     getBranchPackages();
     getBranchMemberships();
-
   }
 
   @override
@@ -188,6 +187,11 @@ class Addcustomercontroller extends GetxController {
         (json) => json,
       );
 
+      // Refresh customer list after adding
+      try {
+        Get.find<CustomerController>().fetchCustomers();
+      } catch (e) {}
+
       // Clear form
       fullNameController.clear();
       emailController.clear();
@@ -199,12 +203,10 @@ class Addcustomercontroller extends GetxController {
       packageController.clearAll();
       isActive.value = true;
       showPackageFields.value = false;
-
+      Get.back();
       CustomSnackbar.showSuccess('Success', 'Customer added successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to add customer: $e');
     }
   }
-
-
 }

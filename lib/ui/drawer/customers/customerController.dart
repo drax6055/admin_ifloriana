@@ -117,6 +117,7 @@ class CustomerController extends GetxController {
       if (response != null) {
         customerList.removeWhere((customer) => customer.id == customerId);
         CustomSnackbar.showSuccess('Success', 'Customer deleted successfully');
+        await fetchCustomers();
       }
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to delete customer: $e');
@@ -158,8 +159,10 @@ class CustomerController extends GetxController {
         );
         customerList.refresh();
       }
+       Get.back();
       CustomSnackbar.showSuccess('Success', 'Customer updated successfully');
-      Get.back();
+      await fetchCustomers();
+     
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to update customer: $e');
     }
