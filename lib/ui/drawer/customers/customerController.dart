@@ -142,7 +142,8 @@ class CustomerController extends GetxController {
             .map((p) => p.id)
             .where((id) => id != null && id.toString().isNotEmpty)
             .toList();
-        customerData['branch_package'] = packageIds;
+        customerData['branch_package'] =
+            packageIds; // always an array, even if empty
         customerData['branch_membership'] = selectedBranchMembership.value;
       }
       final response = await dioClient.putData(
@@ -174,7 +175,7 @@ class CustomerController extends GetxController {
     try {
       final loginUser = await prefs.getUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}?salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}${loginUser!.salonId}',
         (json) => json,
       );
       final data = response['data'] as List;

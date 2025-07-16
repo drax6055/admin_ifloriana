@@ -134,7 +134,7 @@ class Addcustomercontroller extends GetxController {
     try {
       final loginUser = await prefs.getUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}?salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}${loginUser!.salonId}',
         (json) => json,
       );
 
