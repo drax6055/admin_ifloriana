@@ -142,8 +142,9 @@ class CustomerController extends GetxController {
             .map((p) => p.id)
             .where((id) => id != null && id.toString().isNotEmpty)
             .toList();
-        customerData['branch_package'] =
-            packageIds; // always an array, even if empty
+        if (packageIds.isNotEmpty) {
+          customerData['branch_package'] = packageIds;
+        }
         customerData['branch_membership'] = selectedBranchMembership.value;
       }
       final response = await dioClient.putData(
