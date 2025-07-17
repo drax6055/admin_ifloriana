@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/drawer/branches/getBranches/getBranchesScreen.Dart';
-import 'package:flutter_template/ui/drawer/calender_booking/calender_screen.dart';
+
 import 'package:flutter_template/ui/drawer/drawer_controller.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart';
 import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
@@ -37,10 +37,6 @@ class DrawerScreen extends StatelessWidget {
       {
         'title': 'Dashboard',
         'widget':  DashboardScreen(),
-      },
-      {
-        'title': 'CalenderScreen',
-        'widget': const CalenderScreen(),
       },
       {
         'title': 'Branches',

@@ -28,7 +28,7 @@ import '../ui/drawer/products/variations/variationScreen.dart';
 import '../ui/splash/splash_screen.dart';
 import 'app_route.dart';
 import '../ui/drawer/branches/getBranches/getBranchesScreen.Dart';
-import 'package:flutter_template/ui/product_list/product_list_screen.dart';
+import 'package:flutter_template/ui/drawer/products/product_list/product_list_screen.dart';
 import 'package:flutter_template/ui/drawer/customers/edit_customer/edit_customer_screen.dart';
 
 class AppPages {
