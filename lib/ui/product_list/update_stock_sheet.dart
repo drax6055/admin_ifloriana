@@ -44,7 +44,7 @@ class _UpdateStockSheetState extends State<UpdateStockSheet> {
       padding: EdgeInsets.all(16)
           .copyWith(bottom: MediaQuery.of(context).viewInsets.bottom + 16),
       decoration: BoxDecoration(
-        color: Color(0xFF2a2a2a),
+        color: Colors.white, // Light mode background
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SingleChildScrollView(
@@ -57,16 +57,16 @@ class _UpdateStockSheetState extends State<UpdateStockSheet> {
               children: [
                 Expanded(
                   child: Text(
-                    'Update Stock: ${widget.product.productName}',
+                    'Update Stock:  ${widget.product.productName}',
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black, // Dark text for light mode
                         fontSize: 18,
                         fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.close, color: Colors.red),
+                  icon: Icon(Icons.close, color: Colors.red[700]),
                   onPressed: () => Get.back(),
                 )
               ],
@@ -90,15 +90,15 @@ class _UpdateStockSheetState extends State<UpdateStockSheet> {
             flex: 2,
             child: Text('Variation',
                 style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold))),
+                    color: Colors.black, fontWeight: FontWeight.bold))),
         Expanded(
             child: Text('Current Stock',
                 style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold))),
+                    color: Colors.black, fontWeight: FontWeight.bold))),
         Expanded(
             child: Text('New Stock',
                 style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold))),
+                    color: Colors.black, fontWeight: FontWeight.bold))),
       ],
     );
   }
@@ -130,20 +130,20 @@ class _UpdateStockSheetState extends State<UpdateStockSheet> {
         children: [
           Expanded(
               flex: 2,
-              child: Text(variation, style: TextStyle(color: Colors.white))),
+              child: Text(variation, style: TextStyle(color: Colors.black))),
           Expanded(
-              child: Text(currentStock, style: TextStyle(color: Colors.white))),
+              child: Text(currentStock, style: TextStyle(color: Colors.black))),
           Expanded(
             child: Container(
               height: 40,
               child: TextField(
                 controller: newStockController,
                 keyboardType: TextInputType.number,
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(horizontal: 10),
                   filled: true,
-                  fillColor: Colors.grey[800],
+                  fillColor: Colors.grey[200], // Light fill for input
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,
@@ -162,9 +162,9 @@ class _UpdateStockSheetState extends State<UpdateStockSheet> {
       children: [
         ElevatedButton(
           onPressed: _onUpdateStock,
-          child: Text('Update Stock'),
+          child: Text('Update Stock', style: TextStyle(color: Colors.white)),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.brown[400],
+            backgroundColor: Colors.blue, // More visible in light mode
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -173,7 +173,7 @@ class _UpdateStockSheetState extends State<UpdateStockSheet> {
         SizedBox(width: 10),
         TextButton(
           onPressed: () => Get.back(),
-          child: Text('Cancel', style: TextStyle(color: Colors.white)),
+          child: Text('Cancel', style: TextStyle(color: Colors.blue)),
         ),
       ],
     );

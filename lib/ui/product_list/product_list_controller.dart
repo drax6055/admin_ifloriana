@@ -17,10 +17,11 @@ class ProductListController extends GetxController {
   }
 
   void fetchProducts() async {
+    final loginUser = await prefs.getUser();
     try {
       isLoading(true);
       var response = await dioClient.dio.get(
-          'http://192.168.1.12:5000/api/products?salon_id=684011271ee646f27873fddc');
+          '${Apis.baseUrl}/products?salon_id=${loginUser!.salonId}');
       if (response.statusCode == 200) {
         var products = productFromJson(jsonEncode(response.data));
         productList.assignAll(products);

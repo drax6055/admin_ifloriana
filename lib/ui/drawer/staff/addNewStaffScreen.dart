@@ -161,6 +161,7 @@ class Addnewstaffscreen extends StatelessWidget {
           ],
         ),
         Gender(),
+        InputTxtfield_Specialization(),
         // InputTxtfield_Salary(),
         Row(
           children: [
@@ -235,6 +236,15 @@ class Addnewstaffscreen extends StatelessWidget {
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(10),
       ],
+    );
+  }
+
+  Widget InputTxtfield_Specialization() {
+    return CustomTextFormField(
+      controller: getController.specializationController,
+      labelText: "Specialization",
+      keyboardType: TextInputType.text,
+      validator: (value) => Validation.validateisBlanck(value),
     );
   }
 

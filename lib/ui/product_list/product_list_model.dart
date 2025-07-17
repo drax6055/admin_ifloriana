@@ -9,7 +9,7 @@ String productToJson(List<Product> data) =>
 class Product {
   String id;
   List<BranchId> branchId;
-  String image;
+  // String image;
   String productName;
   String description;
   Brand? brandId;
@@ -29,7 +29,7 @@ class Product {
   Product({
     required this.id,
     required this.branchId,
-    required this.image,
+    // required this.image,
     required this.productName,
     required this.description,
     this.brandId,
@@ -51,7 +51,7 @@ class Product {
         id: json["_id"],
         branchId: List<BranchId>.from(
             json["branch_id"].map((x) => BranchId.fromJson(x))),
-        image: json["image"],
+        // image: json["image"],
         productName: json["product_name"],
         description: json["description"],
         brandId:
@@ -77,7 +77,7 @@ class Product {
   Map<String, dynamic> toJson() => {
         "_id": id,
         "branch_id": List<dynamic>.from(branchId.map((x) => x.toJson())),
-        "image": image,
+        // "image": image,
         "product_name": productName,
         "description": description,
         "brand_id": brandId?.toJson(),
@@ -112,8 +112,8 @@ class BranchId {
   String state;
   String city;
   String postalCode;
-  double latitude;
-  double longitude;
+  // double latitude;
+  // double longitude;
   String description;
   String image;
   int ratingStar;
@@ -138,8 +138,8 @@ class BranchId {
     required this.state,
     required this.city,
     required this.postalCode,
-    required this.latitude,
-    required this.longitude,
+    // required this.latitude,
+    // required this.longitude,
     required this.description,
     required this.image,
     required this.ratingStar,
@@ -165,8 +165,8 @@ class BranchId {
         state: json["state"],
         city: json["city"],
         postalCode: json["postal_code"],
-        latitude: json["latitude"]?.toDouble(),
-        longitude: json["longitude"]?.toDouble(),
+        // latitude: json["latitude"]?.toDouble(),
+        // longitude: json["longitude"]?.toDouble(),
         description: json["description"],
         image: json["image"],
         ratingStar: json["rating_star"],
@@ -192,8 +192,8 @@ class BranchId {
         "state": state,
         "city": city,
         "postal_code": postalCode,
-        "latitude": latitude,
-        "longitude": longitude,
+        // "latitude": latitude,
+        // "longitude": longitude,
         "description": description,
         "image": image,
         "rating_star": ratingStar,

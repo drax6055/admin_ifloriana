@@ -55,7 +55,7 @@ class Addnewstaffcontroller extends GetxController {
   var shiftStarttimeController = TextEditingController();
   var shiftEndtimeController = TextEditingController();
   var selectedGender = "Male".obs;
-  // var salaryController = TextEditingController();
+  var specializationController = TextEditingController();
   var durationController = TextEditingController();
   var LunchStarttimeController = TextEditingController();
 
@@ -181,6 +181,7 @@ class Addnewstaffcontroller extends GetxController {
     }
     _pendingStaffToPopulate = null;
     fullnameController.text = staff.fullName ?? '';
+    specializationController.text = staff.specialization ?? '';
     emailController.text = staff.email ?? '';
     phoneController.text = staff.phoneNumber ?? '';
     passwordController.text = '';
@@ -235,6 +236,7 @@ class Addnewstaffcontroller extends GetxController {
       'branch_id': selectedBranch.value?.id,
       'service_id': selectedServices.map((s) => s.id).toList(),
       'status': 1,
+      'specialization': specializationController.text,
       'assigned_commission_id': selectedCommitionId.value?.id,
       'salon_id': (await prefs.getUser())?.salonId,
       'assign_time': {
@@ -289,6 +291,7 @@ class Addnewstaffcontroller extends GetxController {
       'assigned_commission_id': selectedCommitionId.value,
       'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
+      'specialization': specializationController.text,
       // 'salary': int.tryParse(salaryController.text) ?? 0,
       'assign_time': {
         'start_shift': shiftStarttimeController.text,

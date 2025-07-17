@@ -26,6 +26,7 @@ class Data {
   String? sId;
   String? fullName;
   String? email;
+  String? specialization;
   String? phoneNumber;
   String? password;
   String? gender;
@@ -48,6 +49,7 @@ class Data {
     this.email,
     this.phoneNumber,
     this.password,
+    this.specialization,
     this.gender,
     this.branchId,
     this.commissionId,
@@ -74,6 +76,7 @@ class Data {
     phoneNumber = json['phone_number'];
     password = json['password'];
     gender = json['gender'];
+    specialization = json['specialization'];
     branchId =
         json['branch_id'] != null ? BranchId.fromJson(json['branch_id']) : null;
     commissionId = json['commission_id']?.cast<String>();
@@ -106,6 +109,7 @@ class Data {
     data['phone_number'] = phoneNumber;
     data['password'] = password;
     data['gender'] = gender;
+    data['specialization'] = specialization;
     if (branchId != null) {
       data['branch_id'] = branchId!.toJson();
     }

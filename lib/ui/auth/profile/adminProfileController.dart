@@ -7,7 +7,7 @@ import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
 
-class   Adminprofilecontroller extends GetxController {
+class Adminprofilecontroller extends GetxController {
   var fullnameController = TextEditingController();
   var salonNameController = TextEditingController();
   var addressController = TextEditingController();
@@ -21,8 +21,6 @@ class   Adminprofilecontroller extends GetxController {
   var showPassword = false.obs;
   var showOldPassword = false.obs;
   var showConfirmPassword = false.obs;
-
-  
 
   void toggleShowPassword() {
     showPassword.value = !showPassword.value;
@@ -87,7 +85,8 @@ class   Adminprofilecontroller extends GetxController {
         formData,
         (data) => data,
       );
-      await prefs.setRegisterdetails(GetAdminDetails.fromJson(response));
+      await prefs
+          .setRegisterdetails(GetAdminDetails.fromJson(response['data']));
       Get.offAllNamed(Routes.drawerScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());
@@ -118,6 +117,4 @@ class   Adminprofilecontroller extends GetxController {
       CustomSnackbar.showError('Error', e.toString());
     }
   }
-
-
 }
