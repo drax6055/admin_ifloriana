@@ -139,8 +139,8 @@ class Addnewstaffscreen extends StatelessWidget {
         // Imagepicker(),
         InputTxtfield_fullName(),
         InputTxtfield_Email(),
-        InputTxtfield_Pass(),
-        InputTxtfield_confirmPass(),
+        // InputTxtfield_Pass(),
+        // InputTxtfield_confirmPass(),
         CommitionDropdown(),
       ],
     );
@@ -351,45 +351,45 @@ class Addnewstaffscreen extends StatelessWidget {
         ));
   }
 
-  Widget InputTxtfield_Pass() {
-    return Obx(() => CustomTextFormField(
-          controller: getController.passwordController,
-          labelText: 'Password',
-          obscureText: !getController.showPass.value,
-          suffixIcon: IconButton(
-            onPressed: () {
-              getController.toggleShowPass();
-            },
-            icon: Icon(
-              getController.showPass.value
-                  ? Icons.visibility
-                  : Icons.visibility_off,
-              color: grey,
-            ),
-          ),
-          validator: (value) => Validation.validatePassword(value),
-        ));
-  }
+  // Widget InputTxtfield_Pass() {
+  //   return Obx(() => CustomTextFormField(
+  //         controller: getController.passwordController,
+  //         labelText: 'Password',
+  //         obscureText: !getController.showPass.value,
+  //         suffixIcon: IconButton(
+  //           onPressed: () {
+  //             getController.toggleShowPass();
+  //           },
+  //           icon: Icon(
+  //             getController.showPass.value
+  //                 ? Icons.visibility
+  //                 : Icons.visibility_off,
+  //             color: grey,
+  //           ),
+  //         ),
+  //         validator: (value) => Validation.validatePassword(value),
+  //       ));
+  // }
 
-  Widget InputTxtfield_confirmPass() {
-    return Obx(() => CustomTextFormField(
-          controller: getController.confirmpasswordController,
-          labelText: 'Confirm Password',
-          obscureText: !getController.showPass2.value,
-          suffixIcon: IconButton(
-            onPressed: () {
-              getController.toggleShowPass2();
-            },
-            icon: Icon(
-              getController.showPass.value
-                  ? Icons.visibility
-                  : Icons.visibility_off,
-              color: grey,
-            ),
-          ),
-          validator: (value) => Validation.validatePassword(value),
-        ));
-  }
+  // Widget InputTxtfield_confirmPass() {
+  //   return Obx(() => CustomTextFormField(
+  //         controller: getController.confirmpasswordController,
+  //         labelText: 'Confirm Password',
+  //         obscureText: !getController.showPass2.value,
+  //         suffixIcon: IconButton(
+  //           onPressed: () {
+  //             getController.toggleShowPass2();
+  //           },
+  //           icon: Icon(
+  //             getController.showPass.value
+  //                 ? Icons.visibility
+  //                 : Icons.visibility_off,
+  //             color: grey,
+  //           ),
+  //         ),
+  //         validator: (value) => Validation.validatePassword(value),
+  //       ));
+  // }
 
   Widget serviceDropdown() {
     return Obx(() {

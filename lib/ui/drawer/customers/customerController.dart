@@ -145,7 +145,9 @@ class CustomerController extends GetxController {
         if (packageIds.isNotEmpty) {
           customerData['branch_package'] = packageIds;
         }
-        customerData['branch_membership'] = selectedBranchMembership.value;
+        if (selectedBranchMembership.value.isNotEmpty) {
+          customerData['branch_membership'] = selectedBranchMembership.value;
+        }
       }
       final response = await dioClient.putData(
         '${Apis.baseUrl}${Endpoints.customers}/$customerId?salon_id=${loginUser!.salonId}',

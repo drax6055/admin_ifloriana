@@ -49,8 +49,6 @@ class Commition {
 class Addnewstaffcontroller extends GetxController {
   var fullnameController = TextEditingController();
   var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmpasswordController = TextEditingController();
   var phoneController = TextEditingController();
   var shiftStarttimeController = TextEditingController();
   var shiftEndtimeController = TextEditingController();
@@ -184,8 +182,6 @@ class Addnewstaffcontroller extends GetxController {
     specializationController.text = staff.specialization ?? '';
     emailController.text = staff.email ?? '';
     phoneController.text = staff.phoneNumber ?? '';
-    passwordController.text = '';
-    confirmpasswordController.text = '';
     selectedGender.value = staff.gender?.capitalizeFirst ?? 'Male';
     shiftStarttimeController.text = staff.assignTime?.startShift ?? '';
     shiftEndtimeController.text = staff.assignTime?.endShift ?? '';
@@ -250,12 +246,12 @@ class Addnewstaffcontroller extends GetxController {
     };
 
     // Only include password fields if not empty
-    if (passwordController.text.isNotEmpty) {
-      updateStaffData['password'] = passwordController.text;
-    }
-    if (confirmpasswordController.text.isNotEmpty) {
-      updateStaffData['confirm_password'] = confirmpasswordController.text;
-    }
+    // if (passwordController.text.isNotEmpty) {
+    //   updateStaffData['password'] = passwordController.text;
+    // }
+    // if (confirmpasswordController.text.isNotEmpty) {
+    //   updateStaffData['confirm_password'] = confirmpasswordController.text;
+    // }
 
     // Only include image if not null
     if (singleImage.value != null) {
@@ -282,17 +278,14 @@ class Addnewstaffcontroller extends GetxController {
       'full_name': fullnameController.text,
       'email': emailController.text,
       'phone_number': phoneController.text,
-      'password': passwordController.text,
-      'confirm_password': confirmpasswordController.text,
       'gender': selectedGender.value.toLowerCase(),
       'branch_id': selectedBranch.value?.id,
       'service_id': selectedServices.map((s) => s.id).toList(),
       'status': 1,
-      'assigned_commission_id': selectedCommitionId.value,
+      'assigned_commission_id': selectedCommitionId.value!.id,
       'salon_id': (await prefs.getUser())?.salonId,
       'image': null,
       'specialization': specializationController.text,
-      // 'salary': int.tryParse(salaryController.text) ?? 0,
       'assign_time': {
         'start_shift': shiftStarttimeController.text,
         'end_shift': shiftEndtimeController.text,
@@ -302,7 +295,7 @@ class Addnewstaffcontroller extends GetxController {
         'timing': LunchStarttimeController.text,
       },
     };
-    print("===> ${staffData.toString()}");
+    print("===>  [32m${staffData.toString()}");
     try {
       await dioClient.postData(
         '${Apis.baseUrl}${Endpoints.postStaffDetails}',

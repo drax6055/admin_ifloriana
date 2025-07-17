@@ -99,7 +99,7 @@ class Addcustomercontroller extends GetxController {
   var fullNameController = TextEditingController();
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
-  var passwordController = TextEditingController();
+  // var passwordController = TextEditingController();
   final packageController = MultiSelectController<BranchPackage>();
 
   // Dropdown values
@@ -125,7 +125,7 @@ class Addcustomercontroller extends GetxController {
     fullNameController.dispose();
     emailController.dispose();
     phoneController.dispose();
-    passwordController.dispose();
+    // passwordController.dispose();
     packageController.dispose();
     super.onClose();
   }
@@ -170,7 +170,7 @@ class Addcustomercontroller extends GetxController {
         'full_name': fullNameController.text,
         'email': emailController.text,
         'gender': selectedGender.value.toLowerCase(),
-        'password': passwordController.text,
+        // 'password': passwordController.text,
         'phone_number': phoneController.text,
         'status': isActive.value ? 1 : 0,
       };
@@ -196,7 +196,7 @@ class Addcustomercontroller extends GetxController {
       fullNameController.clear();
       emailController.clear();
       phoneController.clear();
-      passwordController.clear();
+      // passwordController.clear();
       selectedGender.value = '';
       selectedBranchMembership.value = '';
       selectedPackages.clear();

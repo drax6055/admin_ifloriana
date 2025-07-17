@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
 import '../auth/profile/adminProfileScreen.dart';
+import '../drawer/customers/customersScreen.dart';
+import '../drawer/staff/staffDetailsScreen.dart';
 import '../product_list/product_list_screen.dart';
 import '../product_list/product_list_screen.dart';
 
@@ -25,8 +27,8 @@ class SplashController extends GetxController {
           Get.offNamed(Routes.loginScreen);
         } else {
        
-          // Get.to(Staffdetailsscreen());
-             Get.to(ProductListScreen());
+          Get.to(CustomersScreen());
+            //  Get.to(ProductListScreen());
         }
       });
     } catch (e) {

@@ -46,12 +46,12 @@ class Addcustomerscreen extends StatelessWidget {
                 keyboardType: TextInputType.phone,
                 validator: (value) => Validation.validatePhone(value),
               ),
-              CustomTextFormField(
-                controller: customerController.passwordController,
-                labelText: 'Password',
-                obscureText: true,
-                validator: (value) => Validation.validatePassword(value),
-              ),
+              // CustomTextFormField(
+              //   controller: customerController.passwordController,
+              //   labelText: 'Password',
+              //   obscureText: true,
+              //   validator: (value) => Validation.validatePassword(value),
+              // ),
               genderDropdown(),
               Obx(() => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
