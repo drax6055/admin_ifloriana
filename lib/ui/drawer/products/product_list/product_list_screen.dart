@@ -132,7 +132,9 @@ class ProductListScreen extends StatelessWidget {
         ),
         IconButton(
           icon: Icon(Icons.edit, color: Colors.blue),
-          onPressed: () {},
+          onPressed: () {
+            Get.toNamed(Routes.addProductScreen, arguments: product);
+          },
         ),
         IconButton(
             icon: Icon(Icons.delete, color: Colors.red),

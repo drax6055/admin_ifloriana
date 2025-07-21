@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/ui/drawer/products/allProducts/getAllproductsController.dart';
+import 'package:flutter_template/ui/drawer/products/allProducts/addProductsController.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../../wiget/custome_snackbar.dart';
@@ -11,9 +11,12 @@ class AddProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(AddProductController());
     final textTheme = Theme.of(context).textTheme;
+    final isEditMode = controller.isEditMode.value;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Product')),
+      appBar: AppBar(
+        title: Text(isEditMode ? 'Update Product' : 'Add Product'),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -65,12 +68,11 @@ class AddProductScreen extends StatelessWidget {
               _buildSectionTitle(textTheme, 'Branch *'),
               _buildBranchDropdown(controller),
               const SizedBox(height: 32),
-              _buildActionButtons(controller),
+              _buildActionButtons(controller, isEditMode),
             ],
           ),
         ),
       ),
-     
     );
   }
 
@@ -558,7 +560,7 @@ class AddProductScreen extends StatelessWidget {
         ));
   }
 
-  Widget _buildActionButtons(AddProductController controller) {
+  Widget _buildActionButtons(AddProductController controller, bool isEditMode) {
     return Obx(() => controller.isLoading.value
         ? const Center(child: CircularProgressIndicator())
         : Row(
@@ -567,8 +569,8 @@ class AddProductScreen extends StatelessWidget {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16)),
-                  onPressed: controller.addProduct,
-                  child: const Text('Add Product'),
+                  onPressed: controller.saveProduct,
+                  child: Text(isEditMode ? 'Update Product' : 'Add Product'),
                 ),
               ),
               const SizedBox(width: 8),

@@ -8,6 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 
+import 'package:flutter_template/ui/drawer/products/product_list/product_list_controller.dart';
+import 'package:flutter_template/ui/drawer/products/product_list/product_list_model.dart';
+
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
 
@@ -109,6 +112,11 @@ class GeneratedVariant {
 }
 
 class AddProductController extends GetxController {
+  final Product? productToEdit =
+      (Get.arguments is Product) ? Get.arguments as Product : null;
+  var isEditMode = false.obs;
+  String? productId;
+
   var branchList = <Branch>[].obs;
   var selectedBranch = Rx<Branch?>(null);
   var selectedCategory = Rx<Category?>(null);
@@ -157,7 +165,11 @@ class AddProductController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _fetchAllDropdownData();
+    if (productToEdit != null) {
+      isEditMode.value = true;
+      productId = productToEdit!.id;
+    }
+    _initialize();
     ever(hasVariations, (has) {
       if (has && variationGroups.isEmpty) {
         addVariationGroup();
@@ -166,16 +178,25 @@ class AddProductController extends GetxController {
     });
   }
 
-  void _fetchAllDropdownData() async {
+  void _initialize() async {
+    await _fetchAllDropdownData();
+    if (isEditMode.value) {
+      populateFormForUpdate(productToEdit!);
+    }
+  }
+
+  Future<void> _fetchAllDropdownData() async {
     final salonId = (await prefs.getUser())?.salonId;
     if (salonId == null) return;
 
-    getBrands(salonId);
-    getBranches(salonId);
-    getCategories(salonId);
-    getTags(salonId);
-    getUnits(salonId);
-    getVariations(salonId);
+    await Future.wait([
+      getBrands(salonId),
+      getBranches(salonId),
+      getCategories(salonId),
+      getTags(salonId),
+      getUnits(salonId),
+      getVariations(salonId),
+    ]);
   }
 
   Future<void> getBrands(String salonId) async {
@@ -321,7 +342,122 @@ class AddProductController extends GetxController {
         .join(' ');
   }
 
-  void addProduct() async {
+  void populateFormForUpdate(Product product) {
+    productNameController.text = product.productName;
+    descriptionController.text = product.description;
+    status.value = product.status == 1 ? 'active' : 'inactive';
+
+    selectedBrand.value =
+        brandList.firstWhereOrNull((b) => b.id == product.brandId?.id);
+    selectedCategory.value =
+        categoryList.firstWhereOrNull((c) => c.id == product.categoryId?.id);
+    selectedTag.value =
+        tagList.firstWhereOrNull((t) => t.id == product.tagId?.id);
+    selectedUnit.value =
+        unitList.firstWhereOrNull((u) => u.id == product.unitId?.id);
+
+    if (product.branchId.isNotEmpty) {
+      selectedBranch.value =
+          branchList.firstWhereOrNull((b) => b.id == product.branchId.first.id);
+    }
+
+    hasVariations.value = product.hasVariations == 1;
+
+    if (!hasVariations.value) {
+      priceController.text = product.price?.toString() ?? '';
+      stockController.text = product.stock?.toString() ?? '';
+      skuController.text = product.sku ?? '';
+      codeController.text = product.code ?? '';
+    } else {
+      // TODO: Handle population of variation fields
+    }
+  }
+
+  void saveProduct() async {
+    if (isEditMode.value) {
+      await _updateProduct();
+    } else {
+      await _addProduct();
+    }
+  }
+
+  Future<void> _updateProduct() async {
+    if (!formKey.currentState!.validate()) {
+      CustomSnackbar.showError(
+          "Validation Error", "Please fill all required fields.");
+      return;
+    }
+    isLoading.value = true;
+    try {
+      final loginUser = await prefs.getUser();
+      final Map<String, dynamic> payload = {
+        'branch_id': [selectedBranch.value!.id],
+        'product_name': productNameController.text,
+        'description': descriptionController.text,
+        'brand_id': selectedBrand.value!.id,
+        'category_id': selectedCategory.value!.id,
+        'unit_id': selectedUnit.value!.id,
+        'tag_id': selectedTag.value!.id,
+        'status': status.value == 'active' ? 1 : 0,
+        'has_variations': hasVariations.value ? 1 : 0,
+        'salon_id': loginUser!.salonId,
+      };
+
+      // Add other fields like price, stock, variants etc. similar to addProduct
+      if (hasVariations.value) {
+        payload['variation_id'] = variationGroups
+            .where((g) => g.selectedType.value != null)
+            .map((g) => g.selectedType.value!.id)
+            .toList();
+
+        payload['variants'] = generatedVariants.map((variant) {
+          return {
+            'combination': variant.combination.entries
+                .map((e) => {
+                      'variation_type': e.key,
+                      'variation_value': e.value,
+                    })
+                .toList(),
+            'price': double.tryParse(variant.priceController.text) ?? 0,
+            'stock': int.tryParse(variant.stockController.text) ?? 0,
+            'sku': variant.skuController.text,
+            'code': variant.codeController.text,
+          };
+        }).toList();
+      } else {
+        payload['price'] = double.tryParse(priceController.text) ?? 0;
+        payload['stock'] = int.tryParse(stockController.text) ?? 0;
+        payload['sku'] = skuController.text;
+        payload['code'] = codeController.text;
+      }
+
+      if (discountAmountController.text.isNotEmpty) {
+        payload['product_discount'] = {
+          'type': discountType.value,
+          'start_date': startDate.value?.toIso8601String(),
+          'end_date': endDate.value?.toIso8601String(),
+          'discount_amount':
+              double.tryParse(discountAmountController.text) ?? 0,
+        };
+      }
+
+      await dioClient.patchData(
+        '${Apis.baseUrl}${Endpoints.uploadProducts}/$productId',
+        payload,
+        (json) => json,
+      );
+
+      CustomSnackbar.showSuccess("Success", "Product updated successfully!");
+      Get.find<ProductListController>().fetchProducts(); // Refresh list
+      Get.back();
+    } catch (e) {
+      CustomSnackbar.showError("Error", "Failed to update product: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> _addProduct() async {
     if (!formKey.currentState!.validate()) {
       CustomSnackbar.showError(
           "Validation Error", "Please fill all required fields.");
