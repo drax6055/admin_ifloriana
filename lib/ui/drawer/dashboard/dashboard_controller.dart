@@ -112,11 +112,11 @@ class DashboardController extends GetxController {
 
 // New models for separation
 class DashboardData {
-  int? appointmentCount;
-  int? customerCount;
-  int? orderCount;
-  int? productSales;
-  double? totalCommission;
+  num? appointmentCount;
+  num? customerCount;
+  num? orderCount;
+  num? productSales;
+  num? totalCommission;
   List<Performance>? performance;
   List<UpcomingAppointments>? upcomingAppointments;
   List<AppointmentsRevenueGraph>? appointmentsRevenueGraph;
