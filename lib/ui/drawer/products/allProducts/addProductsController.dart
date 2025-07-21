@@ -411,13 +411,11 @@ class AddProductController extends GetxController {
         'salon_id': loginUser!.salonId,
       };
 
-      // Add other fields like price, stock, variants etc. similar to addProduct
       if (hasVariations.value) {
         payload['variation_id'] = variationGroups
             .where((g) => g.selectedType.value != null)
             .map((g) => g.selectedType.value!.id)
             .toList();
-
         payload['variants'] = generatedVariants.map((variant) {
           return {
             'combination': variant.combination.entries
@@ -449,7 +447,8 @@ class AddProductController extends GetxController {
         };
       }
 
-      await dioClient.patchData(
+      // Sending data as raw JSON using patchData
+      await dioClient.putData(
         '${Apis.baseUrl}${Endpoints.uploadProducts}/$productId',
         payload,
         (json) => json,
