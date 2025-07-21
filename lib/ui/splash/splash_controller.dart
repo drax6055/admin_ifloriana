@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
 import '../drawer/products/allProducts/getAllproductsScreen.dart';
+import '../drawer/products/product_list/product_list_screen.dart';
 
 class SplashController extends GetxController {
   @override
@@ -22,7 +23,8 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-             Get.to(AddProductScreen());
+          //  Get.to(AddProductScreen());
+          Get.to(ProductListScreen());
         }
       });
     } catch (e) {
@@ -30,4 +32,3 @@ class SplashController extends GetxController {
     }
   }
 }
-  

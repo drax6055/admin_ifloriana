@@ -70,6 +70,7 @@ class AddProductScreen extends StatelessWidget {
           ),
         ),
       ),
+     
     );
   }
 

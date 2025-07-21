@@ -24,6 +24,7 @@ import 'package:get/get.dart';
 import '../ui/auth/forgot/forgot_screen.dart';
 import '../ui/buy_product/buy_product_screen.dart';
 import '../ui/drawer/dashboard/dashboard_screen.dart';
+import '../ui/drawer/products/allProducts/getAllproductsScreen.dart';
 import '../ui/drawer/products/variations/variationScreen.dart';
 import '../ui/splash/splash_screen.dart';
 import 'app_route.dart';
@@ -145,6 +146,10 @@ class AppPages {
     GetPage(
         name: Routes.editCustomer,
         page: () => EditCustomerScreen(),
+        transition: Transition.rightToLeft),
+        GetPage(
+        name: Routes.addProductScreen,
+        page: () => AddProductScreen(),
         transition: Transition.rightToLeft),
   ];
 }

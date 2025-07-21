@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/route/app_route.dart';
 import 'package:get/get.dart';
 import 'dart:math';
 
@@ -35,6 +36,12 @@ class ProductListScreen extends StatelessWidget {
           );
         }
       }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.toNamed(Routes.addProductScreen);
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 
