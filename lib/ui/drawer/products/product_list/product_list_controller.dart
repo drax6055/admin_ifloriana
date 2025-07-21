@@ -38,7 +38,7 @@ class ProductListController extends GetxController {
       final String baseUrl = '${Apis.baseUrl}${Endpoints.uploadProducts}';
 
       if (updatedStocks != null) {
-        // has variations
+      
         for (var variantStock in updatedStocks) {
           await dioClient.patchData(
             '$baseUrl/$productId/stock',

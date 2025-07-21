@@ -3,12 +3,7 @@ import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import '../../route/app_route.dart';
 import '../../wiget/custome_snackbar.dart';
-import '../auth/profile/adminProfileScreen.dart';
-import '../drawer/appointment/appointmentScreen.dart';
-import '../drawer/customers/customersScreen.dart';
-import '../drawer/staff/staffDetailsScreen.dart';
-import '../drawer/products/product_list/product_list_screen.dart';
-import '../drawer/products/product_list/product_list_screen.dart';
+import '../drawer/products/allProducts/getAllproductsScreen.dart';
 
 class SplashController extends GetxController {
   @override
@@ -27,9 +22,7 @@ class SplashController extends GetxController {
         if (accessToken == null) {
           Get.offNamed(Routes.loginScreen);
         } else {
-       
-          // Get.to(Appointmentscreen());
-             Get.to(ProductListScreen());
+             Get.to(AddProductScreen());
         }
       });
     } catch (e) {

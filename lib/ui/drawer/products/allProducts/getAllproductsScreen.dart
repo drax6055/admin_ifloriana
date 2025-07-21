@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/ui/drawer/allProducts/getAllproductsController.dart';
+import 'package:flutter_template/ui/drawer/products/allProducts/getAllproductsController.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../wiget/custome_snackbar.dart';
+import '../../../../wiget/custome_snackbar.dart';
 
 class AddProductScreen extends StatelessWidget {
   const AddProductScreen({super.key});

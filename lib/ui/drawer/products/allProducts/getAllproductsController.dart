@@ -6,8 +6,8 @@ import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../network/network_const.dart';
-import '../../../wiget/custome_snackbar.dart';
+import '../../../../network/network_const.dart';
+import '../../../../wiget/custome_snackbar.dart';
 
 class Branch {
   final String? id;
@@ -329,7 +329,7 @@ class AddProductController extends GetxController {
 
     isLoading.value = true;
     try {
-      // final salonId = (await prefs.getUser())!.salonId;
+      // final salonId = (await prefs.getUser())!.salonId; 
        final loginUser = await prefs.getUser();
       final Map<String, dynamic> payload = {
         'product_name': productNameController.text,
