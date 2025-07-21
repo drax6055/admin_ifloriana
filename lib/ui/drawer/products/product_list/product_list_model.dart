@@ -115,7 +115,7 @@ class BranchId {
   // double latitude;
   // double longitude;
   String description;
-  String image;
+  // String image;
   int ratingStar;
   int totalReview;
   DateTime createdAt;
@@ -141,7 +141,7 @@ class BranchId {
     // required this.latitude,
     // required this.longitude,
     required this.description,
-    required this.image,
+    // required this.image,
     required this.ratingStar,
     required this.totalReview,
     required this.createdAt,
@@ -168,7 +168,7 @@ class BranchId {
         // latitude: json["latitude"]?.toDouble(),
         // longitude: json["longitude"]?.toDouble(),
         description: json["description"],
-        image: json["image"],
+        // image: json["image"],
         ratingStar: json["rating_star"],
         totalReview: json["total_review"],
         createdAt: DateTime.parse(json["createdAt"]),
@@ -195,7 +195,7 @@ class BranchId {
         // "latitude": latitude,
         // "longitude": longitude,
         "description": description,
-        "image": image,
+        // "image": image,
         "rating_star": ratingStar,
         "total_review": totalReview,
         "createdAt": createdAt.toIso8601String(),
@@ -255,7 +255,7 @@ class Brand {
 class CategoryId {
   String id;
   List<String> branchId;
-  String image;
+  // String image;
   String name;
   List<String> brandId;
   int status;
@@ -267,7 +267,7 @@ class CategoryId {
   CategoryId({
     required this.id,
     required this.branchId,
-    required this.image,
+    // required this.image,
     required this.name,
     required this.brandId,
     required this.status,
@@ -280,7 +280,7 @@ class CategoryId {
   factory CategoryId.fromJson(Map<String, dynamic> json) => CategoryId(
         id: json["_id"],
         branchId: List<String>.from(json["branch_id"].map((x) => x)),
-        image: json["image"],
+        // image: json["image"],
         name: json["name"],
         brandId: List<String>.from(json["brand_id"].map((x) => x)),
         status: json["status"],
@@ -293,7 +293,7 @@ class CategoryId {
   Map<String, dynamic> toJson() => {
         "_id": id,
         "branch_id": List<dynamic>.from(branchId.map((x) => x)),
-        "image": image,
+        // "image": image,
         "name": name,
         "brand_id": List<dynamic>.from(brandId.map((x) => x)),
         "status": status,

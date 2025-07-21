@@ -1,6 +1,6 @@
 class Apis {
-  static const baseUrl = 'http://192.168.1.5:5000/api';
-  static const pdfUrl = 'http://192.168.1.5:5000';
+  static const baseUrl = 'https://api.ifloriana.com/api';
+  static const pdfUrl = 'https://api.ifloriana.com';
 }
 
 class Endpoints {
