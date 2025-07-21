@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 
 import '../../../../network/network_const.dart';
 import '../../../../wiget/custome_snackbar.dart';
@@ -409,6 +411,25 @@ class AddProductController extends GetxController {
       CustomSnackbar.showError("Error", "Failed to add product: $e");
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> scanBarcodeForSku() async {
+    // Check camera permission
+    var status = await Permission.camera.status;
+    if (!status.isGranted) {
+      status = await Permission.camera.request();
+      if (!status.isGranted) {
+        CustomSnackbar.showError("Permission Denied",
+            "Camera permission is required to scan barcodes.");
+        return;
+      }
+    }
+
+    // Open barcode scanner
+    var result = await BarcodeScanner.scan();
+    if (result.type == ResultType.Barcode && result.rawContent.isNotEmpty) {
+      skuController.text = result.rawContent;
     }
   }
 }

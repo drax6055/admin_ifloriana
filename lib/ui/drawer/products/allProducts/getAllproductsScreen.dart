@@ -245,9 +245,15 @@ class AddProductScreen extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
               child: TextFormField(
-                  controller: controller.skuController,
-                  decoration: const InputDecoration(
-                      labelText: 'SKU', border: OutlineInputBorder()))),
+            controller: controller.skuController,
+            decoration: const InputDecoration(
+              labelText: 'SKU',
+              border: OutlineInputBorder(),
+              suffixIcon: Icon(Icons.qr_code_scanner),
+            ),
+            readOnly: true,
+            onTap: () => controller.scanBarcodeForSku(),
+          )),
           const SizedBox(width: 8),
           Expanded(
               child: TextFormField(

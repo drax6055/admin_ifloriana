@@ -36,7 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
   get: ^4.7.2
-  permission_handler: ^11.4.0
+  permission_handler: ^11.0.1
+  barcode_scan2: ^4.2.0
   dio: ^5.8.0+1
   pretty_dio_logger: ^1.4.0
   shared_preferences: ^2.5.2
