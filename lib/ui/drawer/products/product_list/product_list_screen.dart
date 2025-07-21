@@ -17,6 +17,18 @@ class ProductListScreen extends StatelessWidget {
         title: Text("Products", style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 1,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_alt, color: Colors.black),
+            tooltip: 'Filter by Barcode',
+            onPressed: () => controller.filterByBarcode(),
+          ),
+          IconButton(
+            icon: Icon(Icons.clear, color: Colors.black),
+            tooltip: 'Clear Filter',
+            onPressed: () => controller.resetFilter(),
+          ),
+        ],
       ),
       body: Obx(() {
         if (controller.isLoading.value) {

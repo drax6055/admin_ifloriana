@@ -4,11 +4,13 @@ import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:get/get.dart';
 
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'product_list_model.dart';
 
 class ProductListController extends GetxController {
   var isLoading = true.obs;
   var productList = <Product>[].obs;
+  List<Product> _allProducts = [];
 
   @override
   void onInit() {
@@ -20,15 +22,29 @@ class ProductListController extends GetxController {
     final loginUser = await prefs.getUser();
     try {
       isLoading(true);
-      var response = await dioClient.dio.get(
-          '${Apis.baseUrl}/products?salon_id=${loginUser!.salonId}');
+      var response = await dioClient.dio
+          .get('${Apis.baseUrl}/products?salon_id=${loginUser!.salonId}');
       if (response.statusCode == 200) {
         var products = productFromJson(jsonEncode(response.data));
         productList.assignAll(products);
+        _allProducts = products;
       }
     } finally {
       isLoading(false);
     }
+  }
+
+  Future<void> filterByBarcode() async {
+    var result = await BarcodeScanner.scan();
+    if (result.type == ResultType.Barcode && result.rawContent.isNotEmpty) {
+      final filtered =
+          _allProducts.where((p) => p.sku == result.rawContent).toList();
+      productList.assignAll(filtered);
+    }
+  }
+
+  void resetFilter() {
+    productList.assignAll(_allProducts);
   }
 
   Future<void> updateStock(String productId,
@@ -38,7 +54,6 @@ class ProductListController extends GetxController {
       final String baseUrl = '${Apis.baseUrl}${Endpoints.uploadProducts}';
 
       if (updatedStocks != null) {
-      
         for (var variantStock in updatedStocks) {
           await dioClient.patchData(
             '$baseUrl/$productId/stock',
