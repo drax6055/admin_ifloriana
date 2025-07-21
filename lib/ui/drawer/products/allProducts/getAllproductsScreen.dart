@@ -484,7 +484,10 @@ class AddProductScreen extends StatelessWidget {
               child: Obx(() => DropdownButtonFormField<String>(
                     value: controller.discountType.value,
                     items: ['fixed', 'percentage']
-                        .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                        .map((t) => DropdownMenuItem(
+                              value: t,
+                              child: Text(t[0].toUpperCase() + t.substring(1)),
+                            ))
                         .toList(),
                     onChanged: (v) => controller.discountType.value = v!,
                     decoration: const InputDecoration(

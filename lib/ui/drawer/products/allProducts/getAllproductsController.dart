@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart' as dio;
+// import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_template/main.dart';
 import 'package:get/get.dart';
@@ -404,6 +404,27 @@ class AddProductController extends GetxController {
         payload,
         (json) => json,
       );
+
+      // Clear all controllers and reset fields
+      productNameController.clear();
+      descriptionController.clear();
+      priceController.clear();
+      stockController.clear();
+      skuController.clear();
+      codeController.clear();
+      discountAmountController.clear();
+      startDate.value = null;
+      endDate.value = null;
+      selectedBrand.value = null;
+      selectedCategory.value = null;
+      selectedUnit.value = null;
+      selectedTag.value = null;
+      selectedBranch.value = null;
+      hasVariations.value = false;
+      status.value = 'active';
+      variationGroups.clear();
+      generatedVariants.clear();
+      imageFile.value = null;
 
       CustomSnackbar.showSuccess("Success", "Product added successfully!");
       Get.back();
