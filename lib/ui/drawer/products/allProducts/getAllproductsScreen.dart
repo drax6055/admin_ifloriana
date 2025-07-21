@@ -21,7 +21,7 @@ class AddProductScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildImagePicker(controller),
+              // _buildImagePicker(controller),
               const SizedBox(height: 16),
               TextFormField(
                 controller: controller.productNameController,

@@ -156,7 +156,6 @@ class AddProductController extends GetxController {
   void onInit() {
     super.onInit();
     _fetchAllDropdownData();
-    // Add a default variation group when variations are enabled
     ever(hasVariations, (has) {
       if (has && variationGroups.isEmpty) {
         addVariationGroup();
@@ -329,19 +328,34 @@ class AddProductController extends GetxController {
 
     isLoading.value = true;
     try {
-      // final salonId = (await prefs.getUser())!.salonId; 
-       final loginUser = await prefs.getUser();
+      final loginUser = await prefs.getUser();
+
+      // Ensure all required fields are present
+      if (selectedBranch.value == null ||
+          selectedBrand.value == null ||
+          selectedCategory.value == null ||
+          selectedUnit.value == null ||
+          selectedTag.value == null ||
+          productNameController.text.isEmpty ||
+          descriptionController.text.isEmpty ||
+          loginUser == null) {
+        CustomSnackbar.showError(
+            "Validation Error", "Please fill all required fields.");
+        isLoading.value = false;
+        return;
+      }
+
       final Map<String, dynamic> payload = {
+        'branch_id': [selectedBranch.value!.id],
         'product_name': productNameController.text,
         'description': descriptionController.text,
-        'brand_id': selectedBrand.value?.id,
-        'category_id': selectedCategory.value?.id,
-        'unit_id': selectedUnit.value?.id,
-        'tag_id': selectedTag.value?.id,
+        'brand_id': selectedBrand.value!.id,
+        'category_id': selectedCategory.value!.id,
+        'unit_id': selectedUnit.value!.id,
+        'tag_id': selectedTag.value!.id,
         'status': status.value == 'active' ? 1 : 0,
-        'branch_id': selectedBranch.value!.id,
         'has_variations': hasVariations.value ? 1 : 0,
-        'salon_id': loginUser!.salonId,
+        'salon_id': loginUser.salonId,
       };
 
       if (discountAmountController.text.isNotEmpty) {
@@ -381,16 +395,13 @@ class AddProductController extends GetxController {
         payload['code'] = codeController.text;
       }
 
-      final formData = dio.FormData.fromMap(payload);
-      if (imageFile.value != null) {
-        formData.files.add(MapEntry(
-          'image',
-          await dio.MultipartFile.fromFile(imageFile.value!.path),
-        ));
-      }
+      print('Payload: ' + payload.toString());
 
-      await dioClient.postFormData('${Apis.baseUrl}${Endpoints.uploadProducts}',
-          formData, (json) => json);
+      await dioClient.postData(
+        '${Apis.baseUrl}${Endpoints.uploadProducts}',
+        payload,
+        (json) => json,
+      );
 
       CustomSnackbar.showSuccess("Success", "Product added successfully!");
       Get.back();
