@@ -371,6 +371,14 @@ class AddProductController extends GetxController {
     } else {
       // TODO: Handle population of variation fields
     }
+
+    if (product.productDiscount != null) {
+      final discount = product.productDiscount!;
+      discountType.value = discount.type;
+      discountAmountController.text = discount.discountAmount.toString();
+      startDate.value = discount.startDate;
+      endDate.value = discount.endDate;
+    }
   }
 
   void saveProduct() async {

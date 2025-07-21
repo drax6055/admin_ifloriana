@@ -25,6 +25,7 @@ class Product {
   int? stock;
   String? sku;
   String? code;
+  ProductDiscount? productDiscount;
 
   Product({
     required this.id,
@@ -45,6 +46,7 @@ class Product {
     this.stock,
     this.sku,
     this.code,
+    this.productDiscount,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -72,6 +74,9 @@ class Product {
         stock: json["stock"],
         sku: json["sku"],
         code: json["code"],
+        productDiscount: json["product_discount"] == null
+            ? null
+            : ProductDiscount.fromJson(json["product_discount"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -93,6 +98,39 @@ class Product {
         "stock": stock,
         "sku": sku,
         "code": code,
+        "product_discount": productDiscount?.toJson(),
+      };
+}
+
+class ProductDiscount {
+  String type;
+  DateTime? startDate;
+  DateTime? endDate;
+  double discountAmount;
+
+  ProductDiscount({
+    required this.type,
+    this.startDate,
+    this.endDate,
+    required this.discountAmount,
+  });
+
+  factory ProductDiscount.fromJson(Map<String, dynamic> json) =>
+      ProductDiscount(
+        type: json["type"],
+        startDate: json["start_date"] == null
+            ? null
+            : DateTime.parse(json["start_date"]),
+        endDate:
+            json["end_date"] == null ? null : DateTime.parse(json["end_date"]),
+        discountAmount: json["discount_amount"]?.toDouble(),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "start_date": startDate?.toIso8601String(),
+        "end_date": endDate?.toIso8601String(),
+        "discount_amount": discountAmount,
       };
 }
 
