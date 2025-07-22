@@ -12,47 +12,7 @@ class GetBranchesScreen extends StatelessWidget {
   const GetBranchesScreen({super.key});
 
   void _showDeleteConfirmation(BuildContext context, Getbranchescontroller controller, String branchId, String branchName) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Delete Branch',
-            style: TextStyle(fontSize: 18.sp),
-
-          ),
-          content: Text(
-            'Are you sure you want to delete "$branchName"?',
-            style: TextStyle(fontSize: 16.sp),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                controller.deleteBranch(branchId);
-              },
-              child: Text(
-                'Delete',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+    controller.deleteBranch(branchId);
   }
 
   @override

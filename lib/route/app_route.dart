@@ -1,4 +1,5 @@
 abstract class Routes {
+  static const productListScreen = '/ProductListScreen';
   static const splashScreen = '/SplashScreen';
   static const drawerScreen = '/DrawerScreen';
   static const loginScreen = '/LoginScreen';
@@ -34,7 +35,7 @@ abstract class Routes {
   static const addBranchMembership = "/BranchMembershipListScreen";
   static const addVariationscreen = "/Variationscreen";
   static const branchmembershipaddscreen = "/Branchmembershipaddscreen";
-
-
-  
+  static const placeOrder = "/BuyProductScreen";
+  static const editCustomer = '/EditCustomerScreen';
+    static const addProductScreen =  '/AddProductScreen';
 }

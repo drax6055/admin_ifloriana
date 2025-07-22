@@ -15,175 +15,197 @@ class DynamicInputScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = controller.packageToEdit != null;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Dynamic Service Inputs')),
+      appBar:
+          AppBar(title: Text(isEditing ? 'Update Package' : 'Create Package')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: controller.addContainer,
-              child: Text('Add Container'),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: Obx(() => ListView.builder(
-                    itemCount: controller.containerList.length,
-                    itemBuilder: (context, index) {
+        child: SingleChildScrollView(
+          child: Column(
+            spacing: 10,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              branchDropdown(),
+              CustomTextFormField(
+                controller: controller.nameController,
+                labelText: 'Name',
+                keyboardType: TextInputType.text,
+                validator: (value) => Validation.validatename(value),
+              ),
+              CustomTextFormField(
+                controller: controller.discriptionController,
+                labelText: 'Discription',
+                maxLines: 2,
+                keyboardType: TextInputType.text,
+                validator: (value) => Validation.validatedisscription(value),
+              ),
+              Row(
+                children: [
+                  Expanded(child: startTime(context)),
+                  SizedBox(width: 5),
+                  Expanded(child: endTime(context)),
+                ],
+              ),
+              Obx(() => Column(
+                    children:
+                        List.generate(controller.containerList.length, (index) {
                       final data = controller.containerList[index];
-                      return Obx(() => Container(
-                            margin: EdgeInsets.only(bottom: 16),
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.blue),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Container ${index + 1}",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    IconButton(
-                                      icon: Icon(Icons.delete,
-                                          color: primaryColor),
-                                      onPressed: () =>
-                                          controller.removeContainer(index),
-                                    ),
-                                  ],
-                                ),
-                                DropdownButtonFormField<Service>(
-                                  value: data.selectedService.value,
-                                  items: controller.serviceList
-                                      .map((service) => DropdownMenuItem(
-                                            value: service,
-                                            child: Text(service.name ?? ''),
-                                          ))
-                                      .toList(),
-                                  onChanged: (newService) {
-                                    if (newService != null) {
-                                      controller.onServiceSelected(
-                                          data, newService);
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: "Select Service",
-                                    border: OutlineInputBorder(),
+                      return Obx(
+                        () => Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: primaryColor),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Service ${index + 1}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  IconButton(
+                                    icon:
+                                        Icon(Icons.delete, color: primaryColor),
+                                    onPressed: () =>
+                                        controller.removeContainer(index),
                                   ),
+                                ],
+                              ),
+                              DropdownButtonFormField<Service>(
+                                value: data.selectedService.value,
+                                items: controller.serviceList
+                                    .map((service) => DropdownMenuItem(
+                                          value: service,
+                                          child: Text(service.name ?? ''),
+                                        ))
+                                    .toList(),
+                                onChanged: (newService) {
+                                  if (newService != null) {
+                                    controller.onServiceSelected(
+                                        data, newService);
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  labelText: "Select Service",
+                                  border: OutlineInputBorder(),
                                 ),
-                                SizedBox(height: 10),
-                                CustomTextFormField(
-                                  controller: data.discountedPriceController,
-                                  labelText: 'Discounted Price',
-                                  hintText: 'Enter Discounted Price',
-                                  keyboardType: TextInputType.number,
-                                ),
-                                SizedBox(height: 10),
-                                CustomTextFormField(
-                                  controller: data.quantityController,
-                                  labelText: 'Quantity',
-                                  hintText: 'Enter Quantity',
-                                  keyboardType: TextInputType.number,
-                                ),
-                                SizedBox(height: 10),
-                                Text("Total: ₹${data.total.value}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green)),
-                              ],
-                            ),
-                          ));
-                    },
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                spacing: 10,
+                                children: [
+                                  Expanded(
+                                    child: CustomTextFormField(
+                                      controller:
+                                          data.discountedPriceController,
+                                      labelText: 'Discounted Price',
+                                      hintText: 'Enter Discounted Price',
+                                      keyboardType: TextInputType.number,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: CustomTextFormField(
+                                      controller: data.quantityController,
+                                      labelText: 'Quantity',
+                                      hintText: 'Enter Quantity',
+                                      keyboardType: TextInputType.number,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Text("Total: ₹${data.total.value}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green)),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
                   )),
-            ),
-            branchDropdown(),
-            CustomTextFormField(
-              controller: controller.nameController,
-              labelText: 'Name',
-              keyboardType: TextInputType.text,
-              validator: (value) => Validation.validatename(value),
-            ),
-            CustomTextFormField(
-              controller: controller.discriptionController,
-              labelText: 'Discription',
-              maxLines: 2,
-              keyboardType: TextInputType.text,
-              validator: (value) => Validation.validatedisscription(value),
-            ),
-            Row(
-              children: [
-                Expanded(child: startTime(context)),
-                SizedBox(
-                  width: 5,
-                ),
-                Expanded(child: endTime(context)),
-              ],
-            ),
-            Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextWidget(
-                      text: 'Status',
-                      textStyle: CustomTextStyles.textFontRegular(size: 14.sp),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: GestureDetector(
+                  onTap: controller.addContainer,
+                  child: Text(
+                    '+ Add Service',
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontSize: 16,
                     ),
-                    Switch(
-                      value: controller.isActive.value,
-                      onChanged: (value) {
-                        controller.isActive.value = value;
-                      },
-                      activeColor: primaryColor,
-                    ),
-                  ],
-                )),
-            Obx(() => Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(
+                ),
+              ),
+              Obx(() => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Grand Total:",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      CustomTextWidget(
+                        text: 'Status',
+                        textStyle:
+                            CustomTextStyles.textFontRegular(size: 14.sp),
                       ),
-                      Text(
-                        "₹${controller.grandTotal.value}",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
+                      Switch(
+                        value: controller.isActive.value,
+                        onChanged: (value) {
+                          controller.isActive.value = value;
+                        },
+                        activeColor: primaryColor,
                       ),
                     ],
+                  )),
+              Obx(() => Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Grand Total:",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "₹${controller.grandTotal.value}",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              ElevatedButton(
+                onPressed: controller.submitPackage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                child: Text(
+                  isEditing ? 'Update Package' : 'Create Package',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-                )),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: controller.submitPackage,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                minimumSize: Size(double.infinity, 50),
-              ),
-              child: Text(
-                'Create Package',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-          ],
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

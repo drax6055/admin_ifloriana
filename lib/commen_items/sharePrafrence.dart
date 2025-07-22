@@ -89,10 +89,6 @@ class SharedPreferenceManager {
     }
   }
 
-  /// Get token from stored login user data
-  ///
-  ///
-  /// current flowe goes like
   Future<String?> getToken() async {
     var user = await getUser();
     return user?.token ?? "";

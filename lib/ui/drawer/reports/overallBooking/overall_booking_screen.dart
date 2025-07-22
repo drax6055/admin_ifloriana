@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/drawer/reports/overallBooking/overall_booking_controller.dart';
+import 'package:flutter_template/utils/app_images.dart';
 import 'package:get/get.dart';
 
 class OverallBookingScreen extends StatelessWidget {
@@ -111,7 +112,7 @@ class OverallBookingScreen extends StatelessWidget {
                                     if (booking.staffImage != null)
                                       CircleAvatar(
                                         backgroundImage:
-                                            NetworkImage(booking.staffImage!),
+                                            AssetImage(AppImages.applogo),
                                       ),
                                     const SizedBox(width: 8),
                                     Text(booking.staffName ?? ''),

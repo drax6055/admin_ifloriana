@@ -11,10 +11,12 @@ import 'package:flutter_template/wiget/custome_dropdown.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:step_progress/step_progress.dart';
+import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
 
 class Addnewstaffscreen extends StatelessWidget {
   final bool showAppBar;
-  Addnewstaffscreen({super.key, this.showAppBar = true});
+  final Data? staff;
+  Addnewstaffscreen({super.key, this.showAppBar = true, this.staff});
   final Addnewstaffcontroller getController = Get.put(Addnewstaffcontroller());
 
   final _formKey = GlobalKey<FormState>();
@@ -34,6 +36,12 @@ class Addnewstaffscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // If editing, populate fields and set edit mode
+    if (staff != null && !getController.isEditMode.value) {
+      getController.isEditMode.value = true;
+      getController.editingStaffId = staff!.sId;
+      getController.populateFromStaff(staff!);
+    }
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -94,14 +102,20 @@ class Addnewstaffscreen extends StatelessWidget {
                             Expanded(
                               child: ElevatedButtonExample(
                                 height: 35.h,
-                                text: getController.currentStep.value == 1
-                                    ? 'Add Staff'
-                                    : 'Next',
+                                text: getController.isEditMode.value
+                                    ? 'Update Staff'
+                                    : getController.currentStep.value == 1
+                                        ? 'Add Staff'
+                                        : 'Next',
                                 onPressed: () {
                                   if (getController.currentStep.value < 1) {
                                     getController.nextStep();
                                   } else {
-                                    getController.onAddStaffPress();
+                                    if (getController.isEditMode.value) {
+                                      getController.onUpdateStaffPress();
+                                    } else {
+                                      getController.onAddStaffPress();
+                                    }
                                   }
                                 },
                               ),
@@ -125,9 +139,9 @@ class Addnewstaffscreen extends StatelessWidget {
         // Imagepicker(),
         InputTxtfield_fullName(),
         InputTxtfield_Email(),
-        InputTxtfield_Pass(),
-        InputTxtfield_confirmPass(),
-         CommitionDropdown(),
+        // InputTxtfield_Pass(),
+        // InputTxtfield_confirmPass(),
+        CommitionDropdown(),
       ],
     );
   }
@@ -138,7 +152,6 @@ class Addnewstaffscreen extends StatelessWidget {
       children: [
         serviceDropdown(),
         branchDropdown(),
-
         InputTxtfield_Phone(),
         Row(
           children: [
@@ -148,7 +161,8 @@ class Addnewstaffscreen extends StatelessWidget {
           ],
         ),
         Gender(),
-        InputTxtfield_Salary(),
+        InputTxtfield_Specialization(),
+        // InputTxtfield_Salary(),
         Row(
           children: [
             Expanded(child: InputTxtfield_Duration()),
@@ -225,14 +239,23 @@ class Addnewstaffscreen extends StatelessWidget {
     );
   }
 
-  Widget InputTxtfield_Salary() {
+  Widget InputTxtfield_Specialization() {
     return CustomTextFormField(
-      controller: getController.salaryController,
-      labelText: "Salary",
-      keyboardType: TextInputType.number,
-      validator: (value) => Validation.validateSalary(value),
+      controller: getController.specializationController,
+      labelText: "Specialization",
+      keyboardType: TextInputType.text,
+      validator: (value) => Validation.validateisBlanck(value),
     );
   }
+
+  // Widget InputTxtfield_Salary() {
+  //   return CustomTextFormField(
+  //     controller: getController.salaryController,
+  //     labelText: "Salary",
+  //     keyboardType: TextInputType.number,
+  //     validator: (value) => Validation.validateSalary(value),
+  //   );
+  // }
 
   Widget InputTxtfield_Duration() {
     return CustomTextFormField(
@@ -328,45 +351,45 @@ class Addnewstaffscreen extends StatelessWidget {
         ));
   }
 
-  Widget InputTxtfield_Pass() {
-    return Obx(() => CustomTextFormField(
-          controller: getController.passwordController,
-          labelText: 'Password',
-          obscureText: !getController.showPass.value,
-          suffixIcon: IconButton(
-            onPressed: () {
-              getController.toggleShowPass();
-            },
-            icon: Icon(
-              getController.showPass.value
-                  ? Icons.visibility
-                  : Icons.visibility_off,
-              color: grey,
-            ),
-          ),
-          validator: (value) => Validation.validatePassword(value),
-        ));
-  }
+  // Widget InputTxtfield_Pass() {
+  //   return Obx(() => CustomTextFormField(
+  //         controller: getController.passwordController,
+  //         labelText: 'Password',
+  //         obscureText: !getController.showPass.value,
+  //         suffixIcon: IconButton(
+  //           onPressed: () {
+  //             getController.toggleShowPass();
+  //           },
+  //           icon: Icon(
+  //             getController.showPass.value
+  //                 ? Icons.visibility
+  //                 : Icons.visibility_off,
+  //             color: grey,
+  //           ),
+  //         ),
+  //         validator: (value) => Validation.validatePassword(value),
+  //       ));
+  // }
 
-  Widget InputTxtfield_confirmPass() {
-    return Obx(() => CustomTextFormField(
-          controller: getController.confirmpasswordController,
-          labelText: 'Confirm Password',
-          obscureText: !getController.showPass2.value,
-          suffixIcon: IconButton(
-            onPressed: () {
-              getController.toggleShowPass2();
-            },
-            icon: Icon(
-              getController.showPass.value
-                  ? Icons.visibility
-                  : Icons.visibility_off,
-              color: grey,
-            ),
-          ),
-          validator: (value) => Validation.validatePassword(value),
-        ));
-  }
+  // Widget InputTxtfield_confirmPass() {
+  //   return Obx(() => CustomTextFormField(
+  //         controller: getController.confirmpasswordController,
+  //         labelText: 'Confirm Password',
+  //         obscureText: !getController.showPass2.value,
+  //         suffixIcon: IconButton(
+  //           onPressed: () {
+  //             getController.toggleShowPass2();
+  //           },
+  //           icon: Icon(
+  //             getController.showPass.value
+  //                 ? Icons.visibility
+  //                 : Icons.visibility_off,
+  //             color: grey,
+  //           ),
+  //         ),
+  //         validator: (value) => Validation.validatePassword(value),
+  //       ));
+  // }
 
   Widget serviceDropdown() {
     return Obx(() {
@@ -443,7 +466,7 @@ class Addnewstaffscreen extends StatelessWidget {
   //     );
   //   });
   // }
-Widget branchDropdown() {
+  Widget branchDropdown() {
     return Obx(() {
       return DropdownButtonFormField<Branch>(
         value: getController.selectedBranch.value,
@@ -473,9 +496,12 @@ Widget branchDropdown() {
 
   Widget CommitionDropdown() {
     return Obx(() {
-      return DropdownButton<Commition>(
-        value: getController.selectedCommition.value,
-        hint: Text("Select Commition"),
+      return DropdownButtonFormField<Commition>(
+        value: getController.selectedCommitionId.value,
+        decoration: InputDecoration(
+          labelText: "Select Commision",
+          border: OutlineInputBorder(),
+        ),
         items: getController.commitionList.map((Commition commition) {
           return DropdownMenuItem<Commition>(
             value: commition,
@@ -484,10 +510,10 @@ Widget branchDropdown() {
         }).toList(),
         onChanged: (Commition? newValue) {
           if (newValue != null) {
-            getController.selectedCommition.value = newValue;
+            getController.selectedCommitionId.value = newValue;
             CustomSnackbar.showSuccess(
               'Commition Selected',
-              'ID: ${newValue.id}',
+              'ID: $newValue',
             );
           }
         },

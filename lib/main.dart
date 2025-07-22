@@ -16,8 +16,7 @@ final SharedPreferenceManager prefs = SharedPreferenceManager();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.
-  load(fileName: "assets/.env");
+  await dotenv.load(fileName: "assets/.env");
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: primaryColor,
     statusBarColor: primaryColor,
@@ -54,3 +53,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+  

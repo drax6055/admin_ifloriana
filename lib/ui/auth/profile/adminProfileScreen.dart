@@ -187,8 +187,6 @@ class Adminprofilescreen extends StatelessWidget {
                               ),
                             )),
                       ),
-
-                      InputTxtfield_pincode(),
                       SizedBox(height: 20),
                       Obx(() {
                         if (getController.isLoading.value) {
@@ -350,24 +348,6 @@ class Adminprofilescreen extends StatelessWidget {
       maxLines: 2,
       keyboardType: TextInputType.text,
       validator: (value) => Validation.validateAddress(value),
-    );
-  }
-
-  Widget InputTxtfield_pincode() {
-    return CustomTextFormField(
-      controller: getController.pincodeController,
-      labelText: 'Pincode',
-      keyboardType: TextInputType.phone,
-      validator: (value) => Validation.validationPincode(value),
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(6),
-      ],
-      onFieldSubmitted: (value) {
-        if (value.isNotEmpty) {
-          getController.fetchLocationDetails(value);
-        }
-      },
     );
   }
 

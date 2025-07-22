@@ -22,8 +22,6 @@ class Adminprofilecontroller extends GetxController {
   var showOldPassword = false.obs;
   var showConfirmPassword = false.obs;
 
-  
-
   void toggleShowPassword() {
     showPassword.value = !showPassword.value;
   }
@@ -83,11 +81,12 @@ class Adminprofilecontroller extends GetxController {
     try {
       final loginUser = await prefs.getUser();
       final response = await dioClient.putFormData(
-        '${Apis.baseUrl}${Endpoints.get_register_details}${loginUser!.adminId}',
+        '${Apis.baseUrl}/auth/update-admin/${loginUser!.adminId}',
         formData,
         (data) => data,
       );
-      await prefs.setRegisterdetails(GetAdminDetails.fromJson(response));
+      await prefs
+          .setRegisterdetails(GetAdminDetails.fromJson(response['data']));
       Get.offAllNamed(Routes.drawerScreen);
     } catch (e) {
       CustomSnackbar.showError("Error", e.toString());
@@ -116,32 +115,6 @@ class Adminprofilecontroller extends GetxController {
     } catch (e) {
       print('==> Add Staff Error: $e');
       CustomSnackbar.showError('Error', e.toString());
-    }
-  }
-
-  Future<void> fetchLocationDetails(String pincode) async {
-    isLoading.value = true;
-    error.value = '';
-
-    try {
-      final response = await dioClient.getData(
-        'https://api.postalpincode.in/pincode/$pincode',
-        (data) => data,
-      );
-
-      if (response != null && response[0]['Status'] == 'Success') {
-        final postOffice = response[0]['PostOffice'][0];
-        country.value = postOffice['Country'] ?? '';
-        state.value = postOffice['State'] ?? '';
-        district.value = postOffice['District'] ?? '';
-        block.value = postOffice['Block'] ?? '';
-      } else {
-        error.value = 'Invalid Pincode or no data found.';
-      }
-    } catch (e) {
-      error.value = 'Failed to fetch data: $e';
-    } finally {
-      isLoading.value = false;
     }
   }
 }

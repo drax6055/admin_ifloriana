@@ -1,5 +1,6 @@
 class Apis {
-  static const baseUrl = 'http://192.168.1.26:5000/api';
+  static const baseUrl = 'https://api.ifloriana.com/api';
+  static const pdfUrl = 'https://api.ifloriana.com';
 }
 
 class Endpoints {
@@ -72,4 +73,9 @@ class Endpoints {
   static const String orderReport = '/order';
   static const String getcommition = '/revenue-commissions?salon_id=';
   static const String commition = '/revenue-commissions';
+  static const String getVariation = '/variations/names?salon_id=';
+  static const String getCustomersName = "/customers/names?salon_id=";
+  static const String getProductsName = "/products?salon_id=";
+  static const String postOrders = "/order";
+  static const String uploadProducts = "/products";
 }

@@ -54,7 +54,7 @@ class StaffServiceReportScreen extends StatelessWidget {
                             DataColumn(label: Text('Commission')),
                             DataColumn(label: Text('Tips')),
                             DataColumn(label: Text('Total Earning')),
-                            DataColumn(label: Text('Total Amount')),
+                            // DataColumn(label: Text('Total Amount')),
                           ],
                           rows: controller.filteredStaffServiceReports
                               .map((report) {
@@ -80,8 +80,8 @@ class StaffServiceReportScreen extends StatelessWidget {
                                   Text(report.tipsEarn?.toString() ?? '0')),
                               DataCell(
                                   Text(report.totalEarning?.toString() ?? '0')),
-                              DataCell(
-                                  Text(report.totalAmount?.toString() ?? '0')),
+                              // DataCell(
+                              //     Text(report.totalAmount?.toString() ?? '0')),
                             ]);
                           }).toList(),
                         ),
@@ -89,7 +89,7 @@ class StaffServiceReportScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(16.0),
                           child: Row(
                             children: [
-                              Text('Grand Total: ',
+                              Text('Total: ',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16.sp)),

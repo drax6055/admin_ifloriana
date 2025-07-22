@@ -3,6 +3,8 @@ import 'package:flutter_template/main.dart';
 import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
+import 'package:flutter_template/ui/drawer/staff/staffDetailsController.dart';
+import 'dart:convert';
 
 class Service {
   String? id;
@@ -47,13 +49,11 @@ class Commition {
 class Addnewstaffcontroller extends GetxController {
   var fullnameController = TextEditingController();
   var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmpasswordController = TextEditingController();
   var phoneController = TextEditingController();
   var shiftStarttimeController = TextEditingController();
   var shiftEndtimeController = TextEditingController();
   var selectedGender = "Male".obs;
-  var salaryController = TextEditingController();
+  var specializationController = TextEditingController();
   var durationController = TextEditingController();
   var LunchStarttimeController = TextEditingController();
 
@@ -66,7 +66,11 @@ class Addnewstaffcontroller extends GetxController {
   var branchList = <Branch>[].obs;
   var commitionList = <Commition>[].obs;
   var selectedBranch = Rx<Branch?>(null);
-  var selectedCommition = Rx<Commition?>(null);
+  var selectedCommitionId = Rx<Commition?>(null);
+
+  var isEditMode = false.obs;
+  String? editingStaffId;
+  Data? _pendingStaffToPopulate;
 
   void toggleShowPass() {
     showPass.value = !showPass.value;
@@ -110,13 +114,6 @@ class Addnewstaffcontroller extends GetxController {
     }
   }
 
-  // String formatTimeToString(TimeOfDay timeOfDay) {
-  //   final now = DateTime.now();
-  //   final time = DateTime(
-  //       now.year, now.month, now.day, timeOfDay.hour, timeOfDay.minute);
-  //   return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time.second.toString().padLeft(2, '0')}";
-  // }
-
   Future<void> getServices() async {
     final loginUser = await prefs.getUser();
     try {
@@ -127,6 +124,7 @@ class Addnewstaffcontroller extends GetxController {
 
       final data = response['data'] as List;
       serviceList.value = data.map((e) => Service.fromJson(e)).toList();
+      _tryPopulatePendingStaff();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
@@ -142,6 +140,7 @@ class Addnewstaffcontroller extends GetxController {
 
       final data = response['data'] as List;
       branchList.value = data.map((e) => Branch.fromJson(e)).toList();
+      _tryPopulatePendingStaff();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
@@ -157,26 +156,85 @@ class Addnewstaffcontroller extends GetxController {
 
       final data = response['data'] as List;
       commitionList.value = data.map((e) => Commition.fromJson(e)).toList();
+      _tryPopulatePendingStaff();
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to get data: $e');
     }
   }
 
-  Future onAddStaffPress() async {
-    Map<String, dynamic> staffData = {
+  void _tryPopulatePendingStaff() {
+    if (_pendingStaffToPopulate != null &&
+        branchList.isNotEmpty &&
+        commitionList.isNotEmpty &&
+        serviceList.isNotEmpty) {
+      populateFromStaff(_pendingStaffToPopulate!);
+      _pendingStaffToPopulate = null;
+    }
+  }
+
+  void populateFromStaff(Data staff) {
+    if (branchList.isEmpty || commitionList.isEmpty || serviceList.isEmpty) {
+      _pendingStaffToPopulate = staff;
+      return;
+    }
+    _pendingStaffToPopulate = null;
+    fullnameController.text = staff.fullName ?? '';
+    specializationController.text = staff.specialization ?? '';
+    emailController.text = staff.email ?? '';
+    phoneController.text = staff.phoneNumber ?? '';
+    selectedGender.value = staff.gender?.capitalizeFirst ?? 'Male';
+    shiftStarttimeController.text = staff.assignTime?.startShift ?? '';
+    shiftEndtimeController.text = staff.assignTime?.endShift ?? '';
+    durationController.text = staff.lunchTime?.duration?.toString() ?? '';
+    LunchStarttimeController.text = staff.lunchTime?.timing ?? '';
+
+    // Set selectedBranch (preselect like example)
+    if (branchList.isNotEmpty) {
+      final branch = branchList.firstWhere(
+        (b) => b.id == staff.branchId?.sId,
+        orElse: () => branchList.first,
+      );
+      selectedBranch.value = branch;
+    } else {
+      selectedBranch.value = null;
+    }
+
+    // Set selectedServices
+    selectedServices.assignAll(
+      serviceList
+          .where((s) => staff.serviceId?.any((sid) => sid.sId == s.id) ?? false)
+          .toList(),
+    );
+
+    // Set selectedCommitionId (by id)
+    // selectedCommitionId.value = staff.commissionId?.isNotEmpty == true
+    //     ? staff.commissionId!.first
+    //     : null;
+    if (commitionList.isNotEmpty) {
+      final commiison = commitionList.firstWhere(
+        (b) => b.id == staff.commissionId?.sId,
+        orElse: () => commitionList.first,
+      );
+      selectedCommitionId.value = commiison;
+    } else {
+      selectedCommitionId.value = null;
+    }
+    // Set image
+    singleImage.value = staff.image;
+  }
+
+  Future onUpdateStaffPress() async {
+    final Map<String, dynamic> updateStaffData = {
       'full_name': fullnameController.text,
       'email': emailController.text,
       'phone_number': phoneController.text,
-      'password': passwordController.text,
-      'confirm_password': confirmpasswordController.text,
       'gender': selectedGender.value.toLowerCase(),
       'branch_id': selectedBranch.value?.id,
       'service_id': selectedServices.map((s) => s.id).toList(),
       'status': 1,
-      'assigned_commission_id':selectedCommition.value?.id,
+      'specialization': specializationController.text,
+      'assigned_commission_id': selectedCommitionId.value?.id,
       'salon_id': (await prefs.getUser())?.salonId,
-      'image': null,
-      'salary': int.tryParse(salaryController.text) ?? 0,
       'assign_time': {
         'start_shift': shiftStarttimeController.text,
         'end_shift': shiftEndtimeController.text,
@@ -186,7 +244,58 @@ class Addnewstaffcontroller extends GetxController {
         'timing': LunchStarttimeController.text,
       },
     };
-    print("===> ${staffData.toString()}");
+
+    // Only include password fields if not empty
+    // if (passwordController.text.isNotEmpty) {
+    //   updateStaffData['password'] = passwordController.text;
+    // }
+    // if (confirmpasswordController.text.isNotEmpty) {
+    //   updateStaffData['confirm_password'] = confirmpasswordController.text;
+    // }
+
+    // Only include image if not null
+    if (singleImage.value != null) {
+      updateStaffData['image'] = singleImage.value;
+    }
+
+    print("===> ${jsonEncode(updateStaffData)}");
+
+    try {
+      await dioClient.putData(
+        '${Apis.baseUrl}${Endpoints.postStaffDetails}/$editingStaffId',
+        updateStaffData,
+        (json) => json,
+      );
+      CustomSnackbar.showSuccess('Success', 'Staff updated successfully');
+    } catch (e) {
+      print('==> Update Staff Error: $e');
+      CustomSnackbar.showError('Error', e.toString());
+    }
+  }
+
+  Future onAddStaffPress() async {
+    Map<String, dynamic> staffData = {
+      'full_name': fullnameController.text,
+      'email': emailController.text,
+      'phone_number': phoneController.text,
+      'gender': selectedGender.value.toLowerCase(),
+      'branch_id': selectedBranch.value?.id,
+      'service_id': selectedServices.map((s) => s.id).toList(),
+      'status': 1,
+      'assigned_commission_id': selectedCommitionId.value!.id,
+      'salon_id': (await prefs.getUser())?.salonId,
+      'image': null,
+      'specialization': specializationController.text,
+      'assign_time': {
+        'start_shift': shiftStarttimeController.text,
+        'end_shift': shiftEndtimeController.text,
+      },
+      'lunch_time': {
+        'duration': int.tryParse(durationController.text) ?? 0,
+        'timing': LunchStarttimeController.text,
+      },
+    };
+    print("===>  [32m${staffData.toString()}");
     try {
       await dioClient.postData(
         '${Apis.baseUrl}${Endpoints.postStaffDetails}',

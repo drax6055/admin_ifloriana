@@ -155,6 +155,24 @@ class DioClient {
       throw _handleDioError(e);
     }
   }
+
+  Future<T> patchData<T>(
+    String endpoint,
+    Map<String, dynamic> data,
+    T Function(Map<String, dynamic>) fromJson,
+  ) async {
+    try {
+      final response = await dio.patch(endpoint, data: data);
+      if (response.statusCode == 200) {
+        return fromJson(response.data);
+      } else {
+        throw Exception('PATCH Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
   Future<T> deleteData<T>(
     String endpoint,
     T Function(Map<String, dynamic>) fromJson,
@@ -175,5 +193,4 @@ class DioClient {
       throw _handleDioError(e);
     }
   }
-
 }

@@ -4,6 +4,7 @@ import 'package:flutter_template/network/network_const.dart';
 import 'package:flutter_template/wiget/custome_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
+import '../customerController.dart';
 
 class Salon {
   final String? id;
@@ -98,14 +99,13 @@ class Addcustomercontroller extends GetxController {
   var fullNameController = TextEditingController();
   var emailController = TextEditingController();
   var phoneController = TextEditingController();
-  var passwordController = TextEditingController();
+  // var passwordController = TextEditingController();
   final packageController = MultiSelectController<BranchPackage>();
 
   // Dropdown values
   var selectedGender = 'Male'.obs;
   var selectedBranchMembership = ''.obs;
   var selectedPackages = <BranchPackage>[].obs;
-
 
   // Lists for dropdowns
   var branchPackageList = <BranchPackage>[].obs;
@@ -118,7 +118,6 @@ class Addcustomercontroller extends GetxController {
     super.onInit();
     getBranchPackages();
     getBranchMemberships();
-
   }
 
   @override
@@ -126,7 +125,7 @@ class Addcustomercontroller extends GetxController {
     fullNameController.dispose();
     emailController.dispose();
     phoneController.dispose();
-    passwordController.dispose();
+    // passwordController.dispose();
     packageController.dispose();
     super.onClose();
   }
@@ -135,7 +134,7 @@ class Addcustomercontroller extends GetxController {
     try {
       final loginUser = await prefs.getUser();
       final response = await dioClient.getData(
-        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}?salon_id=${loginUser!.salonId}',
+        '${Apis.baseUrl}${Endpoints.getBranchpackagesNames}${loginUser!.salonId}',
         (json) => json,
       );
 
@@ -171,7 +170,7 @@ class Addcustomercontroller extends GetxController {
         'full_name': fullNameController.text,
         'email': emailController.text,
         'gender': selectedGender.value.toLowerCase(),
-        'password': passwordController.text,
+        // 'password': passwordController.text,
         'phone_number': phoneController.text,
         'status': isActive.value ? 1 : 0,
       };
@@ -188,23 +187,26 @@ class Addcustomercontroller extends GetxController {
         (json) => json,
       );
 
+      // Refresh customer list after adding
+      try {
+        Get.find<CustomerController>().fetchCustomers();
+      } catch (e) {}
+
       // Clear form
       fullNameController.clear();
       emailController.clear();
       phoneController.clear();
-      passwordController.clear();
+      // passwordController.clear();
       selectedGender.value = '';
       selectedBranchMembership.value = '';
       selectedPackages.clear();
       packageController.clearAll();
       isActive.value = true;
       showPackageFields.value = false;
-
+      Get.back();
       CustomSnackbar.showSuccess('Success', 'Customer added successfully');
     } catch (e) {
       CustomSnackbar.showError('Error', 'Failed to add customer: $e');
     }
   }
-
-
 }

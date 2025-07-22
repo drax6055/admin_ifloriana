@@ -9,7 +9,7 @@ import 'customerController.dart';
 class CustomersScreen extends StatelessWidget {
   CustomersScreen({super.key});
   final CustomerController customerController = Get.put(CustomerController());
-
+                       
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,15 +37,29 @@ class CustomersScreen extends StatelessWidget {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(customer.email),
+                        // Text(customer.email),
                         Text(customer.phoneNumber),
                       ],
                     ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        customerController.deleteCustomer(customer.id);
-                      },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            Get.toNamed(
+                              Routes.editCustomer,
+                              arguments: customer,
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            customerController.deleteCustomer(customer.id);
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -53,7 +67,7 @@ class CustomersScreen extends StatelessWidget {
             )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed(Routes.addCustomer);  
+          Get.toNamed(Routes.addCustomer);
         },
         child: Icon(Icons.add),
         backgroundColor: primaryColor,

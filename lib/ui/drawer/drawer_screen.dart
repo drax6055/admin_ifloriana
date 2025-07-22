@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/ui/auth/profile/adminProfileScreen.dart';
 import 'package:flutter_template/ui/drawer/branches/getBranches/getBranchesScreen.Dart';
-import 'package:flutter_template/ui/drawer/calender_booking/calender_screen.dart';
+
 import 'package:flutter_template/ui/drawer/drawer_controller.dart';
 import 'package:flutter_template/ui/drawer/staff/staffDetailsScreen.dart';
-import 'package:flutter_template/ui/drawer/udpate_salon_details/updateSalon_screen.dart';
 import 'package:flutter_template/utils/colors.dart';
 import 'package:flutter_template/wiget/custome_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,6 +19,7 @@ class DrawerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DrawermenuController getController = Get.put(DrawermenuController());
+
     final List<DrawerItem> drawerItems = [
       DrawerItem(
           title: 'Dashboard', icon: FontAwesomeIcons.gauge, pageIndex: 0),
@@ -27,55 +27,74 @@ class DrawerScreen extends StatelessWidget {
           title: 'Booking', icon: FontAwesomeIcons.calendarDays, pageIndex: 1),
       DrawerItem(title: 'Branches', icon: Icons.update, pageIndex: 2),
       DrawerItem(
-          title: 'Staff', icon: Icons.account_circle_sharp, pageIndex: 4),
+          title: 'Staff', icon: Icons.account_circle_sharp, pageIndex: 3),
       DrawerItem(
-          title: 'Profile Update', icon: Icons.account_box, pageIndex: 3),
+          title: 'Profile Update', icon: Icons.account_box, pageIndex: 4),
       DrawerItem(
-          title: 'Logout', icon: Icons.logout, pageIndex: 0, isLogout: true)
+          title: 'Logout', icon: Icons.logout, pageIndex: 0, isLogout: true),
     ];
+
     final List<Map<String, dynamic>> pages = [
       {
         'title': 'Dashboard',
-        'widget': const DashboardScreen(),
-      },
-      {
-        'title': 'CalenderScreen',
-        'widget': const CalenderScreen(),
+        'widget': DashboardScreen(),
+        'showAppBar': true,
+        'actions': [
+          IconButton(
+            onPressed: () {
+              // Dashboard action
+            },
+            icon: Icon(Icons.notifications, size: 26.sp),
+          ),
+        ],
       },
       {
         'title': 'Branches',
         'widget': GetBranchesScreen(),
-      },
-      {
-        'title': 'Profile Update',  
-        'widget': Adminprofilescreen(),
+        'showAppBar': false,
+        'actions': [],
       },
       {
         'title': 'Staff',
         'widget': Staffdetailsscreen(),
-      }
-      
+        'showAppBar': true,
+        'actions': [
+          IconButton(
+            onPressed: () {
+              // Staff page action
+            },
+            icon: Icon(Icons.add, size: 26.sp),
+          ),
+        ],
+      },
+      {
+        'title': 'Profile Update',
+        'widget': Adminprofilescreen(),
+        'showAppBar': true,
+        'actions': [],
+      },
     ];
 
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(70.h),
-          child: Obx(() => CustomAppBar(
+          child: Obx(() {
+            final selectedIndex = getController.selectedPage.value;
+            if (selectedIndex < pages.length &&
+                pages[selectedIndex]['showAppBar'] == true) {
+              return CustomAppBar(
                 title: getController.appBarTitle.value,
-                actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.notifications,
-                      size: 26.sp,
-                    ),
-                  ),
-                ],
-              )),
+                actions: pages[selectedIndex]['actions'] ?? [],
+              );
+            } else {
+              return SizedBox.shrink(); // no appbar
+            }
+          }),
         ),
         body: Obx(() {
           final selectedIndex = getController.selectedPage.value;
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (selectedIndex < pages.length) {
               getController.appBarTitle.value = pages[selectedIndex]['title'];
@@ -83,10 +102,11 @@ class DrawerScreen extends StatelessWidget {
               getController.appBarTitle.value = 'Dashboard';
             }
           });
+
           if (selectedIndex < pages.length) {
             return pages[selectedIndex]['widget'];
           } else {
-            return const DashboardScreen();
+            return DashboardScreen();
           }
         }),
         drawer: Drawer(
@@ -108,7 +128,7 @@ class DrawerScreen extends StatelessWidget {
                 currentAccountPicture: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
-                    getController.selectPage(3);
+                    getController.selectPage(4); // Profile page
                   },
                   child: CircleAvatar(
                     radius: 40.r,
@@ -126,17 +146,14 @@ class DrawerScreen extends StatelessWidget {
               ...drawerItems.map((item) {
                 return ListTile(
                   dense: true,
-                  leading: Icon(
-                    item.icon,
-                    size: 18.sp,
-                  ),
+                  leading: Icon(item.icon, size: 18.sp),
                   title: CustomTextWidget(
                     text: item.title,
                     textStyle: CustomTextStyles.textFontMedium(size: 13.sp),
                   ),
                   onTap: () async {
                     Navigator.pop(context);
-                    if (item.title == 'Logout') {
+                    if (item.isLogout) {
                       await getController.onLogoutPress();
                     } else {
                       getController.selectPage(item.pageIndex);
